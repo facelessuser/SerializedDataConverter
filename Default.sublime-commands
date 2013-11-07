@@ -29,7 +29,7 @@
         "command": "plist_to_yaml"
     },
     {
-        "caption": "Plist Yaml Converter: YAML to PLIST (Save)",
+        "caption": "Serialized Data Converter: YAML to PLIST (Save)",
         "command": "yaml_to_plist",
         "args": {"save_to_file": true}
     },
