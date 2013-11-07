@@ -17,6 +17,7 @@ import traceback
 
 
 ERRORS = {
+    "view2plist": "Could not read view buffer as PLIST!\nPlease see console for more info.",
     "plist2json": "Could not convert PLIST to JSON!\nPlease see console for more info.",
     "view2json": "Could not read view buffer as JSON!\nPlease see console for more info.",
     "json2plist": "Could not convert JSON to PLIST!\nPlease see console for more info."

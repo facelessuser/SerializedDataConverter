@@ -15,6 +15,7 @@ import traceback
 
 
 ERRORS = {
+    "view2plist": "Could not read view buffer as PLIST!\nPlease see console for more info.",
     "plist2yaml": "Could not convert PLIST to YAML!\nPlease see console for more info.",
     "view2yaml": "Could not read view buffer as YAML!\nPlease see console for more info.",
     "yaml2plist": "Could not convert YAML to PLIST!\nPlease see console for more info."
