@@ -1,0 +1,41 @@
+[
+    // PLIST/JSON conversion
+    {
+        "caption": "Serialized Data Converter: JSON to PLIST",
+        "command": "json_to_plist"
+    },
+    {
+        "caption": "Serialized Data Converter: PLIST to JSON",
+        "command": "plist_to_json"
+    },
+    {
+        "caption": "Serialized Data Converter: JSON to PLIST (Save)",
+        "command": "json_to_plist",
+        "args": {"save_to_file": true}
+    },
+    {
+        "caption": "Serialized Data Converter: PLIST to JSON (Save)",
+        "command": "plist_to_json",
+        "args": {"save_to_file": true}
+    },
+
+    // PLIST/YAML conversion
+    {
+        "caption": "Serialized Data Converter: YAML to PLIST",
+        "command": "yaml_to_plist"
+    },
+    {
+        "caption": "Serialized Data Converter: PLIST to YAML",
+        "command": "plist_to_yaml"
+    },
+    {
+        "caption": "Plist Yaml Converter: YAML to PLIST (Save)",
+        "command": "yaml_to_plist",
+        "args": {"save_to_file": true}
+    },
+    {
+        "caption": "Serialized Data Converter: PLIST to YAML (Save)",
+        "command": "plist_to_yaml",
+        "args": {"save_to_file": true}
+    }
+]

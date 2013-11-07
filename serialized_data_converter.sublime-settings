@@ -1,0 +1,52 @@
+{
+    "json_language": "Packages/JavaScript/JSON.tmLanguage",
+    "yaml_language": "Packages/SerializedDataConverter/languages/YAML.tmLanguage",
+    "plist_language": "Packages/XML/XML.tmLanguage",
+
+    // When converting buffer open conversion in new buffer
+    "open_in_new_buffer": true,
+
+    // Enable show conversion in a view buffer
+    "enable_show_in_buffer_commands": true,
+
+    // Enable creation of new file based on extension map containing the coverted data
+    // If the current file to convert does not exist on disk, the converted file will default
+    // To being shown in a view buffer only, and will not be automatcially saved to disk.
+    "enable_save_to_file_commands": true,
+
+    // When saving converted data to a file, or when opening
+    // conversion in new buffer use these extension maps for file name.
+    // Extensions will be evaluated in the order listed below.
+    // If the file does not match any of the extensions, the current
+    // extension will be replaced with either "plist", "json", or "yaml" accordingly.
+    "plist_json_conversion_ext": [
+        {"plist": "tmLanguage", "other": "tmLanguage.JSON"},
+        {"plist": "tmPreferences", "other": "tmPreferences.JSON"},
+        {"plist": "tmTheme", "other": "tmTheme.JSON"}
+    ],
+
+    "plist_yaml_conversion_ext": [
+        {"plist": "tmLanguage", "other": "tmLanguage.YAML"},
+        {"plist": "tmPreferences", "other": "tmPreferences.YAML"},
+        {"plist": "tmTheme", "other": "tmTheme.YAML"}
+    ],
+
+    // Extensions to auto convert from json to plist on save
+    // Extensions are case insensitive
+    "json_to_plist_on_save": [
+    //     "tmLanguage.JSON",
+    //     "tmPreferences.JSON",
+    //     "tmTheme.JSON"
+    ],
+    "yaml_to_plist_on_save": [
+    //     "tmLanguage.YAML",
+    //     "tmPreferences.YAML",
+    //     "tmTheme.YAML"
+    ],
+
+    "yaml_strip_tabs_from": [
+        "tmLanguage",
+        "tmTheme",
+        "tmPreferences"
+    ]
+}

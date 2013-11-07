@@ -1,0 +1,221 @@
+comment: | # Comment after multiline
+    A Less crappy, simple YAML...but still a little crappy.
+    A work in progress
+
+fileTypes:
+- yaml
+name: YAML (simple)
+patterns:
+# Invalid (testing inline)
+- {match: \t+, name: invalid.illegal.tab.yaml-simple} #Test comment
+
+# Comments
+-   captures:
+        '1':
+            name: comment.yaml-simple
+    match: '^\s*(#.*)$'
+
+# Header
+-   captures:
+        '1':
+            name: markup.list.yaml-simple
+        '2':
+            name: comment.yaml-simple
+    match: ^(-{3}|\.{3})\s*(?:(#.*)?$)
+
+# Scalar
+-   begin: |-
+        (?x)^\s*(?:
+            (?:([\-?])(?:\s+))?
+            (?:
+                (\w(?:.*?[^\ ])?)(?:\s*\:(?:\s+|(?=$))) |
+                ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])\:(?:\s+|(?=$))|
+                (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])\:(?:\s+|(?=$))
+            )
+        )
+    beginCaptures:
+        '1':
+            name: markup.list.yaml-simple
+        '2':
+            name: meta.tag.yaml-simple
+        '3':
+            name: meta.tag.yaml-simple
+        '4':
+            name: string.yaml-simple
+        '5':
+            name: meta.tag.yaml-simple
+        '6':
+            name: string.yaml-simple
+    end: $
+    patterns:
+    -   include: '#scalar' #testing comment
+
+# Inline map
+-   begin: ^\s*(-)\s*(?=[\{\[])
+    beginCaptures:
+        '1':
+            name: markup.list.yaml-simple
+    end: (#.*)?$
+    endCaptures:
+        '1':
+            name: comment.yaml-simple
+    patterns:
+    -   include: '#map'
+    -   include: '#array'
+
+#-   captures:
+#        '1':
+#            name: markup.list.yaml-simple
+#    match: \^\s*([\-?])(?:$|\s)
+
+#-   match: '!![\w//]+'
+#    name: constant.yaml-simple
+
+#-   match: '[&\*][a-zA-Z0-9-_]+'
+#    name: constant.language.yaml-simple
+
+#-   match: <<\w*:\w*
+#    name: keyword.operator.yaml-simple
+#-   match: -\s*(?=[\{])
+#    name: keyword.operator.yaml-simple
+
+
+repository:
+    multi-line:
+        patterns:
+        -   captures:
+                "1":
+                    name: keyword.multi-line.yaml-simple
+                "2":
+                    name: comment.yaml-simple
+            match: ([|>][-+\d\s]*)\s*(#.*)?$
+
+    scalar:
+        patterns:
+        -   include: '#map'
+        -   include: '#array'
+        -   include: '#multi-line'
+        -   include: '#strings'
+        -   include: '#numerics'
+        -   include: '#boolean'
+        -   match: '.*'
+            name: unmatched.yaml-simple
+
+    map:
+        begin: (\{)
+        beginCaptures:
+            '1':
+                name: paren.lparen.yaml-simple
+        end: (\})\s*(#.*)?(?=$)
+        endCaptures:
+            '1':
+                name: paren.rparen.yaml-simple
+            '2':
+                name: comment.yaml-simple
+        patterns:
+        -   include: '#inline-map'
+
+    array:
+        begin: (\[)
+        beginCaptures:
+            '1':
+                name: paren.lparen.yaml-simple
+        end: (\])\s*(#.*)?(?=$)
+        endCaptures:
+            '1':
+                name: paren.rparen.yaml-simple
+            '2':
+                name: comment.yaml-simple
+        patterns:
+        -   include: '#inline-array'
+
+    single-line:
+        patterns:
+        -   include: '#inline-strings'
+        -   include: '#inline-numerics'
+        -   include: '#inline-boolean'
+        -   match: '[^,\}\]]*'
+            name: unmatched.yaml-simple
+
+    inline-array:
+        begin: (?<=(?:\[|,))
+        end: \s*(?=(?:\]|,))
+        patterns:
+        -   include: '#single-line' #testing comment
+
+    inline-map:
+        begin: |-
+            (?x)\s*(?:
+                (?:
+                    (\w(?:.*?[^\ ])?)(?:\s*\:(?:\s+)) |
+                    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])\:(?:\s+)|
+                    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])\:(?:\s+)
+                )
+            )
+        beginCaptures:
+            '1':
+                name: meta.tag.yaml-simple
+            '2':
+                name: meta.tag.yaml-simple
+            '3':
+                name: string.yaml-simple
+            '4':
+                name: meta.tag.yaml-simple
+            '5':
+                name: string.yaml-simple
+        end: \s*,|(?=[\}])
+        patterns:
+        -   include: '#single-line' #testing comment
+
+    numerics:
+        patterns:
+        -   match: '[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?\s*(#.*)?(?=$)'
+            name: constant.numeric.yaml-simple
+        -   match: '[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+\s*(#.*)?(?=$)'
+            name: constant.numeric.yaml-simple
+    boolean:
+        patterns:
+        -   match: (?:true|false|TRUE|FALSE|True|False|yes|no)\s*(#.*)?(?=$)
+            name: constant.language.boolean.yaml-simple
+    strings:
+        patterns:
+        -   captures:
+                '1':
+                    name: string.yaml-simple
+                '2':
+                    name: comment.yaml-simple
+            match: '(["](?:(?:\\.)|(?:[^"\\]|\\"))*?["])\s*(#.*)?(?=$)'
+        -   captures:
+                '1':
+                    name: string.yaml-simple
+                '2':
+                    name: comment.yaml-simple
+            match: '([''](?:(?:\\.)|(?:[^''\\]|''{2}))*?[''])\s*(#.*)?(?=$)'
+
+    inline-numerics:
+        patterns:
+        -   match: '[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?'
+            name: constant.numeric.yaml-simple
+        -   match: '[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+'
+            name: constant.numeric.yaml-simple
+    inline-boolean:
+        patterns:
+        -   match: (?:true|false|TRUE|FALSE|True|False|yes|no)
+            name: constant.language.boolean.yaml-simple
+    inline-strings:
+        patterns:
+        -   captures:
+                '1':
+                    name: string.yaml-simple
+                '2':
+                    name: comment.yaml-simple
+            match: '(["](?:(?:\\.)|(?:[^"\\]|\\"))*?["])\s*(?=(?:,|\}))'
+        -   captures:
+                '1':
+                    name: string.yaml-simple
+                '2':
+                    name: comment.yaml-simple
+            match: '([''](?:(?:\\.)|(?:[^''\\]|''{2}))*?[''])\s*(?=(?:,|\}))'
+
+scopeName: source.yaml-simple
+uuid: a3a8b36d-b4c3-4212-bb86-d1d18301bf5a
