@@ -9,6 +9,7 @@ A work in progress
 	<key>fileTypes</key>
 	<array>
 		<string>yaml</string>
+		<string>yml</string>
 	</array>
 	<key>name</key>
 	<string>YAML (simple)</string>
@@ -46,7 +47,7 @@ A work in progress
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>paren.lparen.yaml-simple</string>
+					<string>keyword.paren.lparen.yaml-simple</string>
 				</dict>
 			</dict>
 			<key>end</key>
@@ -56,7 +57,7 @@ A work in progress
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>paren.rparen.yaml-simple</string>
+					<string>keyword.paren.rparen.yaml-simple</string>
 				</dict>
 				<key>2</key>
 				<dict>
@@ -153,7 +154,15 @@ A work in progress
 			<key>begin</key>
 			<string>(?&lt;=(?:\[|,))</string>
 			<key>end</key>
-			<string>\s*(?=(?:\]|,))</string>
+			<string>\s*(?:(,)|(?=\]))</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.paren.separator.yaml-simple</string>
+				</dict>
+			</dict>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -228,7 +237,15 @@ A work in progress
 				</dict>
 			</dict>
 			<key>end</key>
-			<string>\s*,|(?=[\}])</string>
+			<string>\s*(?:(,)|(?=\}))</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.paren.separator.yaml-simple</string>
+				</dict>
+			</dict>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -410,7 +427,7 @@ A work in progress
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>paren.lparen.yaml-simple</string>
+					<string>keyword.paren.left.yaml-simple</string>
 				</dict>
 			</dict>
 			<key>end</key>
@@ -420,7 +437,7 @@ A work in progress
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>paren.rparen.yaml-simple</string>
+					<string>keyword.paren.right.yaml-simple</string>
 				</dict>
 				<key>2</key>
 				<dict>
