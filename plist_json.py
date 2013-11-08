@@ -5,7 +5,6 @@ Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 """
 
 import sublime
-import sublime_plugin
 import json
 import re
 from os.path import splitext

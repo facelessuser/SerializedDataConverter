@@ -37,5 +37,25 @@
         "caption": "Serialized Data Converter: PLIST to YAML (Save)",
         "command": "plist_to_yaml",
         "args": {"save_to_file": true}
+    },
+
+    // JSON/YAML conversion
+    {
+        "caption": "Serialized Data Converter: YAML to JSON",
+        "command": "yaml_to_json"
+    },
+    {
+        "caption": "Serialized Data Converter: JSON to YAML",
+        "command": "json_to_yaml"
+    },
+    {
+        "caption": "Serialized Data Converter: YAML to JSON (Save)",
+        "command": "yaml_to_json",
+        "args": {"save_to_file": true}
+    },
+    {
+        "caption": "Serialized Data Converter: JSON to YAML (Save)",
+        "command": "json_to_yaml",
+        "args": {"save_to_file": true}
     }
 ]

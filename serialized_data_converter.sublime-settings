@@ -31,6 +31,12 @@
         {"plist": "tmTheme", "other": "tmTheme.YAML"}
     ],
 
+    "plist_yaml_conversion_ext": [
+        // Nothing to see here; move along
+        // Add your rules here
+        //{"json": "some extension", "other": "some extension"}
+    ],
+
     // Extensions to auto convert from json to plist on save
     // Extensions are case insensitive
     "json_to_plist_on_save": [
