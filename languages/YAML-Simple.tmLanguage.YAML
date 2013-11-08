@@ -41,7 +41,7 @@ repository:
 
     # Tabs are evil (at least to yaml)
     evil-tabs:
-        match: !!regex \t+
+        match: !!regex '\t+'
         name: invalid.illegal.tab.yaml-simple
 
     ###################
@@ -80,7 +80,7 @@ repository:
         -   captures:
                 '2': {name: keyword.operator.list.yaml-simple}
                 '3': {name: comment.yaml-simple}
-            match: !!regex ^( *)(-|\?)[ ]*(#.*)?
+            match: !!regex ^( *)(-|\?)[ ]*(#.*)?$
 
 
     cast-values:

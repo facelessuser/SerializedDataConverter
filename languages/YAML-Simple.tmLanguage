@@ -1001,7 +1001,7 @@ A work in progress
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>^( *)(-|\?)[ ]*(#.*)?</string>
+					<string>^( *)(-|\?)[ ]*(#.*)?$</string>
 				</dict>
 			</array>
 		</dict>
