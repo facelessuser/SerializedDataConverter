@@ -1,4 +1,4 @@
-# This is the main file that gets edited
+# YAML-SIMPLE
 ---
 comment: |
     A Less crappy, simple YAML...but still a little crappy.
@@ -15,7 +15,8 @@ patterns:
 - include: '#evil-tabs'
 - include: '#line-comments'
 - include: '#document-markers'
-- include: '#keys'
+- include: '#multi-line'
+- include: '#single-line'
 - include: '#inline'
 
 
@@ -27,256 +28,201 @@ repository:
     # Mark the start and end of the document
     document-markers:
         captures:
-            '1':
-                name: keyword.operator.document.start.yaml-simple
-            '2':
-                name: keyword.operator.document.end.yaml-simple
-            '3':
-                name: comment.yaml-simple
-        match: ^(?:(-{3})|(\.{3}))[ \r\n\f]*(?:(#.*)?$)
+            '1': {name: keyword.operator.document.start.yaml-simple}
+            '2': {name: keyword.operator.document.end.yaml-simple}
+            '3': {name: comment.yaml-simple}
+        match: !!regex ^(?:(-{3})|(\.{3}))[ \r\n]*(?:(#.*)?$)
 
     # Lines that only have comments
     line-comments:
         captures:
-            '1':
-                name: comment.yaml-simple
-        match: !!regex '^[ \r\n\f]*(#.*)$'
+            '1': {name: comment.yaml-simple}
+        match: !!regex '^[ \r\n]*(#.*)$'
 
     # Tabs are evil (at least to yaml)
     evil-tabs:
-        patterns:
-        - {match: !!regex '\t+', name: invalid.illegal.tab.yaml-simple}
-        # match: \t+
-        # name: invalid.illegal.tab.yaml-simple
+        match: !!regex \t+
+        name: invalid.illegal.tab.yaml-simple
 
     ###################
-    # Key Value Pairs
+    # Lines
     ###################
     # Scan the line for key value pairs
-    keys:
-        begin: |-
-            (?x)^[\ \r\n\f]*(?:
-                (?:([\-?])(?:[\ \r\n\f]+))?
+    single-line:
+        begin: !!regex |-
+            (?x)^[\ ]*(?:
+                (?:([\-?])(?:[\ \r\n]+))?
                 (?:
-                    (\w(?:.*?[^\ ])?)(?:[\ \r\n\f]*(\:)(?:[\ \f]+(!![\w//]+))?(?:[\ \r\n\f]+|(?=$))) |
-                    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \f]+(!![\w//]+))?(?:[\ \r\n\f]+|(?=$))|
-                    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \f]+(!![\w//]+))?(?:\[\ \r\n\f]+|(?=$))
+                    (\w(?:.*?[^\ ])?|<<)(?:[\ \r\n]*(\:)(?:[\ \r\n]+|(?=$))) |
+                    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+|(?=$))|
+                    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+|(?=$))
                 )
             )
         beginCaptures:
-            '1':
-                name: keyword.operator.list.yaml-simple
-            '2':
-                name: meta.tag.yaml-simple
-            '3':
-                name: keyword.operator.key-separator.yaml-simple
-            '4':
-                name: support.type.yaml-simple
-            '5':
-                name: meta.tag.yaml-simple
-            '6':
-                name: string.yaml-simple
-            '7':
-                name: keyword.operator.key-separator.yaml-simple
-            '8':
-                name: support.type.yaml-simple
-            '9':
-                name: meta.tag.yaml-simple
-            '10':
-                name: string.yaml-simple
-            '11':
-                name: keyword.operator.key-separator.yaml-simple
-            '12':
-                name: support.type.yaml-simple
-        end: $
+            '1': {name: keyword.operator.list.yaml-simple}
+            '2': {name: meta.tag.yaml-simple}
+            '3': {name: keyword.operator.key-separator.yaml-simple}
+            '4': {name: meta.tag.yaml-simple}
+            '5': {name: string.yaml-simple}
+            '6': {name: keyword.operator.key-separator.yaml-simple}
+            '7': {name: meta.tag.yaml-simple}
+            '8': {name: string.yaml-simple}
+            '9': {name: keyword.operator.key-separator.yaml-simple}
+        end: !!regex $
         patterns:
-        -   include: '#values' #testing comment
+        -   include: '#cast-values'
+        -   include: '#values'
+
+    cast-values:
+        patterns:
+            -   captures:
+                    '1': {name: support.type.yaml-simple}
+                    '2': {name: keyword.operator.multi-line.yaml-simple}
+                    '3': {name: comment.yaml-simple}
+                match: !!regex (?:(!![\w//]+)[ ]+)?([|>][-+\d\r\n]*)[ \r\n]*(#.*)?$
+            -   begin: !!regex (!!regex)[ ]+
+                beginCaptures:
+                    '1': {name: support.type.yaml-simple}
+                end: !!regex (?=$)
+                patterns:
+                -   include: '#sublime-regex'
+            -   begin: !!regex (!![\w//]+)[ ]+
+                end: !!regex (?=$)
+                patterns:
+                -   include: '#values'
 
     values:
         patterns:
-        -   include: '#sublime-regex'
         -   include: '#address-tag'
-        -   include: '#map'
+        -   include: '#associative-array'
         -   include: '#array'
-        -   include: '#multi-line'
         -   include: '#strings'
         -   include: '#numerics'
         -   include: '#boolean'
         -   match: '.*'
             name: unmatched.yaml-simple
 
-    ###################
-    # Scan for Value Types
-    ###################
-    # Multi-line marker
+    # Multi-line key value pairs
     multi-line:
         patterns:
-        -   captures:
-                "1":
-                    name: keyword.operator.multi-line.yaml-simple
-                "2":
-                    name: comment.yaml-simple
-            match: ([|>][-+\d\r\n\f]*)[ \r\n\f]*(#.*)?$
+        -   begin: !!regex |-
+                (?x)^([\ ]*)(?:([\-])([\ ]+))?
+                    (?:
+                        (\w(?:.*?[^\ ])?|<<)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
+                        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+) |
+                        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
+                    )
+                    (!!regex)[\ ]+([|>][-+\d\r\n]*)[\ ]*(\#.*)?
+            beginCaptures:
+                '2':  {name: keyword.operator.list.yaml-simple}
+                '4':  {name: meta.tag.yaml-simple}
+                '5':  {name: keyword.operator.key-separator.yaml-simple}
+                '6':  {name: meta.tag.yaml-simple}
+                '7':  {name: string.yaml-simple}
+                '8':  {name: keyword.operator.key-separator.yaml-simple}
+                '9':  {name: meta.tag.yaml-simple}
+                '10': {name: string.yaml-simple}
+                '11': {name: keyword.operator.key-separator.yaml-simple}
+                '12': {name: support.type.yaml-simple}
+                '13': {name: keyword.operator.multi-line.yaml-simple}
+                '14': {name: comment.yaml-simple}
+            end: !!regex ^(?! *$|\1\3 {2})
+            patterns:
+            -   include: source.regexp
 
-    # Single line maps or associative array
-    map:
-        begin: '(\{)'
-        beginCaptures:
-            '1':
-                name: keyword.paren.left.yaml-simple
-        end: (\})[ \r\n\f]*(?:(#.*)?|(?=$|,|\}|\]))
-        endCaptures:
-            '1':
-                name: keyword.paren.right.yaml-simple
-            '2':
-                name: comment.yaml-simple
-        patterns:
-        -   include: '#inline-keys'
-
-    # Single line array
-    array:
-        begin: (\[)(?:[ \f]*(!![\w//]+))?
-        beginCaptures:
-            '1':
-                name: keyword.paren.left.yaml-simple
-            '2':
-                name: support.type.yaml-simple
-        end: (\])[ \r\n\f]*(?:(#.*)?|(?=$|,|\}|\]))
-        endCaptures:
-            '1':
-                name: keyword.paren.right.yaml-simple
-            '2':
-                name: comment.yaml-simple
-        patterns:
-        -   include: '#inline-array-values'
+        -   begin: !!regex |-
+                (?x)^([\ ]*)(?:([\-])([\ ]+))?
+                    (?:
+                        (\w(?:.*?[^\ ])?|<<)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
+                        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+) |
+                        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
+                    )
+                    (?:(!![\w//]+)[\ ]+)?([|>][-+\d\r\n]*)[\ ]*(\#.*)?
+            beginCaptures:
+                '2':  {name: keyword.operator.list.yaml-simple}
+                '4':  {name: meta.tag.yaml-simple}
+                '5':  {name: keyword.operator.key-separator.yaml-simple}
+                '6':  {name: meta.tag.yaml-simple}
+                '7':  {name: string.yaml-simple}
+                '8':  {name: keyword.operator.key-separator.yaml-simple}
+                '9':  {name: meta.tag.yaml-simple}
+                '10': {name: string.yaml-simple}
+                '11': {name: keyword.operator.key-separator.yaml-simple}
+                '12': {name: support.type.yaml-simple}
+                '13': {name: keyword.operator.multi-line.yaml-simple}
+                '14': {name: comment.yaml-simple}
+            end: !!regex ^(?! *$|\1\3 {2})
+            patterns:
+            -   match: '.*'
+                name: multiline.text.yaml-simple unmatched.yaml-simple
 
     # Inline style associative array and normal arrays
     # - [] or - {}
     inline:
-        begin: ^[ \r\n\f]*(?:(-)[ \r\n\f]*)?(?=[\{\[])
+        begin: !!regex ^[ \r\n]*(?:(-)[ \r\n]*)?(?=[\{\[])
         beginCaptures:
-            '1':
-                name: keyword.operator.list.yaml-simple
-        end: (#.*)?$
+            '1': {name: keyword.operator.list.yaml-simple}
+        end: !!regex (#.*)?$
         endCaptures:
-            '1':
-                name: comment.yaml-simple
+            '1': {name: comment.yaml-simple}
         patterns:
-        -   include: '#map'
+        -   include: '#associative-array'
         -   include: '#array'
 
-    # Inline array values
-    inline-array-values:
-        begin: (?<=(?:\[|,|[ \r\n\f]))
-        end: '[ \r\n\f]*(?:(,)\n?|(?=\]))'
+    ###################
+    # Inline Arrays
+    ###################
+    # Single line associative array
+    associative-array:
+        begin: '(\{)'
+        beginCaptures:
+            '1': {name: keyword.paren.left.yaml-simple}
+        end: !!regex (\})[ \r\n]*(?:(#.*)?|(?=$|,|\}|\]))
         endCaptures:
-            '1':
-                name: keyword.paren.separator.yaml-simple
+            '1': {name: keyword.paren.right.yaml-simple}
+            '2': {name: comment.yaml-simple}
         patterns:
-        -   include: '#inline-values' #testing comment
+        -   include: '#inline-keys'
 
-    inline-sublime-regex:
-        patterns:
-        -   begin: '('')'
-            end: '('')[ \r\n\f]*(?=(?:,|\}|\]))'
-            patterns:
-            -   include: source.regexp
-        -   begin: '(")'
-            end: '(")[ \r\n\f]*(?=(?:,|\}|\]))'
-            patterns:
-            -   include: source.regexp
-        -   include: source.regexp
-
-    sublime-regex:
-        patterns:
-        -   begin: '(?<=(?:\!\!regex ))('')'
-            end: '('')[ \f]*(#.*)?(?=$)'
-            patterns:
-            -   include: source.regexp
-        -   begin: '(?<=(?:\!\!regex ))(")'
-            end: '(")[ \f]*(#.*)?(?=$)'
-            patterns:
-            -   include: source.regexp
-
-    # Inline map or associative array keys
+    # Inline associative array keys
     # - {}
     inline-keys:
+        begin: !!regex |-
+            (?x)[\ \r\n]*(?:
+                (?:
+                    (\w(?:.*?[^\ ])?|<<)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
+                    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+)|
+                    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
+                )
+            )
+        beginCaptures:
+            '1': {name: meta.tag.yaml-simple}
+            '2': {name: keyword.operator.key-separator.yaml-simple}
+            '3': {name: meta.tag.yaml-simple}
+            '4': {name: string.yaml-simple}
+            '5': {name: keyword.operator.key-separator.yaml-simple}
+            '6': {name: meta.tag.yaml-simple}
+            '7': {name: string.yaml-simple}
+            '8': {name: keyword.operator.key-separator.yaml-simple}
+        end: !!regex '[ \r\n]*(?:(,)\n?|(?=\}))'
+        endCaptures:
+            '1': {name: keyword.paren.separator.yaml-simple}
         patterns:
-        -   begin: |-
-                (?x)[\ \r\n\f]*(?:
-                    (?:
-                        (\w(?:.*?[^\ ])?)(?:[\ \r\n\f]*(\:)(?:[\ \f]+(!!regex))(?:[\ \r\n\f]+)) |
-                        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \f]+(!!regex))(?:[\ \r\n\f]+)|
-                        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \f]+(!!regex))(?:[\ \r\n\f]+)
-                    )
-                )
-            beginCaptures:
-                '1':
-                    name: meta.tag.yaml-simple
-                '2':
-                    name: keyword.operator.key-separator.yaml-simple
-                '3':
-                    name: support.type.yaml-simple
-                '4':
-                    name: meta.tag.yaml-simple
-                '5':
-                    name: string.yaml-simple
-                '6':
-                    name: keyword.operator.key-separator.yaml-simple
-                '7':
-                    name: support.type.yaml-simple
-                '8':
-                    name: meta.tag.yaml-simple
-                '9':
-                    name: string.yaml-simple
-                '10':
-                    name: keyword.operator.key-separator.yaml-simple
-                '11':
-                    name: support.type.yaml-simple
-            end: '[ \r\n\f]*(?:(,)\n?|(?=\}))'
-            endCaptures:
-                '1':
-                    name: keyword.paren.separator.yaml-simple
-            patterns:
-            -   include: '#inline-sublime-regex'
+        -   include: '#inline-cast-values'
+        -   include: '#inline-values' #testing comment
 
-        -   begin: |-
-                (?x)[\ \r\n\f]*(?:
-                    (?:
-                        (\w(?:.*?[^\ ])?)(?:[\ \r\n\f]*(\:)(?:[\ \f]+(!![\w//]+))?(?:[\ \r\n\f]+)) |
-                        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \f]+(!![\w//]+))?(?:[\ \r\n\f]+)|
-                        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \f]+(!![\w//]+))?(?:[\ \r\n\f]+)
-                    )
-                )
-            beginCaptures:
-                '1':
-                    name: meta.tag.yaml-simple
-                '2':
-                    name: keyword.operator.key-separator.yaml-simple
-                '3':
-                    name: support.type.yaml-simple
-                '4':
-                    name: meta.tag.yaml-simple
-                '5':
-                    name: string.yaml-simple
-                '6':
-                    name: keyword.operator.key-separator.yaml-simple
-                '7':
-                    name: support.type.yaml-simple
-                '8':
-                    name: meta.tag.yaml-simple
-                '9':
-                    name: string.yaml-simple
-                '10':
-                    name: keyword.operator.key-separator.yaml-simple
-                '11':
-                    name: support.type.yaml-simple
-            end: '[ \r\n\f]*(?:(,)\n?|(?=\}))'
-            endCaptures:
-                '1':
-                    name: keyword.paren.separator.yaml-simple
-            patterns:
-            -   include: '#inline-values' #testing comment
+    inline-cast-values:
+        patterns:
+            -   begin: !!regex (!!regex)[ ]+
+                beginCaptures:
+                    '1': {name: support.type.yaml-simple}
+                end: !!regex (?=(?:,\n?|\}))
+                patterns:
+                -   include: '#inline-sublime-regex'
+            -   begin: !!regex (!![\w//]+)[ ]+
+                end: !!regex (?=(?:,\n?|\}))
+                patterns:
+                -   include: '#inline-values'
 
     # Inline values
     inline-values:
@@ -285,108 +231,188 @@ repository:
         -   include: '#inline-strings'
         -   include: '#inline-numerics'
         -   include: '#inline-boolean'
-        -   include: '#map'
+        -   include: '#associative-array'
         -   include: '#array'
-        -   match: '[^\{\[\}\],]*'
+        -   match: !!regex '[^\{\[\}\],]*'
             name: unmatched.yaml-simple
 
+    # Single line array
+    array:
+        begin: !!regex (\[)
+        beginCaptures:
+            '1': {name: keyword.paren.left.yaml-simple}
+            '2': {name: support.type.yaml-simple}
+        end: !!regex (\])[ \r\n]*(?:(#.*)?|(?=$|,|\}|\]))
+        endCaptures:
+            '1': {name: keyword.paren.right.yaml-simple}
+            '2': {name: comment.yaml-simple}
+        patterns:
+        -   begin: !!regex (!!regex)[ ]*
+            beginCaptures:
+                '1': {name: support.type.yaml-simple}
+            end: !!regex '[ \r\n]*(?:(,)\n?|(?=\]))'
+            endCaptures:
+                '1': {name: keyword.paren.separator.yaml-simple}
+            patterns:
+            -   include: '#inline-sublime-regex'
+            -   begin: !!regex (?<=(?:\[|,|[ \r\n]))
+                end: !!regex '(?=(?:,\n?|\]))'
+                patterns:
+                -   include: '#inline-values'
+        -   begin: !!regex (!![\w//]+)[ ]*
+            end: !!regex '[ \r\n]*(?:(,)\n?|(?=\]))'
+            endCaptures:
+                '1': {name: keyword.paren.separator.yaml-simple}
+            patterns:
+            -   begin: !!regex (?<=(?:\[|,|[ \r\n]))
+                end: !!regex '(?=(?:,\n?|\]))'
+                patterns:
+                -   include: '#inline-values'
+        -   include: '#inline-array-values'
+
+    # Inline array values
+    inline-array-values:
+        begin: !!regex (?<=(?:\[|,|[ \r\n]))
+        end: !!regex '[ \r\n]*(?:(,)\n?|(?=\]))'
+        endCaptures:
+            '1': {name: keyword.paren.separator.yaml-simple}
+        patterns:
+        -   include: '#inline-values'
+
+    ###################
+    # Numbers
+    ###################
     # Numbers (with trailing comments)
     numerics:
         patterns:
-        -   match: '[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?[ \r\n\f]*(#.*)?(?=$)'
+        -   match: !!regex '[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?[ ]*(#.*)?(?=$)'
             name: constant.numeric.yaml-simple
-        -   match: '[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+[ \r\n\f]*(#.*)?(?=$)'
+        -   match: !!regex '[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+[ ]*(#.*)?(?=$)'
             name: constant.numeric.yaml-simple
-
-    # Booleans (with trailing comments)
-    boolean:
-        patterns:
-        -   match: (?:true|false|TRUE|FALSE|True|False|yes|no)[ \r\n\f]*(#.*)?(?=$)
-            name: constant.language.boolean.yaml-simple
-
-    # Strings (with trailing comments)
-    strings:
-        patterns:
-        -   captures:
-                '1':
-                    name: string.yaml-simple
-                '2':
-                    name: comment.yaml-simple
-            match: '(["](?:(?:\\.)|(?:[^"\\]|\\"))*?["])[ \r\n\f]*(#.*)?(?=$)'
-        -   begin: '["]'
-            end: '["][ \r\n\f]*(#.*)?(?=$)'
-            name: string.yaml-simple
-            patterns:
-            -   match: '(?:(?:\\.)|(?:[^"\\]|\\"))*?'
-                name: string.yaml-simple
-        -   captures:
-                '1':
-                    name: string.yaml-simple
-                '2':
-                    name: comment.yaml-simple
-            match: '([''](?:(?:\\.)|(?:[^''\\]|''{2}))*?[''])[ \r\n\f]*(#.*)?(?=$)'
-
-    # address
-    address-tag:
-        patterns:
-        -   captures:
-                '1':
-                    name: support.type.address.yaml-simple
-                '2':
-                    name: comment.yaml-simple
-            match: '([&\*][a-zA-Z0-9\-_]+)[ \r\n\f]*(#.*)?(?=$)'
 
     # Inline numbers
     inline-numerics:
         patterns:
-        -   match: '[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?(?=(?:,|\}|\]))'
+        -   match: !!regex '[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?[ ]*(?=(?:,|\}|\]))'
             name: constant.numeric.yaml-simple
-        -   match: '[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+'
+        -   match: !!regex '[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+[ ]*(?=(?:,|\}|\]))'
             name: constant.numeric.yaml-simple
+
+    ###################
+    # Booleans
+    ###################
+    # Booleans (with trailing comments)
+    boolean:
+        match: (?:true|false|TRUE|FALSE|True|False|yes|no)[ ]*(#.*)?(?=$)
+        name: constant.language.boolean.yaml-simple
 
     # Inline booleans
     inline-boolean:
         patterns:
-        -   match: (?:true|false|TRUE|FALSE|True|False|yes|no)(?=(?:,|\}|\]))
+        -   match: (?:true|false|TRUE|FALSE|True|False|yes|no)[ ]*(?=(?:,|\}|\]))
             name: constant.language.boolean.yaml-simple
+
+    ###################
+    # Strings
+    ###################
+    # Strings (with trailing comments)
+    strings:
+        patterns:
+        -   captures:
+                '1': {name: string.yaml-simple}
+                '2': {name: comment.yaml-simple}
+            match: !!regex '(["](?:(?:\\.)|(?:[^"\\]|\\"))*?["])[ ]*(#.*)?(?=$)'
+        -   begin: !!regex '["]'
+            end: !!regex '["][ \r\n]*(#.*)?(?=$)'
+            name: string.yaml-simple
+            patterns:
+            -   match: !!regex '(?:(?:\\.)|(?:[^"\\]|\\"))*?'
+                name: string.yaml-simple
+        -   captures:
+                '1': {name: string.yaml-simple}
+                '2': {name: comment.yaml-simple}
+            match: !!regex '([''](?:(?:\\.)|(?:[^''\\]|''{2}))*?[''])[ ]*(#.*)?(?=$)'
 
     # Inline strings
     inline-strings:
         patterns:
         -   captures:
-                '1':
-                    name: string.yaml-simple
-                '2':
-                    name: comment.yaml-simple
-            match: '(["](?:(?:\\.)|(?:[^"\\]|\\"))*?["])[ \r\n\f]*(?=(?:,|\}|\]))'
-        -   begin: '["]'
-            end: '["][ \r\n\f]*(?=(?:,|\}|\]))'
+                '1': {name: string.yaml-simple}
+                '2': {name: comment.yaml-simple}
+            match: '!!regex (["](?:(?:\\.)|(?:[^"\\]|\\"))*?["])[ ]*(?=(?:,|\}|\]))'
+        -   begin: !!regex '["]'
+            end: !!regex '["][ \r\n]*(?=(?:,|\}|\]))'
             name: string.yaml-simple
             patterns:
-            -   match: '(?:(?:\\.)|(?:[^"\\]|\\"))*?'
+            -   match: !!regex '(?:(?:\\.)|(?:[^"\\]|\\"))*?'
                 name: string.yaml-simple
         -   captures:
-                '1':
-                    name: string.yaml-simple
-                '2':
-                    name: comment.yaml-simple
-            match: '([''](?:(?:\\.)|(?:[^''\\]|''{2}))*?[''])[ \r\n\f]*(?=(?:,|\}|\]))'
+                '1': {name: string.yaml-simple}
+                '2': {name: comment.yaml-simple}
+            match: !!regex '([''](?:(?:\\.)|(?:[^''\\]|''{2}))*?[''])[ ]*(?=(?:,|\}|\]))'
+
+    ###################
+    # Address
+    ###################
+    # address
+    address-tag:
+        captures:
+            '1': {name: support.type.address.yaml-simple}
+            '2': {name: comment.yaml-simple}
+        match: !!regex '([&\*][a-zA-Z0-9\-_]+)[ \r\n]*(#.*)?(?=$)'
 
     # inline address
     inline-address:
         patterns:
         -   captures:
-                '1':
-                    name: support.type.class.address.yaml-simple
-                '2':
-                    name: comment.yaml-simple
-            match: '([&\*][a-zA-Z0-9\-_]+)[ \r\n\f]*(?=(?:,|\}|\]))'
+                '1': {name: support.type.class.address.yaml-simple}
+                '2': {name: comment.yaml-simple}
+            match: !!regex '([&\*][a-zA-Z0-9\-_]+)[ ]*(?=(?:,|\}|\]))'
+
+    ###################
+    # Sublime regex highlight
+    ###################
+    sublime-regex:
+        patterns:
+        -   begin: !!regex '('')'
+            beginCaptures:
+                '1': {name: string.yaml-simple}
+            end: !!regex '('')[ ]*(#.*)?(?=$)'
+            endCaptures:
+                '1': {name: string.yaml-simple}
+                '2': {name: comment.yaml}
+            patterns:
+            -   include: source.regexp
+        -   begin: !!regex '(")'
+            beginCaptures:
+                '1': {name: string.yaml-simple}
+            end: !!regex '(")[ ]*(#.*)?(?=$)'
+            endCaptures:
+                '1': {name: string.yaml-simple}
+                '2': {name: comment.yaml}
+            patterns:
+            -   include: source.regexp
+        -   include: source.regexp
+
+    inline-sublime-regex:
+        patterns:
+        -   begin: !!regex '('')'
+            beginCaptures:
+                '1': {name: string.yaml-simple}
+            end: !!regex '('')[ ]*(?=(?:,|\}|\]))'
+            endCaptures:
+                '1': {name: string.yaml-simple}
+                '2': {name: comment.yaml}
+            patterns:
+            -   include: source.regexp
+        -   begin: !!regex '(")'
+            beginCaptures:
+                '1': {name: string.yaml-simple}
+            end: !!regex '(")[ ]*(?=(?:,|\}|\]))'
+            endCaptures:
+                '1': {name: string.yaml-simple}
+                '2': {name: comment.yaml}
+            patterns:
+            -   include: source.regexp
+        -   include: source.regexp
 ...
-
-# Todo
-# -Look into stuff below
-
-#-   match: <<\w*:\w*
-#    name: keyword.operator.yaml-simple
-#-   match: -\s*(?=[\{])
-#    name: keyword.operator.yaml-simple
