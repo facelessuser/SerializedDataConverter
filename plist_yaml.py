@@ -102,7 +102,7 @@ class PlistToYamlCommand(_LanguageConverter):
                     width=None,
                     indent=4,
                     allow_unicode=True,
-                    default_flow_style=False
+                    default_flow_style=not bool(sublime.load_settings(self.settings).get("yaml_no_inline", False))
                 )
         except:
             errors = True

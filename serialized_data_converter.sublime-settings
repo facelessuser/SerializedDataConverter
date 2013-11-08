@@ -48,5 +48,7 @@
         "tmLanguage",
         "tmTheme",
         "tmPreferences"
-    ]
+    ],
+
+    "yaml_no_inline": true
 }

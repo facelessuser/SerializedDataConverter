@@ -29,3 +29,8 @@ yaml.add_representer(
     plistlib._InternalDict,
     yaml.SafeDumper.represent_dict
 )
+
+yaml.add_constructor(
+    "tag:yaml.org,2002:regex",
+    yaml.Loader.construct_yaml_str
+)
