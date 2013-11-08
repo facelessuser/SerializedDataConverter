@@ -9,7 +9,6 @@ import re
 import json
 from os.path import splitext
 from SerializedDataConverter.lib.language_converter import LanguageConverter as _LanguageConverter
-from SerializedDataConverter.lib.language_converter import LanguageListener as _LanguageListener
 from SerializedDataConverter.lib.common_include import error_msg, PACKAGE_SETTINGS
 from SerializedDataConverter.lib.yaml_includes import *
 from SerializedDataConverter.lib.json_includes import *
@@ -22,9 +21,9 @@ ERRORS = {
     "json2yaml": "Could not convert JSON to YAML!\nPlease see console for more info."
 }
 
-class JsonToYamlCommand(_LanguageConverter):
+class SerializedJsonToYamlCommand(_LanguageConverter):
     lang = "yaml_language"
-    default_lang = "Packages/SerializedDataConverter/languages/YAML.tmLanguage"
+    default_lang = "Packages/SerializedDataConverter/languages/YAML-Simple.tmLanguage"
     settings = PACKAGE_SETTINGS
 
     def get_output_file(self, filename):
@@ -35,7 +34,7 @@ class JsonToYamlCommand(_LanguageConverter):
         for ext in ext_tbl:
             m = re.match("^(.*)\\." + re.escape(ext["json"]) + "$", filename, re.IGNORECASE)
             if m is not None:
-                name = m.group(1) + "." + ext["other"]
+                name = m.group(1) + "." + ext["yaml"]
                 break
 
         # Could not find ext in table, replace current extension with default
@@ -103,7 +102,7 @@ class JsonToYamlCommand(_LanguageConverter):
             error_msg(ERRORS["json2yaml"], traceback.format_exc())
         return errors
 
-class YamlToJsonCommand(_LanguageConverter):
+class SerializedYamlToJsonCommand(_LanguageConverter):
     lang = "json_language"
     default_lang = "Packages/Javascript/JSON.tmLanguage"
     settings = PACKAGE_SETTINGS
@@ -114,14 +113,14 @@ class YamlToJsonCommand(_LanguageConverter):
         # Try and find file ext in the ext table
         ext_tbl = sublime.load_settings(self.settings).get("json_yaml_conversion_ext", [])
         for ext in ext_tbl:
-            m = re.match("^(.*)\\." + re.escape(ext["other"]) + "$", filename, re.IGNORECASE)
+            m = re.match("^(.*)\\." + re.escape(ext["yaml"]) + "$", filename, re.IGNORECASE)
             if m is not None:
                 name = m.group(1) + "." + ext["json"]
                 break
 
         # Could not find ext in table, replace current extension with default
         if name is None:
-            name = splitext(filename)[0] + ".yaml"
+            name = splitext(filename)[0] + ".JSON"
         return name
 
     def read_buffer(self):

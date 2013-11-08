@@ -9,8 +9,7 @@ import json
 import re
 from os.path import splitext
 from SerializedDataConverter.lib.language_converter import LanguageConverter as _LanguageConverter
-from SerializedDataConverter.lib.language_converter import LanguageListener as _LanguageListener
-from SerializedDataConverter.lib.common_include import error_msg, PACKAGE_SETTINGS
+from SerializedDataConverter.lib.common_include import *
 from SerializedDataConverter.lib.json_includes import *
 import traceback
 
@@ -23,15 +22,7 @@ ERRORS = {
 }
 
 
-class SerializedDataJsonListener(_LanguageListener):
-    def get_save_ext(self):
-        return sublime.load_settings(PACKAGE_SETTINGS).get("json_to_plist_on_save", [])
-
-    def convert(self, view):
-        view.run_command("json_to_plist", {"save_to_file": 'True', "show_file": False, "force": True})
-
-
-class PlistToJsonCommand(_LanguageConverter):
+class SerializedPlistToJsonCommand(_LanguageConverter):
     lang = "json_language"
     default_lang = "Packages/Javascript/JSON.tmLanguage"
     settings = PACKAGE_SETTINGS
@@ -44,7 +35,7 @@ class PlistToJsonCommand(_LanguageConverter):
         for ext in ext_tbl:
             m = re.match("^(.*)\\." + re.escape(ext["plist"]) + "$", filename, re.IGNORECASE)
             if m is not None:
-                name = m.group(1) + "." + ext["other"]
+                name = m.group(1) + "." + ext["json"]
                 break
 
         # Could not find ext in table, replace current extension with default
@@ -80,7 +71,7 @@ class PlistToJsonCommand(_LanguageConverter):
         return errors
 
 
-class JsonToPlistCommand(_LanguageConverter):
+class SerializedJsonToPlistCommand(_LanguageConverter):
     lang = "plist_language"
     default_lang = "Packages/XML/XML.tmLanguage"
     settings = PACKAGE_SETTINGS
@@ -91,7 +82,7 @@ class JsonToPlistCommand(_LanguageConverter):
         # Try and find file ext in the ext table
         ext_tbl = sublime.load_settings(self.settings).get("plist_json_conversion_ext", [])
         for ext in ext_tbl:
-            m = re.match("^(.*)\\." + re.escape(ext["other"]) + "$", filename, re.IGNORECASE)
+            m = re.match("^(.*)\\." + re.escape(ext["json"]) + "$", filename, re.IGNORECASE)
             if m is not None:
                 name = m.group(1) + "." + ext["plist"]
                 break

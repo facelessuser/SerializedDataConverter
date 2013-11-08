@@ -2,7 +2,7 @@ import sublime
 import sublime_plugin
 from os.path import exists, basename
 import traceback
-from .common_include import error_msg
+from .common_include import *
 import codecs
 
 
@@ -10,27 +10,6 @@ ERRORS = {
     "filewrite": "Could not write file!\nPlease see console for more info.",
     "bufferwrite": "Could not write view buffer!\nPlease see console for more info."
 }
-
-
-class LanguageListener(sublime_plugin.EventListener):
-    def on_post_save(self, view):
-        convert = False
-        ext2convert = self.get_save_ext()
-        filename = view.file_name()
-        if filename is not None:
-            for end in ext2convert:
-                if filename.lower().endswith(end.lower()):
-                    convert = True
-                    break
-
-        if convert:
-            self.convert(view)
-
-    def get_save_ext(self):
-        return []
-
-    def convert(self, view):
-        pass
 
 
 class LanguageConverter(sublime_plugin.TextCommand):

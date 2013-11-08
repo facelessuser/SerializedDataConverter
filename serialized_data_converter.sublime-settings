@@ -1,6 +1,7 @@
 {
+    // Languages to use on conversion
     "json_language": "Packages/JavaScript/JSON.tmLanguage",
-    "yaml_language": "Packages/SerializedDataConverter/languages/YAML.tmLanguage",
+    "yaml_language": "Packages/SerializedDataConverter/languages/YAML-Simple.tmLanguage",
     "plist_language": "Packages/XML/XML.tmLanguage",
 
     // When converting buffer open conversion in new buffer
@@ -20,41 +21,52 @@
     // If the file does not match any of the extensions, the current
     // extension will be replaced with either "plist", "json", or "yaml" accordingly.
     "plist_json_conversion_ext": [
-        {"plist": "tmLanguage", "other": "tmLanguage.JSON"},
-        {"plist": "tmPreferences", "other": "tmPreferences.JSON"},
-        {"plist": "tmTheme", "other": "tmTheme.JSON"}
+        {"plist": "tmLanguage", "json": "tmLanguage.JSON"},
+        {"plist": "tmPreferences", "json": "tmPreferences.JSON"},
+        {"plist": "tmTheme", "json": "tmTheme.JSON"}
     ],
 
     "plist_yaml_conversion_ext": [
-        {"plist": "tmLanguage", "other": "tmLanguage.YAML"},
-        {"plist": "tmPreferences", "other": "tmPreferences.YAML"},
-        {"plist": "tmTheme", "other": "tmTheme.YAML"}
+        {"plist": "tmLanguage", "yaml": "tmLanguage.YAML"},
+        {"plist": "tmPreferences", "yaml": "tmPreferences.YAML"},
+        {"plist": "tmTheme", "yaml": "tmTheme.YAML"}
     ],
 
-    "plist_yaml_conversion_ext": [
+    "json_yaml_conversion_ext": [
         // Nothing to see here; move along
         // Add your rules here
-        //{"json": "some extension", "other": "some extension"}
+        //{"json": "some extension", "yaml": "some extension"}
     ],
 
     // Extensions to auto convert from json to plist on save
     // Extensions are case insensitive
-    "json_to_plist_on_save": [
-    //     "tmLanguage.JSON",
-    //     "tmPreferences.JSON",
-    //     "tmTheme.JSON"
-    ],
-    "yaml_to_plist_on_save": [
-    //     "tmLanguage.YAML",
-    //     "tmPreferences.YAML",
-    //     "tmTheme.YAML"
+    // available commands are:
+    //    -json_to_plist
+    //    -plist_to_json
+    //    -yaml_to_plist
+    //    -plist_to_yaml
+    //    -json_to_yaml
+    //    -yaml_to_json
+    "convert_on_save": [
+        // Enable or add what you would like
+        // {"ext": "tmLanguage.JSON", "command": "json_to_plist"},
+        // {"ext": "tmPreferences.JSON", "command": "json_to_plist"},
+        // {"ext": "tmTheme.JSON", "command": "json_to_plist"},
+        // {"ext": "tmLanguage.YAML", "command": "yaml_to_plist"},
+        // {"ext": "tmPreferences.YAML", "command": "yaml_to_plist"},
+        // {"ext": "tmTheme.YAML", "command": "yaml_to_plist"}
     ],
 
+    // These are language extensions in which the converter will strip tabs
+    // to ensure multilines aren't quoted with "\t"
+    // If you are having trouble converting a file that uses pysical tabs,
+    // remove the file type here
     "yaml_strip_tabs_from": [
         "tmLanguage",
         "tmTheme",
         "tmPreferences"
     ],
 
+    // In most this should be left true for easy reading
     "yaml_no_inline": true
 }

@@ -1,5 +1,7 @@
 import sublime
 
+__all__ = ['PACKAGE_SETTINGS', 'error_msg']
+
 PACKAGE_SETTINGS = "serialized_data_converter.sublime-settings"
 
 

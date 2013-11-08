@@ -1,6 +1,8 @@
 from . import yaml
 import plistlib
 
+__all__ = ['yaml', 'plistlib']
+
 
 # http://stackoverflow.com/questions/8640959/how-can-i-control-what-scalar-form-pyyaml-uses-for-my-data
 def _should_use_block(value):

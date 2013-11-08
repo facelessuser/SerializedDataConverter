@@ -49,29 +49,39 @@ repository:
     ###################
     # Scan the line for key value pairs
     single-line:
-        begin: !!regex |-
-            (?x)^[\ ]*(?:
-                (?:([\-?])(?:[\ \r\n]+))?
-                (?:
-                    (\w(?:.*?[^\ ])?|<<)(?:[\ \r\n]*(\:)(?:[\ \r\n]+|(?=$))) |
-                    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+|(?=$))|
-                    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+|(?=$))
-                )
-            )
-        beginCaptures:
-            '1': {name: keyword.operator.list.yaml-simple}
-            '2': {name: meta.tag.yaml-simple}
-            '3': {name: keyword.operator.key-separator.yaml-simple}
-            '4': {name: meta.tag.yaml-simple}
-            '5': {name: string.yaml-simple}
-            '6': {name: keyword.operator.key-separator.yaml-simple}
-            '7': {name: meta.tag.yaml-simple}
-            '8': {name: string.yaml-simple}
-            '9': {name: keyword.operator.key-separator.yaml-simple}
-        end: !!regex $
         patterns:
-        -   include: '#cast-values'
-        -   include: '#values'
+        -   begin: !!regex |-
+                (?x)^[\ ]*(?:
+                    (?:([\-?])(?:[\ \r\n]+))?
+                    (?:
+                        (\w(?:.*?[^\ ])?|<<)(?:[\ \r\n]*(\:)(?:[\ \r\n]+|(?=$))) |
+                        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+|(?=$))|
+                        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+|(?=$))
+                    )
+                )
+            beginCaptures:
+                '1': {name: keyword.operator.list.yaml-simple}
+                '2': {name: meta.tag.yaml-simple}
+                '3': {name: keyword.operator.key-separator.yaml-simple}
+                '4': {name: meta.tag.yaml-simple}
+                '5': {name: string.yaml-simple}
+                '6': {name: keyword.operator.key-separator.yaml-simple}
+                '7': {name: meta.tag.yaml-simple}
+                '8': {name: string.yaml-simple}
+                '9': {name: keyword.operator.key-separator.yaml-simple}
+            end: !!regex $
+            patterns:
+            -   match: !!regex (#.*)$
+                name : comment.yaml-simple
+            -   include: '#cast-values'
+            -   include: '#values'
+
+        # array continuing on the next line
+        -   captures:
+                '2': {name: keyword.operator.list.yaml-simple}
+                '3': {name: comment.yaml-simple}
+            match: !!regex ^( *)(-|\?)[ ]*(#.*)?
+
 
     cast-values:
         patterns:
