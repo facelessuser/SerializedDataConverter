@@ -1,7 +1,7 @@
 # YAML-SIMPLE
 ---
 comment: |
-    A Less crappy, simple YAML...but still a little crappy.
+    A Less crappy, simple YAML...but still a little crappy :).
     A work in progress
 
 name: YAML (simple)
@@ -26,9 +26,9 @@ repository:
     # General Stuff
     ###################
     # Mark the start and end of the document
-    document-markers:
-        captures:
-            '1': {name: keyword.operator.document.start.yaml-simple}
+    document-markers:                                                # Comment test 1
+        captures:                                                    # Comment test 2
+            '1': {name: keyword.operator.document.start.yaml-simple} # Comment test 3
             '2': {name: keyword.operator.document.end.yaml-simple}
             '3': {name: comment.yaml-simple}
         match: !!regex ^(?:(-{3})|(\.{3}))[ \r\n]*(?:(#.*)?$)
@@ -37,7 +37,7 @@ repository:
     line-comments:
         captures:
             '1': {name: comment.yaml-simple}
-        match: !!regex '^[ \r\n]*(#.*)$'
+        match: !!regex '^[ \r\n]*(#.*)$'                             # Comment test 4
 
     # Tabs are evil (at least to yaml)
     evil-tabs:
