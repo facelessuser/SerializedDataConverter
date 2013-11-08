@@ -90,12 +90,19 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
         try:
             if not errors:
                 # Convert Python dict to JSON buffer.
+                default_flow_style = None
+                flow_setting = sublime.load_settings(self.settings).get("yaml_default_flow_style", None)
+                if flow_setting == "true":
+                    default_flow_style = True
+                elif flow_setting == "false":
+                    default_flow_style = False
+
                 self.output = yaml.dump(
                     self.json,
                     width=None,
                     indent=4,
                     allow_unicode=True,
-                    default_flow_style=not bool(sublime.load_settings(self.settings).get("yaml_no_inline", False))
+                    default_flow_style=default_flow_style
                 )
         except:
             errors = True
@@ -144,7 +151,7 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = json.dumps(self.yaml, sort_keys=True, indent=4, separators=(',', ': ')).encode('utf-8')
+            self.output = json.dumps(self.yaml, sort_keys=True, indent=4, separators=(',', ': '))
         except:
             errors = True
             error_msg(ERRORS["yaml2json"], traceback.format_exc())

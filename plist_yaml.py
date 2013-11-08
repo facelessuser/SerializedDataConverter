@@ -88,12 +88,20 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
         try:
             if not errors:
                 # Convert Python dict to JSON buffer.
+                default_flow_style = None
+                flow_setting = sublime.load_settings(self.settings).get("yaml_default_flow_style", None)
+                if flow_setting == "true":
+                    default_flow_style = True
+                elif flow_setting == "false":
+                    default_flow_style = False
+
+                # Convert Python dict to JSON buffer.
                 self.output = yaml.dump(
                     self.plist,
                     width=None,
                     indent=4,
                     allow_unicode=True,
-                    default_flow_style=not bool(sublime.load_settings(self.settings).get("yaml_no_inline", False))
+                    default_flow_style=default_flow_style
                 )
         except:
             errors = True

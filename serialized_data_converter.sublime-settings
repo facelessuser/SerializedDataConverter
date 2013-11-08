@@ -58,8 +58,9 @@
     ],
 
     // These are language extensions in which the converter will strip tabs
-    // to ensure multilines aren't quoted with "\t"
-    // If you are having trouble converting a file that uses pysical tabs,
+    // to ensure multilines aren't quoted with "\t".  It also strips trailing spaces
+    // from multi-line strings. This helps multiline strings convert in a pretty format.
+    // If you are having trouble converting a file and getting a 1:1 translation,
     // remove the file type here
     "yaml_strip_tabs_from": [
         "tmLanguage",
@@ -67,6 +68,14 @@
         "tmPreferences"
     ],
 
-    // In most this should be left true for easy reading
-    "yaml_no_inline": true
+    // In most this should be left to None for easy reading, but feel free to change it
+    // (none | true | false)
+    // none shows things like this will (nicest to read):
+    //     '1': {name: something}
+    // true like this (if you like this you can do it):
+    //     '1':
+    //         name: something
+    // false will have everything like this (harder to read):
+    //     {'1': {name: something}}
+    "yaml_default_flow_style": "none"
 }
