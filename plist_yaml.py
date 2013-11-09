@@ -7,10 +7,15 @@ Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 import sublime
 import re
 from os.path import splitext
-from SerializedDataConverter.lib.language_converter import LanguageConverter as _LanguageConverter
-from SerializedDataConverter.lib.common_include import *
-from SerializedDataConverter.lib.yaml_includes import *
 import traceback
+if int(sublime.version()) >= 3000:
+    from .lib.language_converter import LanguageConverter as _LanguageConverter
+    from .lib.plist_includes import *
+    from .lib.yaml_includes import *
+else:
+    from lib.language_converter import LanguageConverter as _LanguageConverter
+    from lib.plist_includes import *
+    from lib.yaml_includes import *
 
 
 ERRORS = {
@@ -24,13 +29,12 @@ ERRORS = {
 class SerializedPlistToYamlCommand(_LanguageConverter):
     lang = "yaml_language"
     default_lang = "Packages/SerializedDataConverter/languages/YAML-Simple.tmLanguage"
-    settings = PACKAGE_SETTINGS
 
     def get_output_file(self, filename):
         name = None
 
         # Try and find file ext in the ext table
-        ext_tbl = sublime.load_settings(self.settings).get("plist_yaml_conversion_ext", [])
+        ext_tbl = load_settings("plist_yaml_conversion_ext", [])
         for ext in ext_tbl:
             m = re.match("^(.*)\\." + re.escape(ext["plist"]) + "$", filename, re.IGNORECASE)
             if m is not None:
@@ -42,42 +46,24 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
             name = splitext(filename)[0] + ".YAML"
         return name
 
-    def yaml_strip(self, obj):
-        if isinstance(obj, (dict, plistlib._InternalDict)):
-            for k, v in obj.items():
-                obj[k] = self.yaml_strip(v)
-        elif isinstance(obj, list):
-            count = 0
-            for v in obj:
-                obj[count] = self.yaml_strip(v)
-                count += 1
-        elif self.strip_tabs and isinstance(obj, str):
-            obj = obj.replace("\t", "    ").rstrip(" ")
-
-        return obj
-
     def read_buffer(self):
         errors = False
-        ext_tbl = sublime.load_settings(self.settings).get("yaml_strip_tabs_from", [])
+        ext_tbl = load_settings("yaml_strip_tabs_from", [])
         filename = self.view.file_name()
-        self.strip_tabs = False
+        strip_tabs = False
         if filename is not None:
             for ext in ext_tbl:
                 m = re.match("^(.*)\\." + re.escape(ext) + "$", filename, re.IGNORECASE)
                 if m is not None:
-                    self.strip_tabs = True
+                    strip_tabs = True
                     break
         try:
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
-            self.plist = plistlib.readPlistFromBytes(
-                self.view.substr(
-                    sublime.Region(0, self.view.size())
-                ).encode('utf8')
-            )
-            if self.strip_tabs:
-                self.plist = self.yaml_strip(self.plist)
+            self.plist = readPlistFromView(self.view)
+            if strip_tabs:
+                self.plist = yaml_strip(self.plist, strip_tabs=strip_tabs)
         except:
             errors = True
             error_msg(ERRORS["view2plist"], traceback.format_exc())
@@ -89,20 +75,14 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
             if not errors:
                 # Convert Python dict to JSON buffer.
                 default_flow_style = None
-                flow_setting = sublime.load_settings(self.settings).get("yaml_default_flow_style", None)
+                flow_setting = load_settings("yaml_default_flow_style", None)
                 if flow_setting == "true":
                     default_flow_style = True
                 elif flow_setting == "false":
                     default_flow_style = False
 
-                # Convert Python dict to JSON buffer.
-                self.output = yaml.dump(
-                    self.plist,
-                    width=None,
-                    indent=4,
-                    allow_unicode=True,
-                    default_flow_style=default_flow_style
-                )
+                # Convert Python dict to Yaml buffer.
+                self.output = yamlDumps(self.plist, default_flow_style=default_flow_style)
         except:
             errors = True
             error_msg(ERRORS["plist2yaml"], traceback.format_exc())
@@ -112,13 +92,12 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
 class SerializedYamlToPlistCommand(_LanguageConverter):
     lang = "plist_language"
     default_lang = "Packages/XML/XML.tmLanguage"
-    settings = PACKAGE_SETTINGS
 
     def get_output_file(self, filename):
         name = None
 
         # Try and find file ext in the ext table
-        ext_tbl = sublime.load_settings(self.settings).get("plist_yaml_conversion_ext", [])
+        ext_tbl = load_settings("plist_yaml_conversion_ext", [])
         for ext in ext_tbl:
             m = re.match("^(.*)\\." + re.escape(ext["yaml"]) + "$", filename, re.IGNORECASE)
             if m is not None:
@@ -136,12 +115,7 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.yaml = yaml.load(
-                self.view.substr(
-                    sublime.Region(0, self.view.size())
-                )
-            )
-
+            self.yaml = readYamlFromView(self.view)
         except:
             errors = True
             error_msg(ERRORS["view2yaml"], traceback.format_exc())
@@ -151,7 +125,7 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = plistlib.writePlistToBytes(self.yaml).decode('utf-8')
+            self.output = plistDumps(self.yaml)
         except:
             errors = True
             error_msg(ERRORS["yaml2plist"], traceback.format_exc())
