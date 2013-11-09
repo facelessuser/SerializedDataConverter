@@ -7,15 +7,15 @@ Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 import sublime
 import re
 from os.path import splitext
+import traceback
 if int(sublime.version()) >= 3000:
     from .lib.language_converter import LanguageConverter as _LanguageConverter
-    from .lib.common_include import *
-    from .lib.st_abstraction import plistDumps, plistDumps, readPlistFromView, yaml, yaml_strip
+    from .lib.plist_includes import *
+    from .lib.yaml_includes import *
 else:
     from lib.language_converter import LanguageConverter as _LanguageConverter
-    from lib.common_include import *
-    from lib.st_abstraction import plistDumps, plistDumps, readPlistFromView, yaml, yaml_strip
-import traceback
+    from lib.plist_includes import *
+    from lib.yaml_includes import *
 
 
 ERRORS = {
@@ -81,14 +81,8 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
                 elif flow_setting == "false":
                     default_flow_style = False
 
-                # Convert Python dict to JSON buffer.
-                self.output = yaml.dump(
-                    self.plist,
-                    width=None,
-                    indent=4,
-                    allow_unicode=True,
-                    default_flow_style=default_flow_style
-                )
+                # Convert Python dict to Yaml buffer.
+                self.output = yamlDumps(self.plist, default_flow_style=default_flow_style)
         except:
             errors = True
             error_msg(ERRORS["plist2yaml"], traceback.format_exc())
@@ -121,12 +115,7 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.yaml = yaml.load(
-                self.view.substr(
-                    sublime.Region(0, self.view.size())
-                )
-            )
-
+            self.yaml = readYamlFromView(self.view)
         except:
             errors = True
             error_msg(ERRORS["view2yaml"], traceback.format_exc())

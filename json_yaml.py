@@ -8,15 +8,15 @@ import sublime
 import re
 import json
 from os.path import splitext
+import traceback
 if int(sublime.version()) >= 3000:
     from .lib.language_converter import LanguageConverter as _LanguageConverter
-    from .lib.common_include import *
-    from .lib.st_abstraction import plistDumps, jsonDumps, readPlistFromView, readJsonFromView, yaml, yaml_strip
+    from .lib.json_includes import *
+    from .lib.yaml_includes import *
 else:
     from lib.language_converter import LanguageConverter as _LanguageConverter
-    from lib.common_include import *
-    from lib.st_abstraction import plistDumps, jsonDumps, readPlistFromView, readJsonFromView, yaml, yaml_strip
-import traceback
+    from lib.json_includes import *
+    from lib.yaml_includes import *
 
 ERRORS = {
     "view2json": "Could not read view buffer as JSON!\nPlease see console for more info.",
@@ -81,13 +81,7 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
                 elif flow_setting == "false":
                     default_flow_style = False
 
-                self.output = yaml.dump(
-                    self.json,
-                    width=None,
-                    indent=4,
-                    allow_unicode=True,
-                    default_flow_style=default_flow_style
-                )
+                self.output = yamlDumps(self.json, default_flow_style=default_flow_style)
         except:
             errors = True
             error_msg(ERRORS["json2yaml"], traceback.format_exc())
@@ -119,12 +113,7 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.yaml = yaml.load(
-                self.view.substr(
-                    sublime.Region(0, self.view.size())
-                )
-            )
-
+            self.yaml = readYamlFromView(self.view)
         except:
             errors = True
             error_msg(ERRORS["view2yaml"], traceback.format_exc())

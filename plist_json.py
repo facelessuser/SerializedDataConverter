@@ -8,16 +8,16 @@ import sublime
 import json
 import re
 from os.path import splitext
+import traceback
 
 if int(sublime.version()) >= 3000:
     from .lib.language_converter import LanguageConverter as _LanguageConverter
-    from .lib.common_include import *
-    from .lib.st_abstraction import plistDumps, jsonDumps, readJsonFromView, readPlistFromView
+    from .lib.plist_includes import *
+    from .lib.json_includes import *
 else:
     from lib.language_converter import LanguageConverter as _LanguageConverter
-    from lib.common_include import *
-    from lib.st_abstraction import plistDumps, jsonDumps, readJsonFromView, readPlistFromView
-
+    from lib.plist_includes import *
+    from lib.json_includes import *
 
 ERRORS = {
     "view2plist": "Could not read view buffer as PLIST!\nPlease see console for more info.",

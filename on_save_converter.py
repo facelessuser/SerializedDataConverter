@@ -1,7 +1,7 @@
 import sublime
 import sublime_plugin
 if int(sublime.version()) >= 3000:
-    from SerializedDataConverter.lib.common_include import *
+    from .lib.common_include import *
 else:
     from lib.common_include import *
 

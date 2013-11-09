@@ -69,8 +69,32 @@ readJsonFromView = lambda view: json.loads(
 #################
 if ST3:
     from . import yaml3 as yaml
+    readYamlFromView = lambda view: yaml.load(
+        view.substr(
+            sublime.Region(0, view.size())
+        )
+    )
+    yamlDumps = lambda obj, default_flow_style=None: yaml.dump(
+        obj,
+        width=None,
+        indent=4,
+        allow_unicode=True,
+        default_flow_style=default_flow_style
+    )
 else:
     from . import yaml2 as yaml
+    readYamlFromView = lambda view: yaml.load(
+        view.substr(
+            sublime.Region(0, view.size())
+        )
+    )
+    yamlDumps = lambda obj, default_flow_style=None: yaml.dump(
+        obj,
+        width=None,
+        indent=4,
+        allow_unicode=True,
+        default_flow_style=default_flow_style
+    )
 
 # http://stackoverflow.com/questions/8640959/how-can-i-control-what-scalar-form-pyyaml-uses-for-my-data
 def _should_use_block(value):
