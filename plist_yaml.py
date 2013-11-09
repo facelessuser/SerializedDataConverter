@@ -61,9 +61,9 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
-            self.plist = readPlistFromView(self.view)
+            self.plist = plist.readPlistFromView(self.view)
             if strip_tabs:
-                self.plist = yaml_strip(self.plist, strip_tabs=strip_tabs)
+                self.plist = yaml.yaml_strip(self.plist, strip_tabs=strip_tabs)
         except:
             errors = True
             error_msg(ERRORS["view2plist"], traceback.format_exc())
@@ -82,7 +82,7 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
                     default_flow_style = False
 
                 # Convert Python dict to Yaml buffer.
-                self.output = yamlDumps(self.plist, default_flow_style=default_flow_style)
+                self.output = yaml.yamlDumps(self.plist, default_flow_style=default_flow_style)
         except:
             errors = True
             error_msg(ERRORS["plist2yaml"], traceback.format_exc())
@@ -115,7 +115,7 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.yaml = readYamlFromView(self.view)
+            self.yaml = yaml.readYamlFromView(self.view)
         except:
             errors = True
             error_msg(ERRORS["view2yaml"], traceback.format_exc())
@@ -125,7 +125,7 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = plistDumps(self.yaml)
+            self.output = plist.plistDumps(self.yaml)
         except:
             errors = True
             error_msg(ERRORS["yaml2plist"], traceback.format_exc())

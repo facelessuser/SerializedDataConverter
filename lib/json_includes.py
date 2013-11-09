@@ -1,3 +1,3 @@
 from __future__ import absolute_import
 from .common_include import *
-from .st_abstraction import readJsonFromView, jsonDumps
+from .sublime_include import json

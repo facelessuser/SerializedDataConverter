@@ -53,7 +53,7 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
-            self.plist = readPlistFromView(self.view)
+            self.plist = plist.readPlistFromView(self.view)
         except:
             errors = True
             error_msg(ERRORS["view2plist"], traceback.format_exc())
@@ -63,7 +63,7 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
         errors = False
         try:
             if not errors:
-                self.output = jsonDumps(self.plist)
+                self.output = json.jsonDumps(self.plist)
         except:
             errors = True
             error_msg(ERRORS["plist2json"], traceback.format_exc())
@@ -96,7 +96,7 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.json = readJsonFromView(self.view)
+            self.json = json.readJsonFromView(self.view)
 
         except:
             errors = True
@@ -107,7 +107,7 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = plistDumps(self.json)
+            self.output = plist.plistDumps(self.json)
         except:
             errors = True
             error_msg(ERRORS["json2plist"], traceback.format_exc())
