@@ -63,18 +63,18 @@ A work in progress
 		<key>array</key>
 		<dict>
 			<key>begin</key>
-			<string>(\[)</string>
+			<string>(?:(!![\w//]+)[ ]+)?(\[)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.paren.left.yaml-simple</string>
+					<string>support.type.yaml-simple</string>
 				</dict>
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>support.type.yaml-simple</string>
+					<string>keyword.paren.left.yaml-simple</string>
 				</dict>
 			</dict>
 			<key>end</key>
@@ -175,10 +175,15 @@ A work in progress
 		<key>associative-array</key>
 		<dict>
 			<key>begin</key>
-			<string>(\{)</string>
+			<string>(?:(!![\w//]+)[ ]+)?(\{)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>support.type.yaml-simple</string>
+				</dict>
+				<key>2</key>
 				<dict>
 					<key>name</key>
 					<string>keyword.paren.left.yaml-simple</string>
@@ -209,10 +214,26 @@ A work in progress
 		</dict>
 		<key>boolean</key>
 		<dict>
-			<key>match</key>
-			<string>(?:true|false|TRUE|FALSE|True|False|yes|no)[ ]*(#.*)?(?=$)</string>
-			<key>name</key>
-			<string>constant.language.boolean.yaml-simple</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>constant.language.boolean.yaml-simple</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>comment.yaml-simple</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(true|false|TRUE|FALSE|True|False|yes|no)[ ]*(#.*)?(?=$)</string>
+				</dict>
+			</array>
 		</dict>
 		<key>cast-values</key>
 		<dict>
@@ -264,6 +285,14 @@ A work in progress
 				<dict>
 					<key>begin</key>
 					<string>(!![\w//]+)[ ]+</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>support.type.yaml-simple</string>
+						</dict>
+					</dict>
 					<key>end</key>
 					<string>(?=$)</string>
 					<key>patterns</key>
@@ -271,6 +300,12 @@ A work in progress
 						<dict>
 							<key>include</key>
 							<string>#values</string>
+						</dict>
+						<dict>
+							<key>match</key>
+							<string>.*</string>
+							<key>name</key>
+							<string>unmatched.yaml-simple</string>
 						</dict>
 					</array>
 				</dict>
@@ -309,7 +344,7 @@ A work in progress
 		<key>inline</key>
 		<dict>
 			<key>begin</key>
-			<string>^[ \r\n]*(?:(-)[ \r\n]*)?(?=[\{\[])</string>
+			<string>^[ \r\n]*(?:(-)[ \r\n]*)?(?=(?:(!![\w//]+)[ ]+)?[\{\[])</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -390,10 +425,16 @@ A work in progress
 			<key>patterns</key>
 			<array>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>constant.language.boolean.yaml-simple</string>
+						</dict>
+					</dict>
 					<key>match</key>
-					<string>(?:true|false|TRUE|FALSE|True|False|yes|no)[ ]*(?=(?:,|\}|\]))</string>
-					<key>name</key>
-					<string>constant.language.boolean.yaml-simple</string>
+					<string>(true|false|TRUE|FALSE|True|False|yes|no)[ ]*(?=(?:,|\}|\]))</string>
 				</dict>
 			</array>
 		</dict>
@@ -517,16 +558,28 @@ A work in progress
 			<key>patterns</key>
 			<array>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>constant.numeric.yaml-simple</string>
+						</dict>
+					</dict>
 					<key>match</key>
-					<string>[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?[ ]*(?=(?:,|\}|\]))</string>
-					<key>name</key>
-					<string>constant.numeric.yaml-simple</string>
+					<string>([+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?)[ ]*(?=(?:,|\}|\]))</string>
 				</dict>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>constant.numeric.yaml-simple</string>
+						</dict>
+					</dict>
 					<key>match</key>
-					<string>[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+[ ]*(?=(?:,|\}|\]))</string>
-					<key>name</key>
-					<string>constant.numeric.yaml-simple</string>
+					<string>([+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+)[ ]*(?=(?:,|\}|\]))</string>
 				</dict>
 			</array>
 		</dict>
@@ -535,29 +588,26 @@ A work in progress
 			<key>patterns</key>
 			<array>
 				<dict>
-					<key>captures</key>
+					<key>begin</key>
+					<string>(["])</string>
+					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
 							<string>string.yaml-simple</string>
 						</dict>
-						<key>2</key>
+					</dict>
+					<key>end</key>
+					<string>(["])[ \r\n]*(?=(?:,|\}|\]))</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>comment.yaml-simple</string>
+							<string>string.yaml-simple</string>
 						</dict>
 					</dict>
-					<key>match</key>
-					<string>!!regex (["](?:(?:\\.)|(?:[^"\\]|\\"))*?["])[ ]*(?=(?:,|\}|\]))</string>
-				</dict>
-				<dict>
-					<key>begin</key>
-					<string>["]</string>
-					<key>end</key>
-					<string>["][ \r\n]*(?=(?:,|\}|\]))</string>
-					<key>name</key>
-					<string>string.yaml-simple</string>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -569,21 +619,35 @@ A work in progress
 					</array>
 				</dict>
 				<dict>
-					<key>captures</key>
+					<key>begin</key>
+					<string>(['])</string>
+					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
 							<string>string.yaml-simple</string>
 						</dict>
-						<key>2</key>
+					</dict>
+					<key>end</key>
+					<string>(['])[ \r\n]*(?=(?:,|\}|\]))</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>comment.yaml-simple</string>
+							<string>string.yaml-simple</string>
 						</dict>
 					</dict>
-					<key>match</key>
-					<string>(['](?:(?:\\.)|(?:[^'\\]|'{2}))*?['])[ ]*(?=(?:,|\}|\]))</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>(?:(?:\\.)|(?:[^'\\]|'{2}))*?</string>
+							<key>name</key>
+							<string>string.yaml-simple</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>
@@ -721,12 +785,12 @@ A work in progress
 				<dict>
 					<key>begin</key>
 					<string>(?x)^([\ ]*)(?:([\-])([\ ]+))?
-    (?:
-        (\w(?:.*?[^\ ])?|&lt;&lt;)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
-        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+) |
-        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
-    )
-    (!!regex)[\ ]+([|&gt;][-+\d\r\n]*)[\ ]*(\#.*)?</string>
+(?:
+    (\w(?:.*?[^\ ])?|&lt;&lt;)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
+    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+) |
+    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
+)
+(!!regex)[\ ]+([|&gt;][-+\d\r\n]*)[\ ]*(\#.*)?</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>10</key>
@@ -803,12 +867,12 @@ A work in progress
 				<dict>
 					<key>begin</key>
 					<string>(?x)^([\ ]*)(?:([\-])([\ ]+))?
-    (?:
-        (\w(?:.*?[^\ ])?|&lt;&lt;)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
-        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+) |
-        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
-    )
-    (?:(!![\w//]+)[\ ]+)?([|&gt;][-+\d\r\n]*)[\ ]*(\#.*)?</string>
+(?:
+    (\w(?:.*?[^\ ])?|&lt;&lt;)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
+    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+) |
+    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
+)
+(?:(!![\w//]+)[\ ]+)?([|&gt;][-+\d\r\n]*)[\ ]*(\#.*)?</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>10</key>
@@ -891,16 +955,38 @@ A work in progress
 			<key>patterns</key>
 			<array>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>constant.numeric.yaml-simple</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>comment.yaml-simple</string>
+						</dict>
+					</dict>
 					<key>match</key>
-					<string>[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?[ ]*(#.*)?(?=$)</string>
-					<key>name</key>
-					<string>constant.numeric.yaml-simple</string>
+					<string>([+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?)[ ]*(#.*)?(?=$)</string>
 				</dict>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>constant.numeric.yaml-simple</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>comment.yaml-simple</string>
+						</dict>
+					</dict>
 					<key>match</key>
-					<string>[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+[ ]*(#.*)?(?=$)</string>
-					<key>name</key>
-					<string>constant.numeric.yaml-simple</string>
+					<string>([+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+)[ ]*(#.*)?(?=$)</string>
 				</dict>
 			</array>
 		</dict>
@@ -984,6 +1070,12 @@ A work in progress
 							<key>include</key>
 							<string>#values</string>
 						</dict>
+						<dict>
+							<key>match</key>
+							<string>.*</string>
+							<key>name</key>
+							<string>unmatched.yaml-simple</string>
+						</dict>
 					</array>
 				</dict>
 				<dict>
@@ -1010,7 +1102,19 @@ A work in progress
 			<key>patterns</key>
 			<array>
 				<dict>
-					<key>captures</key>
+					<key>begin</key>
+					<string>(["])</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>string.yaml-simple</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>(["])[ \r\n]*(#.*)?(?=$)</string>
+					<key>endCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
@@ -1023,16 +1127,6 @@ A work in progress
 							<string>comment.yaml-simple</string>
 						</dict>
 					</dict>
-					<key>match</key>
-					<string>(["](?:(?:\\.)|(?:[^"\\]|\\"))*?["])[ ]*(#.*)?(?=$)</string>
-				</dict>
-				<dict>
-					<key>begin</key>
-					<string>["]</string>
-					<key>end</key>
-					<string>["][ \r\n]*(#.*)?(?=$)</string>
-					<key>name</key>
-					<string>string.yaml-simple</string>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -1044,7 +1138,19 @@ A work in progress
 					</array>
 				</dict>
 				<dict>
-					<key>captures</key>
+					<key>begin</key>
+					<string>(['])</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>string.yaml-simple</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>(['])[ \r\n]*(#.*)?(?=$)</string>
+					<key>endCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
@@ -1057,8 +1163,15 @@ A work in progress
 							<string>comment.yaml-simple</string>
 						</dict>
 					</dict>
-					<key>match</key>
-					<string>(['](?:(?:\\.)|(?:[^'\\]|'{2}))*?['])[ ]*(#.*)?(?=$)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>(?:(?:\\.)|(?:[^'\\]|'{2}))*?</string>
+							<key>name</key>
+							<string>string.yaml-simple</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>
@@ -1167,12 +1280,6 @@ A work in progress
 				<dict>
 					<key>include</key>
 					<string>#boolean</string>
-				</dict>
-				<dict>
-					<key>match</key>
-					<string>.*</string>
-					<key>name</key>
-					<string>unmatched.yaml-simple</string>
 				</dict>
 			</array>
 		</dict>
