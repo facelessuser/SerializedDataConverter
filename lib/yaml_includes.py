@@ -1,5 +1,12 @@
-from . import yaml
+from __future__ import absolute_import
+import sublime
 import plistlib
+from .common_include import *
+
+if ST3:
+    from . import yaml3 as yaml
+else:
+    from . import yaml2 as yaml
 
 __all__ = ['yaml', 'plistlib']
 

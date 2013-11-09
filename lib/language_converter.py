@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import sublime
 import sublime_plugin
 from os.path import exists, basename
@@ -15,12 +16,11 @@ ERRORS = {
 class LanguageConverter(sublime_plugin.TextCommand):
     lang = None
     default_lang = "Packages/Text/Plain text.tmLanguage"
-    settings = None
 
     def __set_syntax(self):
         if self.output_view is not None:
             # Get syntax language and set it
-            syntax = sublime.load_settings(self.settings).get(self.lang, self.default_lang) if self.lang is not None else self.default_lang
+            syntax = load_settings(self.lang, self.default_lang) if self.lang is not None else self.default_lang
             self.output_view.set_syntax_file(syntax)
 
     def __write_file(self, edit, show_file):
@@ -48,7 +48,7 @@ class LanguageConverter(sublime_plugin.TextCommand):
 
     def __write_buffer(self, edit, force_new_buffer=False):
         errors = False
-        new_buffer = bool(sublime.load_settings(self.settings).get("open_in_new_buffer", False))
+        new_buffer = bool(load_settings("open_in_new_buffer", False))
 
         # Save content to view buffer
         try:
@@ -74,9 +74,9 @@ class LanguageConverter(sublime_plugin.TextCommand):
     def is_enabled(self, save_to_file=False, force=False):
         enabled = True
         if not force:
-            if save_to_file and not bool(sublime.load_settings(self.settings).get("enable_save_to_file_commands", False)):
+            if save_to_file and not bool(load_settings("enable_save_to_file_commands", False)):
                 enabled = False
-            elif not save_to_file and not bool(sublime.load_settings(self.settings).get("enable_show_in_buffer_commands", False)):
+            elif not save_to_file and not bool(load_settings("enable_show_in_buffer_commands", False)):
                 enabled = False
         return enabled
 

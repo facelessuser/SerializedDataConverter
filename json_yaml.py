@@ -8,10 +8,14 @@ import sublime
 import re
 import json
 from os.path import splitext
-from SerializedDataConverter.lib.language_converter import LanguageConverter as _LanguageConverter
-from SerializedDataConverter.lib.common_include import error_msg, PACKAGE_SETTINGS
-from SerializedDataConverter.lib.yaml_includes import *
-from SerializedDataConverter.lib.json_includes import *
+if int(sublime.version()) >= 3000:
+    from .lib.language_converter import LanguageConverter as _LanguageConverter
+    from .lib.common_include import *
+    from .lib.st_abstraction import plistDumps, jsonDumps, readPlistFromView, readJsonFromView, yaml, yaml_strip
+else:
+    from lib.language_converter import LanguageConverter as _LanguageConverter
+    from lib.common_include import *
+    from lib.st_abstraction import plistDumps, jsonDumps, readPlistFromView, readJsonFromView, yaml, yaml_strip
 import traceback
 
 ERRORS = {
@@ -24,13 +28,12 @@ ERRORS = {
 class SerializedJsonToYamlCommand(_LanguageConverter):
     lang = "yaml_language"
     default_lang = "Packages/SerializedDataConverter/languages/YAML-Simple.tmLanguage"
-    settings = PACKAGE_SETTINGS
 
     def get_output_file(self, filename):
         name = None
 
         # Try and find file ext in the ext table
-        ext_tbl = sublime.load_settings(self.settings).get("json_yaml_conversion_ext", [])
+        ext_tbl = load_settings("json_yaml_conversion_ext", [])
         for ext in ext_tbl:
             m = re.match("^(.*)\\." + re.escape(ext["json"]) + "$", filename, re.IGNORECASE)
             if m is not None:
@@ -42,23 +45,9 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
             name = splitext(filename)[0] + ".YAML"
         return name
 
-    def yaml_strip(self, obj):
-        if isinstance(obj, (dict, plistlib._InternalDict)):
-            for k, v in obj.items():
-                obj[k] = self.yaml_strip(v)
-        elif isinstance(obj, list):
-            count = 0
-            for v in obj:
-                obj[count] = self.yaml_strip(v)
-                count += 1
-        elif self.strip_tabs and isinstance(obj, str):
-            obj = obj.replace("\t", "    ").rstrip(" ")
-
-        return obj
-
     def read_buffer(self):
         errors = False
-        ext_tbl = sublime.load_settings(self.settings).get("yaml_strip_tabs_from", [])
+        ext_tbl = load_settings("yaml_strip_tabs_from", [])
         filename = self.view.file_name()
         self.strip_tabs = False
         if filename is not None:
@@ -71,15 +60,10 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
-            self.json = json.loads(
-                sanitize_json(
-                    self.view.substr(
-                        sublime.Region(0, self.view.size())
-                    )
-                )
-            )
+            self.json = readJsonFromView(self.view)
+
             if self.strip_tabs:
-                self.json = self.yaml_strip(self.json)
+                self.json = yaml_strip(self.json)
         except:
             errors = True
             error_msg(ERRORS["view2json"], traceback.format_exc())
@@ -91,7 +75,7 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
             if not errors:
                 # Convert Python dict to JSON buffer.
                 default_flow_style = None
-                flow_setting = sublime.load_settings(self.settings).get("yaml_default_flow_style", None)
+                flow_setting = load_settings("yaml_default_flow_style", None)
                 if flow_setting == "true":
                     default_flow_style = True
                 elif flow_setting == "false":
@@ -112,13 +96,12 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
 class SerializedYamlToJsonCommand(_LanguageConverter):
     lang = "json_language"
     default_lang = "Packages/Javascript/JSON.tmLanguage"
-    settings = PACKAGE_SETTINGS
 
     def get_output_file(self, filename):
         name = None
 
         # Try and find file ext in the ext table
-        ext_tbl = sublime.load_settings(self.settings).get("json_yaml_conversion_ext", [])
+        ext_tbl = load_settings("json_yaml_conversion_ext", [])
         for ext in ext_tbl:
             m = re.match("^(.*)\\." + re.escape(ext["yaml"]) + "$", filename, re.IGNORECASE)
             if m is not None:
@@ -151,7 +134,7 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = json.dumps(self.yaml, sort_keys=True, indent=4, separators=(',', ': '))
+            self.output = jsonDumps(self.yaml)
         except:
             errors = True
             error_msg(ERRORS["yaml2json"], traceback.format_exc())

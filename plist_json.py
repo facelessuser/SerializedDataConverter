@@ -8,10 +8,15 @@ import sublime
 import json
 import re
 from os.path import splitext
-from SerializedDataConverter.lib.language_converter import LanguageConverter as _LanguageConverter
-from SerializedDataConverter.lib.common_include import *
-from SerializedDataConverter.lib.json_includes import *
-import traceback
+
+if int(sublime.version()) >= 3000:
+    from .lib.language_converter import LanguageConverter as _LanguageConverter
+    from .lib.common_include import *
+    from .lib.st_abstraction import plistDumps, jsonDumps, readJsonFromView, readPlistFromView
+else:
+    from lib.language_converter import LanguageConverter as _LanguageConverter
+    from lib.common_include import *
+    from lib.st_abstraction import plistDumps, jsonDumps, readJsonFromView, readPlistFromView
 
 
 ERRORS = {
@@ -25,13 +30,12 @@ ERRORS = {
 class SerializedPlistToJsonCommand(_LanguageConverter):
     lang = "json_language"
     default_lang = "Packages/Javascript/JSON.tmLanguage"
-    settings = PACKAGE_SETTINGS
 
     def get_output_file(self, filename):
         name = None
 
         # Try and find file ext in the ext table
-        ext_tbl = sublime.load_settings(self.settings).get("plist_json_conversion_ext", [])
+        ext_tbl = load_settings("plist_json_conversion_ext", [])
         for ext in ext_tbl:
             m = re.match("^(.*)\\." + re.escape(ext["plist"]) + "$", filename, re.IGNORECASE)
             if m is not None:
@@ -49,11 +53,7 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
-            self.plist = plistlib.readPlistFromBytes(
-                self.view.substr(
-                    sublime.Region(0, self.view.size())
-                ).encode('utf8')
-            )
+            self.plist = readPlistFromView(self.view)
         except:
             errors = True
             error_msg(ERRORS["view2plist"], traceback.format_exc())
@@ -63,8 +63,7 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
         errors = False
         try:
             if not errors:
-                # Convert Python dict to JSON buffer.
-                self.output = json.dumps(self.plist, sort_keys=True, indent=4, separators=(',', ': ')).encode('utf-8').decode('raw_unicode_escape')
+                self.output = jsonDumps(self.plist)
         except:
             errors = True
             error_msg(ERRORS["plist2json"], traceback.format_exc())
@@ -74,13 +73,12 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
 class SerializedJsonToPlistCommand(_LanguageConverter):
     lang = "plist_language"
     default_lang = "Packages/XML/XML.tmLanguage"
-    settings = PACKAGE_SETTINGS
 
     def get_output_file(self, filename):
         name = None
 
         # Try and find file ext in the ext table
-        ext_tbl = sublime.load_settings(self.settings).get("plist_json_conversion_ext", [])
+        ext_tbl = load_settings("plist_json_conversion_ext", [])
         for ext in ext_tbl:
             m = re.match("^(.*)\\." + re.escape(ext["json"]) + "$", filename, re.IGNORECASE)
             if m is not None:
@@ -98,14 +96,7 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.json = json.loads(
-                sanitize_json(
-                    self.view.substr(
-                        sublime.Region(0, self.view.size())
-                    ),
-                    True
-                )
-            )
+            self.json = readJsonFromView(self.view)
 
         except:
             errors = True
@@ -116,7 +107,7 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = plistlib.writePlistToBytes(self.json).decode('utf-8')
+            self.output = plistDumps(self.json)
         except:
             errors = True
             error_msg(ERRORS["json2plist"], traceback.format_exc())

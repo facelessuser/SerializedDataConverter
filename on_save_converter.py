@@ -1,6 +1,9 @@
 import sublime
 import sublime_plugin
-from SerializedDataConverter.lib.common_include import *
+if int(sublime.version()) >= 3000:
+    from SerializedDataConverter.lib.common_include import *
+else:
+    from lib.common_include import *
 
 
 class SerializedDataConverterListener(sublime_plugin.EventListener):
@@ -19,7 +22,7 @@ class SerializedDataConverterListener(sublime_plugin.EventListener):
             self.convert(view, command)
 
     def get_save_ext(self):
-        return sublime.load_settings(PACKAGE_SETTINGS).get("convert_on_save", [])
+        return load_settings("convert_on_save", [])
 
     def convert(self, view, command):
         view.run_command("serialized_%s" % command, {"save_to_file": 'True', "show_file": False, "force": True})
