@@ -70,12 +70,15 @@
 
     // In most this should be left to None for easy reading, but feel free to change it
     // (none | true | false)
-    // none shows things like this will (nicest to read):
+    // On ST2, "none" and "true" act the same
+    //
+    // none (only ST3; same as "false" on ST2) shows things like this will (nicest to read):
     //     '1': {name: something}
-    // true like this (if you like this you can do it):
+    // false like this (if you like this you can do it):
     //     '1':
     //         name: something
-    // false will have everything like this (harder to read):
+    // true will have everything like this (harder to read):
     //     {'1': {name: something}}
+
     "yaml_default_flow_style": "none"
 }

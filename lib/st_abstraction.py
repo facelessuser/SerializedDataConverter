@@ -93,8 +93,10 @@ else:
         width=None,
         indent=4,
         allow_unicode=True,
-        default_flow_style=default_flow_style
-    )
+        encoding='utf-8',
+        default_flow_style=False,
+        Dumper=yaml.SafeDumper
+    ).decode('utf-8')
 
 # http://stackoverflow.com/questions/8640959/how-can-i-control-what-scalar-form-pyyaml-uses-for-my-data
 def _should_use_block(value):
@@ -120,11 +122,11 @@ def _my_represent_scalar(self, tag, value, style=None):
 def yaml_strip(obj, strip_tabs=False):
     if isinstance(obj, (dict, plistlib._InternalDict)):
         for k, v in obj.items():
-            obj[k] = yaml_strip(v)
+            obj[k] = yaml_strip(v, strip_tabs)
     elif isinstance(obj, list):
         count = 0
         for v in obj:
-            obj[count] = yaml_strip(v)
+            obj[count] = yaml_strip(v, strip_tabs)
             count += 1
     elif strip_tabs and isinstance(obj, str):
         obj = obj.replace("\t", "    ").rstrip(" ")
@@ -134,12 +136,21 @@ def yaml_strip(obj, strip_tabs=False):
 
 yaml.representer.BaseRepresenter.represent_scalar = _my_represent_scalar
 
-yaml.add_representer(
-    plistlib._InternalDict,
-    yaml.SafeDumper.represent_dict
-)
-
-yaml.add_constructor(
-    "tag:yaml.org,2002:regex",
-    yaml.Loader.construct_yaml_str
-)
+if not ST3:
+    yaml.SafeDumper.add_representer(
+        plistlib._InternalDict,
+        yaml.SafeDumper.represent_dict
+    )
+    yaml.add_constructor(
+        "tag:yaml.org,2002:regex",
+        yaml.Loader.construct_yaml_str
+    )
+else:
+    yaml.add_representer(
+        plistlib._InternalDict,
+        yaml.SafeDumper.represent_dict
+    )
+    yaml.add_constructor(
+        "tag:yaml.org,2002:regex",
+        yaml.Loader.construct_yaml_str
+    )
