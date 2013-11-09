@@ -37,7 +37,11 @@ A work in progress
 		</dict>
 		<dict>
 			<key>include</key>
-			<string>#inline</string>
+			<string>#inline-arrays</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#other-single-line</string>
 		</dict>
 	</array>
 	<key>repository</key>
@@ -240,28 +244,6 @@ A work in progress
 			<key>patterns</key>
 			<array>
 				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>support.type.yaml-simple</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.operator.multi-line.yaml-simple</string>
-						</dict>
-						<key>3</key>
-						<dict>
-							<key>name</key>
-							<string>comment.yaml-simple</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?:(!![\w//]+)[ ]+)?([|&gt;][-+\d\r\n]*)[ \r\n]*(#.*)?$</string>
-				</dict>
-				<dict>
 					<key>begin</key>
 					<string>(!!regex)[ ]+</string>
 					<key>beginCaptures</key>
@@ -341,40 +323,6 @@ A work in progress
 			<key>name</key>
 			<string>invalid.illegal.tab.yaml-simple</string>
 		</dict>
-		<key>inline</key>
-		<dict>
-			<key>begin</key>
-			<string>^[ \r\n]*(?:(-)[ \r\n]*)?(?=(?:(!![\w//]+)[ ]+)?[\{\[])</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>keyword.operator.list.yaml-simple</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>(#.*)?$</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>comment.yaml-simple</string>
-				</dict>
-			</dict>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#associative-array</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#array</string>
-				</dict>
-			</array>
-		</dict>
 		<key>inline-address</key>
 		<dict>
 			<key>patterns</key>
@@ -417,6 +365,40 @@ A work in progress
 				<dict>
 					<key>include</key>
 					<string>#inline-values</string>
+				</dict>
+			</array>
+		</dict>
+		<key>inline-arrays</key>
+		<dict>
+			<key>begin</key>
+			<string>^[ \r\n]*(?:(-)[ \r\n]*)?(?=(?:(!![\w//]+)[ ]+)?[\{\[])</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.list.yaml-simple</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>(#.*)?$</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>comment.yaml-simple</string>
+				</dict>
+			</dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#associative-array</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#array</string>
 				</dict>
 			</array>
 		</dict>
@@ -484,8 +466,8 @@ A work in progress
 			<string>(?x)[\ \r\n]*(?:
     (?:
         (\w(?:.*?[^\ ])?|&lt;&lt;)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
-        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+)|
-        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
+        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])[\ \r\n]*(\:)(?:[\ \r\n]+)|
+        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])[\ \r\n]*(\:)(?:[\ \r\n]+)
     )
 )</string>
 			<key>beginCaptures</key>
@@ -787,8 +769,8 @@ A work in progress
 					<string>(?x)^([\ ]*)(?:([\-])([\ ]+))?
 (?:
     (\w(?:.*?[^\ ])?|&lt;&lt;)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
-    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+) |
-    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
+    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])[\ \r\n]*(\:)(?:[\ \r\n]+) |
+    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])[\ \r\n]*(\:)(?:[\ \r\n]+)
 )
 (!!regex)[\ ]+([|&gt;][-+\d\r\n]*)[\ ]*(\#.*)?</string>
 					<key>beginCaptures</key>
@@ -869,8 +851,8 @@ A work in progress
 					<string>(?x)^([\ ]*)(?:([\-])([\ ]+))?
 (?:
     (\w(?:.*?[^\ ])?|&lt;&lt;)(?:[\ \r\n]*(\:)(?:[\ \r\n]+)) |
-    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+) |
-    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+)
+    ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])[\ \r\n]*(\:)(?:[\ \r\n]+) |
+    (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])[\ \r\n]*(\:)(?:[\ \r\n]+)
 )
 (?:(!![\w//]+)[\ ]+)?([|&gt;][-+\d\r\n]*)[\ ]*(\#.*)?</string>
 					<key>beginCaptures</key>
@@ -990,6 +972,68 @@ A work in progress
 				</dict>
 			</array>
 		</dict>
+		<key>other-single-line</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>begin</key>
+					<string>(?x)^[\ ]*(?:
+    (?:([\-])(?:[\ \r\n]+))?(?=.+$)
+)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.list.yaml-simple</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>$</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>[ ]*(#.*)(?=$)</string>
+							<key>name</key>
+							<string>comment.yaml-simple</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#cast-values</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#values</string>
+						</dict>
+						<dict>
+							<key>match</key>
+							<string>.*</string>
+							<key>name</key>
+							<string>unmatched.yaml-simple</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.list.yaml-simple</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>comment.yaml-simple</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>^( *)(-|\?)[ ]*(#.*)?$</string>
+				</dict>
+			</array>
+		</dict>
 		<key>single-line</key>
 		<dict>
 			<key>patterns</key>
@@ -1000,8 +1044,8 @@ A work in progress
     (?:([\-?])(?:[\ \r\n]+))?
     (?:
         (\w(?:.*?[^\ ])?|&lt;&lt;)(?:[\ \r\n]*(\:)(?:[\ \r\n]+|(?=$))) |
-        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])(\:)(?:[\ \r\n]+|(?=$))|
-        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])(\:)(?:[\ \r\n]+|(?=$))
+        ([']((?:(?:\\.)|(?:[^'\\]|'{2}))*?)['])[\ \r\n]*(\:)(?:[\ \r\n]+|(?=$))|
+        (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])[\ \r\n]*(\:)(?:[\ \r\n]+|(?=$))
     )
 )</string>
 					<key>beginCaptures</key>
