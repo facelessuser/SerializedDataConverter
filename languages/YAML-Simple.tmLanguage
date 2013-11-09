@@ -67,7 +67,7 @@ A work in progress
 		<key>array</key>
 		<dict>
 			<key>begin</key>
-			<string>(?:(!![\w//]+)[ ]+)?(\[)</string>
+			<string>(?:(!![\w/]+)[ ]+)?(\[)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -142,7 +142,7 @@ A work in progress
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>(!![\w//]+)[ ]*</string>
+					<string>(!![\w/]+)[ ]*</string>
 					<key>end</key>
 					<string>[ \r\n]*(?:(,)\n?|(?=\]))</string>
 					<key>endCaptures</key>
@@ -179,7 +179,7 @@ A work in progress
 		<key>associative-array</key>
 		<dict>
 			<key>begin</key>
-			<string>(?:(!![\w//]+)[ ]+)?(\{)</string>
+			<string>(?:(!![\w/]+)[ ]+)?(\{)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -266,7 +266,7 @@ A work in progress
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>(!![\w//]+)[ ]+</string>
+					<string>(!![\w/]+)[ ]+</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -371,7 +371,7 @@ A work in progress
 		<key>inline-arrays</key>
 		<dict>
 			<key>begin</key>
-			<string>^[ \r\n]*(?:(-)[ \r\n]*)?(?=(?:(!![\w//]+)[ ]+)?[\{\[])</string>
+			<string>^[ \r\n]*(?:(-)[ \r\n]*)?(?=(?:(!![\w/]+)[ ]+)?[\{\[])</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -447,7 +447,7 @@ A work in progress
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>(!![\w//]+)[ ]+</string>
+					<string>(!![\w/]+)[ ]+</string>
 					<key>end</key>
 					<string>(?=(?:,\n?|\}))</string>
 					<key>patterns</key>
@@ -857,7 +857,7 @@ A work in progress
     (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])
 )
 [\ \r\n]*(\:)(?:[\ \r\n]+|(?=$))
-(?:(!![\w//]+)[\ ]+)?([|&gt;][-+\d\r\n]*)[\ ]*(\#.*)?</string>
+(?:(!![\w/]+)[\ ]+)?([|&gt;][-+\d\r\n]*)[\ ]*(\#.*)?</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>10</key>

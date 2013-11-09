@@ -92,14 +92,14 @@ repository:
         #         '1': {name: support.type.yaml-simple}
         #         '2': {name: keyword.operator.multi-line.yaml-simple}
         #         '3': {name: comment.yaml-simple}
-        #     match: !!regex (?:(!![\w//]+)[ ]+)?([|>][-+\d\r\n]*)[ \r\n]*(#.*)?$
+        #     match: !!regex (?:(!![\w/]+)[ ]+)?([|>][-+\d\r\n]*)[ \r\n]*(#.*)?$
         -   begin: !!regex (!!regex)[ ]+
             beginCaptures:
                 '1': {name: support.type.yaml-simple}
             end: !!regex (?=$)
             patterns:
             -   include: '#sublime-regex'
-        -   begin: !!regex (!![\w//]+)[ ]+
+        -   begin: !!regex (!![\w/]+)[ ]+
             beginCaptures:
                 '1': {name: support.type.yaml-simple}
             end: !!regex (?=$)
@@ -154,7 +154,7 @@ repository:
                     (["]((?:(?:\\.)|(?:[^"\\]|\\"))*?)["])
                 )
                 [\ \r\n]*(\:)(?:[\ \r\n]+|(?=$))
-                (?:(!![\w//]+)[\ ]+)?([|>][-+\d\r\n]*)[\ ]*(\#.*)?
+                (?:(!![\w/]+)[\ ]+)?([|>][-+\d\r\n]*)[\ ]*(\#.*)?
             beginCaptures:
                 '2':  {name: keyword.operator.list.yaml-simple}
                 '4':  {name: meta.tag.yaml-simple}
@@ -176,7 +176,7 @@ repository:
     # Inline style associative array and normal arrays
     # - [] or - {}
     inline-arrays:
-        begin: !!regex ^[ \r\n]*(?:(-)[ \r\n]*)?(?=(?:(!![\w//]+)[ ]+)?[\{\[])
+        begin: !!regex ^[ \r\n]*(?:(-)[ \r\n]*)?(?=(?:(!![\w/]+)[ ]+)?[\{\[])
         beginCaptures:
             '1': {name: keyword.operator.list.yaml-simple}
         end: !!regex (#.*)?$
@@ -191,7 +191,7 @@ repository:
     ###################
     # Single line associative array
     associative-array:
-        begin: !!regex '(?:(!![\w//]+)[ ]+)?(\{)'
+        begin: !!regex '(?:(!![\w/]+)[ ]+)?(\{)'
         beginCaptures:
             '1': {name: support.type.yaml-simple}
             '2': {name: keyword.paren.left.yaml-simple}
@@ -238,7 +238,7 @@ repository:
                 end: !!regex (?=(?:,\n?|\}))
                 patterns:
                 -   include: '#inline-sublime-regex'
-            -   begin: !!regex (!![\w//]+)[ ]+
+            -   begin: !!regex (!![\w/]+)[ ]+
                 end: !!regex (?=(?:,\n?|\}))
                 patterns:
                 -   include: '#inline-values'
@@ -257,7 +257,7 @@ repository:
 
     # Single line array
     array:
-        begin: !!regex (?:(!![\w//]+)[ ]+)?(\[)
+        begin: !!regex (?:(!![\w/]+)[ ]+)?(\[)
         beginCaptures:
             '1': {name: support.type.yaml-simple}
             '2': {name: keyword.paren.left.yaml-simple}
@@ -278,7 +278,7 @@ repository:
                 end: !!regex '(?=(?:,\n?|\]))'
                 patterns:
                 -   include: '#inline-values'
-        -   begin: !!regex (!![\w//]+)[ ]*
+        -   begin: !!regex (!![\w/]+)[ ]*
             end: !!regex '[ \r\n]*(?:(,)\n?|(?=\]))'
             endCaptures:
                 '1': {name: keyword.paren.separator.yaml-simple}
