@@ -36,7 +36,7 @@ repository:
     line-comments:
         captures:
             '1': {name: comment.yaml-simple}
-        match: !!regex '^[ \r\n]*(#.*)$'                             # Comment test 5
+        match: !!regex '^[ ]*(#.*)$'                             # Comment test 5
 
     # Tabs are evil (at least to yaml)
     evil-tabs:
@@ -63,13 +63,11 @@ repository:
             beginCaptures:
                 '1': {name: keyword.operator.list.yaml-simple}
                 '2': {name: meta.tag.yaml-simple}
-                '3': {name: keyword.operator.key-separator.yaml-simple}
-                '4': {name: meta.tag.yaml-simple}
-                '5': {name: string.yaml-simple}
-                '6': {name: keyword.operator.key-separator.yaml-simple}
-                '7': {name: meta.tag.yaml-simple}
-                '8': {name: string.yaml-simple}
-                '9': {name: keyword.operator.key-separator.yaml-simple}
+                '3': {name: meta.tag.yaml-simple}
+                '4': {name: string.yaml-simple}
+                '5': {name: meta.tag.yaml-simple}
+                '6': {name: string.yaml-simple}
+                '7': {name: keyword.operator.key-separator.yaml-simple}
             end: !!regex $
             patterns:
             -   match: !!regex (#.*)$
@@ -132,16 +130,14 @@ repository:
             beginCaptures:
                 '2':  {name: keyword.operator.list.yaml-simple}
                 '4':  {name: meta.tag.yaml-simple}
-                '5':  {name: keyword.operator.key-separator.yaml-simple}
-                '6':  {name: meta.tag.yaml-simple}
-                '7':  {name: string.yaml-simple}
-                '8':  {name: keyword.operator.key-separator.yaml-simple}
-                '9':  {name: meta.tag.yaml-simple}
-                '10': {name: string.yaml-simple}
-                '11': {name: keyword.operator.key-separator.yaml-simple}
-                '12': {name: support.type.yaml-simple}
-                '13': {name: keyword.operator.multi-line.yaml-simple}
-                '14': {name: comment.yaml-simple}
+                '5':  {name: meta.tag.yaml-simple}
+                '6':  {name: string.yaml-simple}
+                '7':  {name: meta.tag.yaml-simple}
+                '8':  {name: string.yaml-simple}
+                '9':  {name: keyword.operator.key-separator.yaml-simple}
+                '10': {name: support.type.yaml-simple}
+                '11': {name: keyword.operator.multi-line.yaml-simple}
+                '12': {name: comment.yaml-simple}
             end: !!regex ^(?! *$|\1\3 {2})
             patterns:
             -   include: source.regexp
@@ -158,16 +154,14 @@ repository:
             beginCaptures:
                 '2':  {name: keyword.operator.list.yaml-simple}
                 '4':  {name: meta.tag.yaml-simple}
-                '5':  {name: keyword.operator.key-separator.yaml-simple}
-                '6':  {name: meta.tag.yaml-simple}
-                '7':  {name: string.yaml-simple}
-                '8':  {name: keyword.operator.key-separator.yaml-simple}
-                '9':  {name: meta.tag.yaml-simple}
-                '10': {name: string.yaml-simple}
-                '11': {name: keyword.operator.key-separator.yaml-simple}
-                '12': {name: support.type.yaml-simple}
-                '13': {name: keyword.operator.multi-line.yaml-simple}
-                '14': {name: comment.yaml-simple}
+                '5':  {name: meta.tag.yaml-simple}
+                '6':  {name: string.yaml-simple}
+                '7':  {name: meta.tag.yaml-simple}
+                '8': {name: string.yaml-simple}
+                '9': {name: keyword.operator.key-separator.yaml-simple}
+                '10': {name: support.type.yaml-simple}
+                '11': {name: keyword.operator.multi-line.yaml-simple}
+                '12': {name: comment.yaml-simple}
             end: !!regex ^(?! *$|\1\3 {2})
             patterns:
             -   match: !!regex '.*'
@@ -216,13 +210,11 @@ repository:
             )
         beginCaptures:
             '1': {name: meta.tag.yaml-simple}
-            '2': {name: keyword.operator.key-separator.yaml-simple}
-            '3': {name: meta.tag.yaml-simple}
-            '4': {name: string.yaml-simple}
-            '5': {name: keyword.operator.key-separator.yaml-simple}
-            '6': {name: meta.tag.yaml-simple}
-            '7': {name: string.yaml-simple}
-            '8': {name: keyword.operator.key-separator.yaml-simple}
+            '2': {name: meta.tag.yaml-simple}
+            '3': {name: string.yaml-simple}
+            '4': {name: meta.tag.yaml-simple}
+            '5': {name: string.yaml-simple}
+            '6': {name: keyword.operator.key-separator.yaml-simple}
         end: !!regex '[ \r\n]*(?:(,)\n?|(?=\}))'
         endCaptures:
             '1': {name: keyword.paren.separator.yaml-simple}

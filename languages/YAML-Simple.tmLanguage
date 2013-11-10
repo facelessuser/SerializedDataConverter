@@ -481,34 +481,24 @@ A work in progress
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator.key-separator.yaml-simple</string>
+					<string>meta.tag.yaml-simple</string>
 				</dict>
 				<key>3</key>
 				<dict>
 					<key>name</key>
-					<string>meta.tag.yaml-simple</string>
+					<string>string.yaml-simple</string>
 				</dict>
 				<key>4</key>
 				<dict>
 					<key>name</key>
-					<string>string.yaml-simple</string>
+					<string>meta.tag.yaml-simple</string>
 				</dict>
 				<key>5</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator.key-separator.yaml-simple</string>
-				</dict>
-				<key>6</key>
-				<dict>
-					<key>name</key>
-					<string>meta.tag.yaml-simple</string>
-				</dict>
-				<key>7</key>
-				<dict>
-					<key>name</key>
 					<string>string.yaml-simple</string>
 				</dict>
-				<key>8</key>
+				<key>6</key>
 				<dict>
 					<key>name</key>
 					<string>keyword.operator.key-separator.yaml-simple</string>
@@ -759,7 +749,7 @@ A work in progress
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>^[ \r\n]*(#.*)$</string>
+			<string>^[ ]*(#.*)$</string>
 		</dict>
 		<key>multi-line</key>
 		<dict>
@@ -780,24 +770,14 @@ A work in progress
 						<key>10</key>
 						<dict>
 							<key>name</key>
-							<string>string.yaml-simple</string>
+							<string>support.type.yaml-simple</string>
 						</dict>
 						<key>11</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.key-separator.yaml-simple</string>
-						</dict>
-						<key>12</key>
-						<dict>
-							<key>name</key>
-							<string>support.type.yaml-simple</string>
-						</dict>
-						<key>13</key>
-						<dict>
-							<key>name</key>
 							<string>keyword.operator.multi-line.yaml-simple</string>
 						</dict>
-						<key>14</key>
+						<key>12</key>
 						<dict>
 							<key>name</key>
 							<string>comment.yaml-simple</string>
@@ -815,27 +795,27 @@ A work in progress
 						<key>5</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.key-separator.yaml-simple</string>
+							<string>meta.tag.yaml-simple</string>
 						</dict>
 						<key>6</key>
 						<dict>
 							<key>name</key>
-							<string>meta.tag.yaml-simple</string>
+							<string>string.yaml-simple</string>
 						</dict>
 						<key>7</key>
 						<dict>
 							<key>name</key>
-							<string>string.yaml-simple</string>
+							<string>meta.tag.yaml-simple</string>
 						</dict>
 						<key>8</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.key-separator.yaml-simple</string>
+							<string>string.yaml-simple</string>
 						</dict>
 						<key>9</key>
 						<dict>
 							<key>name</key>
-							<string>meta.tag.yaml-simple</string>
+							<string>keyword.operator.key-separator.yaml-simple</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -863,24 +843,14 @@ A work in progress
 						<key>10</key>
 						<dict>
 							<key>name</key>
-							<string>string.yaml-simple</string>
+							<string>support.type.yaml-simple</string>
 						</dict>
 						<key>11</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.key-separator.yaml-simple</string>
-						</dict>
-						<key>12</key>
-						<dict>
-							<key>name</key>
-							<string>support.type.yaml-simple</string>
-						</dict>
-						<key>13</key>
-						<dict>
-							<key>name</key>
 							<string>keyword.operator.multi-line.yaml-simple</string>
 						</dict>
-						<key>14</key>
+						<key>12</key>
 						<dict>
 							<key>name</key>
 							<string>comment.yaml-simple</string>
@@ -898,27 +868,27 @@ A work in progress
 						<key>5</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.key-separator.yaml-simple</string>
+							<string>meta.tag.yaml-simple</string>
 						</dict>
 						<key>6</key>
 						<dict>
 							<key>name</key>
-							<string>meta.tag.yaml-simple</string>
+							<string>string.yaml-simple</string>
 						</dict>
 						<key>7</key>
 						<dict>
 							<key>name</key>
-							<string>string.yaml-simple</string>
+							<string>meta.tag.yaml-simple</string>
 						</dict>
 						<key>8</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.key-separator.yaml-simple</string>
+							<string>string.yaml-simple</string>
 						</dict>
 						<key>9</key>
 						<dict>
 							<key>name</key>
-							<string>meta.tag.yaml-simple</string>
+							<string>keyword.operator.key-separator.yaml-simple</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -1067,34 +1037,24 @@ A work in progress
 						<key>3</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.key-separator.yaml-simple</string>
+							<string>meta.tag.yaml-simple</string>
 						</dict>
 						<key>4</key>
 						<dict>
 							<key>name</key>
-							<string>meta.tag.yaml-simple</string>
+							<string>string.yaml-simple</string>
 						</dict>
 						<key>5</key>
 						<dict>
 							<key>name</key>
-							<string>string.yaml-simple</string>
+							<string>meta.tag.yaml-simple</string>
 						</dict>
 						<key>6</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.key-separator.yaml-simple</string>
-						</dict>
-						<key>7</key>
-						<dict>
-							<key>name</key>
-							<string>meta.tag.yaml-simple</string>
-						</dict>
-						<key>8</key>
-						<dict>
-							<key>name</key>
 							<string>string.yaml-simple</string>
 						</dict>
-						<key>9</key>
+						<key>7</key>
 						<dict>
 							<key>name</key>
 							<string>keyword.operator.key-separator.yaml-simple</string>
