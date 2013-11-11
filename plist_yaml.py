@@ -63,7 +63,7 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
             # Read view buffer as PLIST and dump to Python dict
             self.plist = plist.readPlistFromView(self.view)
             if strip_tabs:
-                self.plist = yaml.yaml_strip(self.plist, strip_tabs=strip_tabs)
+                self.plist = yaml.yaml_strip(self.plist)
         except:
             errors = True
             error_msg(ERRORS["view2plist"], traceback.format_exc())

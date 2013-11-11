@@ -65,7 +65,10 @@
     "yaml_strip_tabs_from": [
         "tmLanguage",
         "tmTheme",
-        "tmPreferences"
+        "tmPreferences",
+        "tmLanguage.JSON",
+        "tmTheme.JSON",
+        "tmPreferences.JSON"
     ],
 
     // In most this should be left to None for easy reading, but feel free to change it
