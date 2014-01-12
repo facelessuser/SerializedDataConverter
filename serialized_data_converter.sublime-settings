@@ -71,7 +71,7 @@
         "tmPreferences.JSON"
     ],
 
-    // In most this should be left to None for easy reading, but feel free to change it
+    // In most this should be left to "false" for easy reading, but feel free to change it
     // (none | true | false)
     // On ST2, "none" and "true" act the same
     //
@@ -83,5 +83,5 @@
     // true will have everything like this (harder to read):
     //     {'1': {name: something}}
 
-    "yaml_default_flow_style": "none"
+    "yaml_default_flow_style": "false"
 }
