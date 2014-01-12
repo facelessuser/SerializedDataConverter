@@ -73,11 +73,9 @@
 
     // In most this should be left to "false" for easy reading, but feel free to change it
     // (none | true | false)
-    // On ST2, "none" and "true" act the same
-    //
-    // none (only ST3; same as "false" on ST2) shows things like this will (nicest to read):
+    // none shows things like this will (pretty good):
     //     '1': {name: something}
-    // false like this (if you like this you can do it):
+    // false like this (cleanest to read):
     //     '1':
     //         name: something
     // true will have everything like this (harder to read):

@@ -17,7 +17,7 @@ yamlDumps = lambda obj, default_flow_style=None: yaml.dump(
     indent=4,
     allow_unicode=True,
     encoding='utf-8',
-    default_flow_style=False,
+    default_flow_style=default_flow_style,
     Dumper=yaml.SafeDumper
 ).decode('utf-8')
 
