@@ -89,7 +89,7 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
 
 class SerializedYamlToJsonCommand(_LanguageConverter):
     lang = "json_language"
-    default_lang = "Packages/Javascript/JSON.tmLanguage"
+    default_lang = "Packages/JavaScript/JSON.tmLanguage"
 
     def get_output_file(self, filename):
         name = None
