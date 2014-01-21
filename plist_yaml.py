@@ -28,7 +28,7 @@ ERRORS = {
 
 class SerializedPlistToYamlCommand(_LanguageConverter):
     lang = "yaml_language"
-    default_lang = "Packages/SerializedDataConverter/languages/YAML-Simple.tmLanguage"
+    default_lang = "Packages/YAML/YAML.tmLanguage"
 
     def get_output_file(self, filename):
         name = None

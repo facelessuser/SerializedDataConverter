@@ -1,7 +1,7 @@
 {
     // Languages to use on conversion
     "json_language": "Packages/JavaScript/JSON.tmLanguage",
-    "yaml_language": "Packages/SerializedDataConverter/languages/YAML-Simple.tmLanguage",
+    "yaml_language": "Packages/YAML/YAML.tmLanguage",
     "plist_language": "Packages/XML/XML.tmLanguage",
 
     // When converting buffer open conversion in new buffer
