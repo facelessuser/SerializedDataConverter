@@ -67,6 +67,21 @@ yaml.add_representer(
     yaml.SafeDumper.represent_dict
 )
 
+yaml.add_representer(
+    plistlib.Data,
+    lambda self, data: self.represent_binary(data.data)
+)
+
+
+def binary_constructor(self, node):
+    return plistlib.Data(self.construct_yaml_binary(node))
+
+
+yaml.add_constructor(
+    "tag:yaml.org,2002:binary",
+    binary_constructor
+)
+
 # Add !!Regex support during translation
 yaml.add_constructor(
     "tag:yaml.org,2002:regex",
