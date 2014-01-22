@@ -3,7 +3,7 @@ import sublime
 from . import pyyaml as yaml
 import plistlib
 
-__all__ = ["readYamlFromView", "yamlDumps", "yaml_strip"]
+__all__ = ["readYamlFromView", "yamlDumps"]
 
 readYamlFromView = lambda view: yaml.load(
     view.substr(
@@ -11,8 +11,8 @@ readYamlFromView = lambda view: yaml.load(
     )
 )
 
-yamlDumps = lambda obj, default_flow_style=None: yaml.dump(
-    obj,
+yamlDumps = lambda obj, default_flow_style=None, strip_tabs=False: yaml.dump(
+    yaml_strip(obj) if strip_tabs else obj,
     width=None,
     indent=4,
     allow_unicode=True,

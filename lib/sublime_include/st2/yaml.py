@@ -11,28 +11,28 @@ readYamlFromView = lambda view: yaml.load(
     )
 )
 
-yamlDumps = lambda obj, default_flow_style=None: yaml.dump(
-    obj,
+yamlDumps = lambda obj, default_flow_style=None, strip_tabs=False: yaml.dump(
+    yaml_strip(obj) if strip_tabs else obj,
     width=None,
     indent=4,
     allow_unicode=True,
     encoding='utf-8',
     default_flow_style=default_flow_style,
-    Dumper=yaml.SafeDumper
+    Dumper=yaml.Dumper
 ).decode('utf-8')
 
 
 # Strip tabs and trailing spaces to allow block format to successfully be triggered
-def yaml_strip(obj, strip_tabs=False):
+def yaml_strip(obj):
     if isinstance(obj, (dict, plistlib._InternalDict)):
         for k, v in obj.items():
-            obj[k] = yaml_strip(v, strip_tabs)
+            obj[k] = yaml_strip(v)
     elif isinstance(obj, list):
         count = 0
         for v in obj:
-            obj[count] = yaml_strip(v, strip_tabs)
+            obj[count] = yaml_strip(v)
             count += 1
-    elif strip_tabs and isinstance(obj, str):
+    elif isinstance(obj, str):
         obj = obj.replace("\t", "    ").rstrip(" ")
 
     return obj

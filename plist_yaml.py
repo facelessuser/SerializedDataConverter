@@ -50,20 +50,18 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
         errors = False
         ext_tbl = load_settings("yaml_strip_tabs_from", [])
         filename = self.view.file_name()
-        strip_tabs = False
+        self.strip_tabs = False
         if filename is not None:
             for ext in ext_tbl:
                 m = re.match("^(.*)\\." + re.escape(ext) + "$", filename, re.IGNORECASE)
                 if m is not None:
-                    strip_tabs = True
+                    self.strip_tabs = True
                     break
         try:
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
             self.plist = plist.readPlistFromView(self.view)
-            if strip_tabs:
-                self.plist = yaml.yaml_strip(self.plist)
         except:
             errors = True
             error_msg(ERRORS["view2plist"], traceback.format_exc())
@@ -82,7 +80,7 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
                     default_flow_style = False
 
                 # Convert Python dict to Yaml buffer.
-                self.output = yaml.yamlDumps(self.plist, default_flow_style=default_flow_style)
+                self.output = yaml.yamlDumps(self.plist, default_flow_style=default_flow_style, strip_tabs=self.strip_tabs)
         except:
             errors = True
             error_msg(ERRORS["plist2yaml"], traceback.format_exc())
