@@ -45,7 +45,7 @@ def json_convert_to(obj):
 def json_convert_from(obj):
     if isinstance(obj, (dict, plistlib._InternalDict)):
         if len(obj) == 1 and "python/object:plistlib.Data" in obj:
-            obj = plistlib.Data(obj["python/object:plistlib.Data"].decode("base64"))
+            obj = plistlib.Data(base64.b64decode(obj["python/object:plistlib.Data"]))
         else:
             for k, v in obj.items():
                 obj[k] = json_convert_from(v)

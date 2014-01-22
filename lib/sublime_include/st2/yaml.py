@@ -63,8 +63,12 @@ def _my_represent_scalar(self, tag, value, style=None):
 
 yaml.representer.BaseRepresenter.represent_scalar = _my_represent_scalar
 
+
+# Handle Unicode
 yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
 
+
+# Handle Plist Binary Data
 yaml.add_representer(
     plistlib.Data,
     lambda self, data: self.represent_scalar(u'tag:yaml.org,2002:binary', base64.encodestring(data.data), style='|')
