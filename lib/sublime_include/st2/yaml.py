@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import sublime
 from . import pyyaml as yaml
+import base64
 import plistlib
 
 __all__ = ["readYamlFromView", "yamlDumps", "yaml_strip"]
@@ -62,11 +63,28 @@ def _my_represent_scalar(self, tag, value, style=None):
 
 yaml.representer.BaseRepresenter.represent_scalar = _my_represent_scalar
 
+yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
+
+yaml.add_representer(
+    plistlib.Data,
+    lambda self, data: self.represent_scalar(u'tag:yaml.org,2002:binary', base64.encodestring(data.data), style='|')
+)
+
+
+def binary_constructor(self, node):
+    return plistlib.Data(self.construct_yaml_binary(node))
+
+
+yaml.add_constructor(
+    "tag:yaml.org,2002:binary",
+    binary_constructor
+)
+
 
 # Handle python dict
-yaml.SafeDumper.add_representer(
+yaml.add_representer(
     plistlib._InternalDict,
-    yaml.SafeDumper.represent_dict
+    lambda self, data: self.represent_mapping(u'tag:yaml.org,2002:map', data)
 )
 
 

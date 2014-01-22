@@ -1,6 +1,9 @@
 from __future__ import absolute_import
 import sublime
 import json
+import plistlib
+import base64
+import datetime
 from ...file_strip.json import sanitize_json
 
 __all__ = ["readJsonFromView", "jsonDumps"]
@@ -32,7 +35,7 @@ def json_convert_to(obj):
             obj[count] = json_convert_to(v)
             count += 1
     elif isinstance(obj, plistlib.Data):
-        return {"python/object:plistlib.Data": base64.b64encode(obj.data).decode("ascii")}
+        return {"python/object:plistlib.Data": base64.b64encode(obj.data).encode("ascii")}
     elif isinstance(obj, datetime.datetime):
         return plistlib._dateToString(obj)
 
@@ -42,7 +45,7 @@ def json_convert_to(obj):
 def json_convert_from(obj):
     if isinstance(obj, (dict, plistlib._InternalDict)):
         if len(obj) == 1 and "python/object:plistlib.Data" in obj:
-            obj = plistlib.Data(obj["python/object:plistlib.Data"].encode('ascii'))
+            obj = plistlib.Data(obj["python/object:plistlib.Data"].decode("base64"))
         else:
             for k, v in obj.items():
                 obj[k] = json_convert_from(v)
