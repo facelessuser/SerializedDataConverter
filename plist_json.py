@@ -63,7 +63,10 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
         errors = False
         try:
             if not errors:
-                self.output = json.jsonDumps(self.plist)
+                self.output = json.jsonDumps(
+                    self.plist,
+                    preserve_binary=load_settings("json_preserve_binary_data", True)
+                )
         except:
             errors = True
             error_msg(ERRORS["plist2json"], traceback.format_exc())
@@ -107,7 +110,11 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = plist.plistDumps(self.json)
+            self.output = plist.plistDumps(
+                self.json,
+                detect_timestamp=load_settings("plist_detect_timestamp", True),
+                none_handler=load_settings("plist_none_handler", "fail")
+            )
         except:
             errors = True
             error_msg(ERRORS["json2plist"], traceback.format_exc())

@@ -78,7 +78,12 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
                 elif flow_setting == "false":
                     default_flow_style = False
 
-                self.output = yaml.yamlDumps(self.json, default_flow_style=default_flow_style, strip_tabs=self.strip_tabs)
+                self.output = yaml.yamlDumps(
+                    self.json,
+                    default_flow_style=default_flow_style,
+                    strip_tabs=self.strip_tabs,
+                    detect_timestamp=load_settings("yaml_detect_timestamp", True)
+                )
         except:
             errors = True
             error_msg(ERRORS["json2yaml"], traceback.format_exc())
@@ -120,7 +125,10 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = json.jsonDumps(self.yaml)
+            self.output = json.jsonDumps(
+                self.yaml,
+                preserve_binary=load_settings("json_preserve_binary_data", True)
+            )
         except:
             errors = True
             error_msg(ERRORS["yaml2json"], traceback.format_exc())

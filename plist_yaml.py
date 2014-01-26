@@ -80,7 +80,12 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
                     default_flow_style = False
 
                 # Convert Python dict to Yaml buffer.
-                self.output = yaml.yamlDumps(self.plist, default_flow_style=default_flow_style, strip_tabs=self.strip_tabs)
+                self.output = yaml.yamlDumps(
+                    self.plist,
+                    default_flow_style=default_flow_style,
+                    strip_tabs=self.strip_tabs,
+                    detect_timestamp=load_settings("yaml_detect_timestamp", True)
+                )
         except:
             errors = True
             error_msg(ERRORS["plist2yaml"], traceback.format_exc())
@@ -123,7 +128,11 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = plist.plistDumps(self.yaml)
+            self.output = plist.plistDumps(
+                self.yaml,
+                detect_timestamp=load_settings("plist_detect_timestamp", True),
+                none_handler=load_settings("plist_none_handler", "fail")
+            )
         except:
             errors = True
             error_msg(ERRORS["yaml2plist"], traceback.format_exc())
