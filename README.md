@@ -102,6 +102,31 @@ Lets you control the yaml output flow style.
     "yaml_default_flow_style": "false"
 ```
 
+# Other Conversion Controls
+There are some other knobs exposed allowing you to affect the conversion; they are listed below:
+
+```javascript
+    // Detect timestamps on conversion for yaml
+    "yaml_detect_timestamp": true,
+
+    // Detect timestamps on conversion for plists
+    "plist_detect_timestamp": true,
+
+    // Preserve binary data when converting to JSON
+    // This will create binary data in this form which
+    // will be recongnized and representing in plist and yaml native binary format:
+    //    {
+    //        "!!python/object:plistlib.Data": "U29tZSBkYXRh"
+    //    }
+    "json_preserve_binary_data": true,
+
+    // When converting to a plist, and the structure contains none, the plugin should:
+    //    - "fail": let the conversion fail
+    //    - "false": set the None objects to False
+    //    - "strip": strip the None members from the structure
+    "plist_none_handler": "fail"
+```
+
 # Linux Issues (ST2 only)
 I have provided a fix for Ubuntu.  Ubuntu requires a full install of Python2.6, but it only comes with a minimal install by default.  You can enter the command below in your linux terminal to get the full install.
 
