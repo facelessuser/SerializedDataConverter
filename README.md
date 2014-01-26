@@ -3,8 +3,8 @@ SerializedDataConverter
 
 Convert between serialized data formats (plist | json | yaml)
 
-<!-- <img src="https://dl.dropboxusercontent.com/u/342698/PlistJsonConverter/Example.png" border="0">
- -->
+<img src="https://dl.dropboxusercontent.com/u/342698/SerializedDataConverter/Example.png" border="0">
+
 # Usage
 All commands are accessible via the command palatte.  Comments are not preserved during conversion.
 
