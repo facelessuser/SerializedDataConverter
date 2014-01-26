@@ -6,24 +6,52 @@ Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 
 import re
 
+LINE_PRESERVE = re.compile(r"\r?\n", re.MULTILINE)
+CPP_PATTERN = re.compile(
+    r"""
+        (?P<comments>
+            /\*[^*]*\*+(?:[^/*][^*]*\*+)*/  # multi-line comments
+          | \s*//(?:[^\r\n])*               # single line comments
+        )
+      | (?P<code>
+            "(?:\\.|[^"\\])*"               # double quotes
+          | '(?:\\.|[^'\\])*'               # single quotes
+          | .[^/"']*                        # everything else
+        )
+    """,
+    re.VERBOSE | re.MULTILINE | re.DOTALL
+)
+PY_PATTERN = re.compile(
+    r"""
+        (?P<comments>
+            \s*\#(?:[^\r\n])*               # single line comments
+        )
+      | (?P<code>
+            "{3}(?:\\.|[^\\])*"{3}          # triple double quotes
+          | '{3}(?:\\.|[^\\])*'{3}          # triple single quotes
+          | "(?:\\.|[^"\\])*"               # double quotes
+          | '(?:\\.|[^'])*'                 # single quotes
+          | .[^\#"']*                       # everything else
+        )
+    """,
+    re.VERBOSE | re.MULTILINE | re.DOTALL
+)
+
 
 def _strip_regex(pattern, text, preserve_lines):
     def remove_comments(group, preserve_lines=False):
-        return ''.join([x[0] for x in re.compile(r"\r?\n", re.MULTILINE).findall(group)]) if preserve_lines else ''
+        return ''.join([x[0] for x in LINE_PRESERVE.findall(group)]) if preserve_lines else ''
 
-    return (
-        ''.join(
-            map(
-                lambda m: m.group(2) if m.group(2) else remove_comments(m.group(1), preserve_lines),
-                re.compile(pattern, re.MULTILINE | re.DOTALL).finditer(text)
-            )
-        )
-    )
+    def evaluate(m, preserve_lines):
+        g = m.groupdict()
+        return g["code"] if g["code"] is not None else remove_comments(g["comments"], preserve_lines)
+
+    return ''.join(map(lambda m: evaluate(m, preserve_lines), pattern.finditer(text)))
 
 
 def _cpp(self, text, preserve_lines=False):
     return _strip_regex(
-        r"""(/\*[^*]*\*+(?:[^/*][^*]*\*+)*/|\s*//(?:[^\r\n])*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|.[^/"']*)""",
+        CPP_PATTERN,
         text,
         preserve_lines
     )
@@ -31,7 +59,7 @@ def _cpp(self, text, preserve_lines=False):
 
 def _python(self, text, preserve_lines=False):
     return _strip_regex(
-        r"""(\s*#(?:[^\r\n])*)|("{3}(?:\\.|[^\\])*"{3}|'{3}(?:\\.|[^\\])*'{3}|"(?:\\.|[^"\\])*"|'(?:\\.|[^'])*'|.[^#"']*)""",
+        PY_PATTERN,
         text,
         preserve_lines
     )
