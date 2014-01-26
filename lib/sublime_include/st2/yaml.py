@@ -11,15 +11,22 @@ __all__ = ["readYamlFromView", "yamlDumps", "yaml_strip"]
 # http://yaml.org/type/timestamp.html
 YAML_TIMESTAMP = re.compile(
     r'''
-        ([0-9][0-9][0-9][0-9]) # (year)
-        -([0-9][0-9]?)         # (month)
-        -([0-9][0-9]?)         # (day)
+        (?P<year>[0-9][0-9][0-9][0-9])               # year
+        -(?P<month>[0-9][0-9]?)                      # month
+        -(?P<day>[0-9][0-9]?)                        # day
         (?:
-            (?:(?:[Tt]|[ \t]+)([0-9][0-9]?))                   # (hour)
-            :([0-9][0-9])                                      # (minute)
-            :([0-9][0-9])                                      # (second)
-            (?:\.([0-9]*))?                                    # (fraction)
-            (?:[ \t]*Z|([-+])([0-9][0-9]?)(?::([0-9][0-9]))?)? # (time zone)
+            (?:(?:[Tt]|[ \t]+)(?P<hour>[0-9][0-9]?)) # hour
+            :(?P<minute>[0-9][0-9])                  # minute
+            :(?P<second>[0-9][0-9])                  # second
+            (?:\.(?P<microsecond>[0-9]*))?           # microsecond
+            (?:
+                [ \t]*Z
+                | (?:
+                    (?P<tz_sign>[-+])                 # time zone sign
+                    (?P<tz_hour>[0-9][0-9]?)          # time zone hour
+                    (?::(?P<tz_minute>[0-9][0-9]))?   # time zone minute
+                )
+            )?
         )?
     ''',
     re.VERBOSE
@@ -48,34 +55,35 @@ def convert_timestamp(obj):
     time_stamp = None
     m = YAML_TIMESTAMP.match(obj)
     if m is not None:
+        g = m.groupdict()
         # Date object
-        year = int(m.group(1))
-        month = int(m.group(2))
-        day = int(m.group(3))
-        if m.group(4) is None:
+        year = int(g["year"])
+        month = int(g["month"])
+        day = int(g["day"])
+        if g["hour"] is None:
             time_stamp = datetime.date(year, month, day)
         else:
             # Time object
-            hour = int(m.group(4))
-            minute = int(m.group(5))
-            second = int(m.group(6))
+            hour = int(g["hour"])
+            minute = int(g["minute"])
+            second = int(g["second"])
 
-            # Keep fraction 6 digits long if found
-            if m.group(7) is not None:
-                fraction_string = m.group(7)[:6]
-                fraction = int(fraction_string + ("0" * (6 - len(fraction_string))))
+            # Keep microsecond 6 digits long if found
+            if g["microsecond"] is not None:
+                micro_string = g["microsecond"][:6]
+                microsecond = int(micro_string + ("0" * (6 - len(micro_string))))
             else:
-                fraction = 0
+                microsecond = 0
 
             # Adjust for timezone
-            if m.group(8) is not None:
-                tz_hour = int(m.group(9))
-                tz_minute = int(m.group(10)) if m.group(10) is not None else 0
-                delta = datetime.timedelta(hours=tz_hour, minutes=tz_minute) * (-1 if m.group(8) == "-" else 1)
+            if g["tz_sign"] is not None :
+                tz_hour = int(g["tz_hour"])
+                tz_minute = int(g["tz_minute"]) if g.tz_minute is not None else 0
+                delta = datetime.timedelta(hours=tz_hour, minutes=tz_minute) * (-1 if g["tz_sign"] == "-" else 1)
             else:
                 delta = None
 
-            time_stamp = datetime.datetime(year, month, day, hour, minute, second, fraction)
+            time_stamp = datetime.datetime(year, month, day, hour, minute, second, microsecond)
 
     return time_stamp if delta is None else time_stamp - delta
 
