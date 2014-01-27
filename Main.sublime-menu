@@ -17,7 +17,7 @@
                         [
                             {
                                 "command": "open_file",
-                                "args": {"file": "${packages}/PlistJsonConverter/serialized_data_converter.sublime-settings"},
+                                "args": {"file": "${packages}/SerializedDataConverter/serialized_data_converter.sublime-settings"},
                                 "caption": "Settings – Default"
                             },
                             {
