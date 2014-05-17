@@ -25,6 +25,7 @@ ERRORS = {
     "json2yaml": "Could not convert JSON to YAML!\nPlease see console for more info."
 }
 
+
 class SerializedJsonToYamlCommand(_LanguageConverter):
     lang = "yaml_language"
     default_lang = "Packages/YAML/YAML.tmLanguage"
@@ -88,6 +89,7 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
             errors = True
             error_msg(ERRORS["json2yaml"], traceback.format_exc())
         return errors
+
 
 class SerializedYamlToJsonCommand(_LanguageConverter):
     lang = "json_language"

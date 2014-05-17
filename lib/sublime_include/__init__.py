@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 import sublime
+import sys
+from os import exists
 
 __all__ = ["ST3", "ST2", "json", "plist", "yaml", "load_settings"]
 
@@ -10,7 +12,7 @@ PACKAGE_SETTINGS = "serialized_data_converter.sublime-settings"
 
 def load_settings(value, default=None):
     if value:
-        return  sublime.load_settings(PACKAGE_SETTINGS).get(value, default)
+        return sublime.load_settings(PACKAGE_SETTINGS).get(value, default)
     else:
         return sublime.load_settings(PACKAGE_SETTINGS)
 
@@ -19,7 +21,7 @@ def load_settings(value, default=None):
 if ST2 and sublime.platform() == "linux":
     # Try and load Linux Python2.6 lib.  Default path is for Ubuntu.
     linux_lib = load_settings().get("linux_python2.6_lib", "/usr/lib/python2.6/lib-dynload")
-    if not linux_lib in sys.path and exists(linux_lib):
+    if linux_lib not in sys.path and exists(linux_lib):
         sys.path.append(linux_lib)
 
 if ST3:

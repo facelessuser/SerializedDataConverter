@@ -74,7 +74,7 @@ def convert_timestamp(obj):
                 microsecond = 0
 
             # Adjust for timezone
-            if g["tz_sign"] is not None :
+            if g["tz_sign"] is not None:
                 tz_hour = int(g["tz_hour"])
                 tz_minute = int(g["tz_minute"]) if g.tz_minute is not None else 0
                 delta = datetime.timedelta(hours=tz_hour, minutes=tz_minute) * (-1 if g["tz_sign"] == "-" else 1)
@@ -120,7 +120,7 @@ def _should_use_block(value):
 def _my_represent_scalar(self, tag, value, style=None):
     if style is None:
         if _should_use_block(value):
-            style='|'
+            style = '|'
         else:
             style = self.default_style
 

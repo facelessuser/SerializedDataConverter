@@ -67,7 +67,7 @@ class LanguageConverter(sublime_plugin.TextCommand):
                 # If a name can be acquired from the original view, give buffer a modified derivative of the name
                 filename = self.view.file_name()
                 buffer_name = basename(self.get_output_file(filename)) if filename is not None else None
-                if buffer_name != None:
+                if buffer_name is not None:
                     self.output_view.set_name(buffer_name)
             self.__set_syntax()
 
