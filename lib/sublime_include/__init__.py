@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import sublime
 import sys
-from os import exists
+from os.path import exists
 
 __all__ = ["ST3", "ST2", "json", "plist", "yaml", "load_settings"]
 
