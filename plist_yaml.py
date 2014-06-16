@@ -3,19 +3,13 @@ Plist/Yaml Converter
 Licensed under MIT
 Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 """
-
-import sublime
 import re
 from os.path import splitext
 import traceback
-if int(sublime.version()) >= 3000:
-    from .lib.language_converter import LanguageConverter as _LanguageConverter
-    from .lib.plist_includes import *
-    from .lib.yaml_includes import *
-else:
-    from lib.language_converter import LanguageConverter as _LanguageConverter
-    from lib.plist_includes import *
-    from lib.yaml_includes import *
+from .lib.language_converter import LanguageConverter as _LanguageConverter
+from .lib import plist_includes as plist
+from .lib import yaml_includes as yaml
+from .lib.common_include import *
 
 
 ERRORS = {
