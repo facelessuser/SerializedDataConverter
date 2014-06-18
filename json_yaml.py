@@ -3,20 +3,13 @@ JSON/Yaml Converter
 Licensed under MIT
 Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 """
-
-import sublime
 import re
-import json
 from os.path import splitext
 import traceback
-if int(sublime.version()) >= 3000:
-    from .lib.language_converter import LanguageConverter as _LanguageConverter
-    from .lib.json_includes import *
-    from .lib.yaml_includes import *
-else:
-    from lib.language_converter import LanguageConverter as _LanguageConverter
-    from lib.json_includes import *
-    from lib.yaml_includes import *
+from .lib.language_converter import LanguageConverter as _LanguageConverter
+from .lib import json_includes as json
+from .lib import yaml_includes as yaml
+from .lib.common_include import *
 
 ERRORS = {
     "view2json": "Could not read view buffer as JSON!\nPlease see console for more info.",

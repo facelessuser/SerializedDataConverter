@@ -1,7 +1,15 @@
 import sublime
-from .sublime_include import load_settings, ST3, ST2
 
-__all__ = ['error_msg', "load_settings", "ST3", "ST2"]
+__all__ = ['error_msg', "load_settings"]
+
+PACKAGE_SETTINGS = "serialized_data_converter.sublime-settings"
+
+
+def load_settings(value, default=None):
+    if value:
+        return sublime.load_settings(PACKAGE_SETTINGS).get(value, default)
+    else:
+        return sublime.load_settings(PACKAGE_SETTINGS)
 
 
 def error_msg(msg, e=None):

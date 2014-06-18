@@ -3,21 +3,13 @@ Plist Json Converter
 Licensed under MIT
 Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 """
-
-import sublime
-import json
 import re
 from os.path import splitext
 import traceback
-
-if int(sublime.version()) >= 3000:
-    from .lib.language_converter import LanguageConverter as _LanguageConverter
-    from .lib.plist_includes import *
-    from .lib.json_includes import *
-else:
-    from lib.language_converter import LanguageConverter as _LanguageConverter
-    from lib.plist_includes import *
-    from lib.json_includes import *
+from .lib.language_converter import LanguageConverter as _LanguageConverter
+from .lib import json_includes as json
+from .lib import plist_includes as plist
+from .lib.common_include import *
 
 ERRORS = {
     "view2plist": "Could not read view buffer as PLIST!\nPlease see console for more info.",
