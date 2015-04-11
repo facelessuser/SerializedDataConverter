@@ -1,5 +1,5 @@
 import sublime
-import plistlib
+from . import plistlib
 import datetime
 
 __all__ = ["readPlistFromView", "plistDumps"]

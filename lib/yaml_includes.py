@@ -1,7 +1,7 @@
 import sublime
 import datetime
 from . import pyyaml as yaml
-import plistlib
+from . import plistlib
 import re
 
 __all__ = ["readYamlFromView", "yamlDumps"]
