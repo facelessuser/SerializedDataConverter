@@ -72,8 +72,12 @@ class LanguageConverter(object):
         if save_filename is not None:
             # Save content to UTF file
             try:
-                with codecs.open(save_filename, "w", "utf-8") as f:
-                    f.write(self.output)
+                if self.save_binary:
+                    with open(save_filename, "wb") as f:
+                        f.write(self.output)
+                else:
+                    with codecs.open(save_filename, "w", "utf-8") as f:
+                        f.write(self.output)
                 self.output = None
                 if show_file:
                     self.output_view = self.view.window().open_file(save_filename)
@@ -146,6 +150,7 @@ class LanguageConverter(object):
 
     def _run(self, edit, **kwargs):
         self.binary = kwargs.get('binary', False)
+        self.save_binary = kwargs.get('save_binary', False)
         if not self.read_buffer():
             if not self.convert(edit):
                 if kwargs.get('save_to_file', False):
@@ -275,11 +280,18 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = plist.plistDumps(
-                self.yaml,
-                detect_timestamp=self.settings.get("plist_detect_timestamp", True),
-                none_handler=self.settings.get("plist_none_handler", "fail")
-            )
+            if self.save_binary:
+                self.output = plist.plistBinaryDumps(
+                    self.yaml,
+                    detect_timestamp=self.settings.get("plist_detect_timestamp", True),
+                    none_handler=self.settings.get("plist_none_handler", "fail")
+                )
+            else:
+                self.output = plist.plistDumps(
+                    self.yaml,
+                    detect_timestamp=self.settings.get("plist_detect_timestamp", True),
+                    none_handler=self.settings.get("plist_none_handler", "fail")
+                )
             self.yaml = None
         except:
             errors = True
@@ -396,11 +408,18 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = plist.plistDumps(
-                self.json,
-                detect_timestamp=self.settings.get("plist_detect_timestamp", True),
-                none_handler=self.settings.get("plist_none_handler", "fail")
-            )
+            if self.save_binary:
+                self.output = plist.plistBinaryDumps(
+                    self.json,
+                    detect_timestamp=self.settings.get("plist_detect_timestamp", True),
+                    none_handler=self.settings.get("plist_none_handler", "fail")
+                )
+            else:
+                self.output = plist.plistDumps(
+                    self.json,
+                    detect_timestamp=self.settings.get("plist_detect_timestamp", True),
+                    none_handler=self.settings.get("plist_none_handler", "fail")
+                )
             self.json = None
         except:
             errors = True
