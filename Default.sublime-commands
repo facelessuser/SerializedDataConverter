@@ -9,6 +9,11 @@
         "command": "serialized_plist_to_json"
     },
     {
+        "caption": "Serialized Data Converter: PLIST Binary to JSON",
+        "command": "serialized_plist_to_json",
+        "args": {"binary": true}
+    },
+    {
         "caption": "Serialized Data Converter: JSON to PLIST (Save)",
         "command": "serialized_json_to_plist",
         "args": {"save_to_file": true}
@@ -17,6 +22,11 @@
         "caption": "Serialized Data Converter: PLIST to JSON (Save)",
         "command": "serialized_plist_to_json",
         "args": {"save_to_file": true}
+    },
+    {
+        "caption": "Serialized Data Converter: PLIST Binary to JSON (Save)",
+        "command": "serialized_plist_to_json",
+        "args": {"save_to_file": true, "binary": true}
     },
 
     // PLIST/YAML conversion
@@ -29,6 +39,11 @@
         "command": "serialized_plist_to_yaml"
     },
     {
+        "caption": "Serialized Data Converter: PLIST Binary to YAML",
+        "command": "serialized_plist_to_yaml",
+        "args": {"binary": true}
+    },
+    {
         "caption": "Serialized Data Converter: YAML to PLIST (Save)",
         "command": "serialized_yaml_to_plist",
         "args": {"save_to_file": true}
@@ -37,6 +52,11 @@
         "caption": "Serialized Data Converter: PLIST to YAML (Save)",
         "command": "serialized_plist_to_yaml",
         "args": {"save_to_file": true}
+    },
+    {
+        "caption": "Serialized Data Converter: PLIST Binary to YAML (Save)",
+        "command": "serialized_plist_to_yaml",
+        "args": {"save_to_file": true, "binary": true}
     },
 
     // JSON/YAML conversion

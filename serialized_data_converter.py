@@ -28,7 +28,7 @@ class SerializedDataConverterListener(sublime_plugin.EventListener):
             self.convert(view, command)
 
     def get_save_ext(self):
-        return self.settings.get("convert_on_save", [])
+        return sublime.load_settings(PACKAGE_SETTINGS).get("convert_on_save", [])
 
     def convert(self, view, command):
         view.run_command("serialized_%s" % command, {"save_to_file": 'True', "show_file": False, "force": True})
@@ -115,6 +115,11 @@ class LanguageConverter(object):
 
     def _is_enabled(self, **kwargs):
         enabled = True
+        filename = self.view.file_name()
+        view_okay = True
+        if kwargs.get('binary', False) and (filename is None or not exists(filename)):
+            view_okay = False
+
         if not kwargs.get('force', False):
             if (
                 kwargs.get('save_to_file', False) and
@@ -126,6 +131,8 @@ class LanguageConverter(object):
                 not bool(self.settings.get("enable_show_in_buffer_commands", False))
             ):
                 enabled = False
+        if not view_okay and enabled:
+            enabled = False
         return enabled
 
     def get_output_file(self, filename):
@@ -138,6 +145,7 @@ class LanguageConverter(object):
         return False
 
     def _run(self, edit, **kwargs):
+        self.binary = kwargs.get('binary', False)
         if not self.read_buffer():
             if not self.convert(edit):
                 if kwargs.get('save_to_file', False):
@@ -187,7 +195,10 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
-            self.plist = plist.readPlistFromView(self.view)
+            if self.binary and filename is not None and exists(filename):
+                self.plist = plist.readPlistFromFile(filename)
+            else:
+                self.plist = plist.readPlistFromView(self.view)
         except:
             errors = True
             error_msg(self.errors["view2plist"], traceback.format_exc())
@@ -314,7 +325,11 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
-            self.plist = plist.readPlistFromView(self.view)
+            filename = self.view.file_name()
+            if self.binary and filename is not None and exists(filename):
+                self.plist = plist.readPlistFromFile(filename)
+            else:
+                self.plist = plist.readPlistFromView(self.view)
         except:
             errors = True
             error_msg(self.errors["view2plist"], traceback.format_exc())

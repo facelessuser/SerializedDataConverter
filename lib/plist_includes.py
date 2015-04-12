@@ -2,13 +2,12 @@ import sublime
 from . import plistlib
 import datetime
 
-__all__ = ["readPlistFromView", "plistDumps"]
+__all__ = ["readPlistFromView", "readPlistFromFile", "plistDumps"]
 
 
 plistDumps = lambda obj, detect_timestamp=False, none_handler="fail": plistlib.writePlistToBytes(
     plist_convert_to(obj, detect_timestamp, none_handler)
 ).decode('utf-8')
-
 
 readPlistFromView = lambda view: plist_convert_from(
     plistlib.readPlistFromBytes(
@@ -16,6 +15,10 @@ readPlistFromView = lambda view: plist_convert_from(
             sublime.Region(0, view.size())
         ).encode('utf8')
     )
+)
+
+readPlistFromFile = lambda filename: plist_convert_from(
+    plistlib.readPlist(filename)
 )
 
 
