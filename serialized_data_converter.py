@@ -40,18 +40,22 @@ class LanguageConverter(object):
     errors = {
         "filewrite": "Could not write file!\nPlease see console for more info.",
         "bufferwrite": "Could not write view buffer!\nPlease see console for more info.",
+        "view2yaml": "Could not read view buffer as YAML!\nPlease see console for more info.",
+        "view2json": "Could not read view buffer as JSON!\nPlease see console for more info.",
+        "view2plist": "Could not read view buffer as PLIST!\nPlease see console for more info.",
+        "view2bplist": "Could not read view buffer as Binary PLIST!\nPlease see console for more info.",
         "yaml2json": "Could not convert YAML to JSON!\nPlease see console for more info.",
-        "view2yaml": "Could not read view buffer as YAML!\nPlease see console for more info.",
-        "view2json": "Could not read view buffer as JSON!\nPlease see console for more info.",
         "json2yaml": "Could not convert JSON to YAML!\nPlease see console for more info.",
-        "view2plist": "Could not read view buffer as PLIST!\nPlease see console for more info.",
         "plist2yaml": "Could not convert PLIST to YAML!\nPlease see console for more info.",
-        "view2yaml": "Could not read view buffer as YAML!\nPlease see console for more info.",
+        "bplist2yaml": "Could not convert Binary PLIST to YAML!\nPlease see console for more info.",
         "yaml2plist": "Could not convert YAML to PLIST!\nPlease see console for more info.",
-        "view2json": "Could not read view buffer as JSON!\nPlease see console for more info.",
+        "yaml2bplist": "Could not convert YAML to Binary PLIST!\nPlease see console for more info.",
         "json2plist": "Could not convert JSON to PLIST!\nPlease see console for more info.",
-        "view2plist": "Could not read view buffer as PLIST!\nPlease see console for more info.",
-        "plist2json": "Could not convert PLIST to JSON!\nPlease see console for more info."
+        "json2bplist": "Could not convert JSON to Binary PLIST!\nPlease see console for more info.",
+        "plist2json": "Could not convert PLIST to JSON!\nPlease see console for more info.",
+        "bplist2json": "Could not convert Binary PLIST to JSON!\nPlease see console for more info.",
+        "bplist2plist": "Could not convert Binary PLIST to PLIST!\nPlease see console for more info.",
+        "plist2bplist": "Could not convert PLIST to Binary PLIST!\nPlease see console for more info.",
     }
 
     def setup(self):
@@ -149,6 +153,7 @@ class LanguageConverter(object):
         return False
 
     def _run(self, edit, **kwargs):
+        print(kwargs)
         self.binary = kwargs.get('binary', False)
         self.save_binary = kwargs.get('save_binary', False)
         if not self.read_buffer():
@@ -173,9 +178,16 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
     def get_output_file(self, filename):
         name = None
 
+        if self.binary:
+            setting = 'bplist_yaml_conversion_ext'
+            src = 'bplist'
+        else:
+            setting = 'plist_yaml_conversion_ext'
+            src = 'plist'
+
         # Try and find file ext in the ext table
-        for ext in self.settings.get("plist_yaml_conversion_ext", []):
-            m = re.match("^(.*)\\." + re.escape(ext["plist"]) + "$", filename, re.IGNORECASE)
+        for ext in self.settings.get(setting, []):
+            m = re.match("^(.*)\\." + re.escape(ext[src]) + "$", filename, re.IGNORECASE)
             if m is not None:
                 name = m.group(1) + "." + ext["yaml"]
                 break
@@ -206,7 +218,8 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
                 self.plist = plist.readPlistFromView(self.view)
         except:
             errors = True
-            error_msg(self.errors["view2plist"], traceback.format_exc())
+            error_type = 'view2bplist' if self.binary else 'view2plist'
+            error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def convert(self, edit):
@@ -231,7 +244,8 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
                 self.plist = None
         except:
             errors = True
-            error_msg(self.errors["plist2yaml"], traceback.format_exc())
+            error_type = 'bplist2yaml' if self.binary else 'plist2yaml'
+            error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def is_enabled(self, **kwargs):
@@ -252,11 +266,18 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
     def get_output_file(self, filename):
         name = None
 
+        if self.save_binary:
+            setting = 'bplist_yaml_conversion_ext'
+            out = 'bplist'
+        else:
+            setting = 'plist_yaml_conversion_ext'
+            out = 'plist'
+
         # Try and find file ext in the ext table
-        for ext in self.settings.get("plist_yaml_conversion_ext", []):
+        for ext in self.settings.get(setting, []):
             m = re.match("^(.*)\\." + re.escape(ext["yaml"]) + "$", filename, re.IGNORECASE)
             if m is not None:
-                name = m.group(1) + "." + ext["plist"]
+                name = m.group(1) + "." + ext[out]
                 break
 
         # Could not find ext in table, replace current extension with default
@@ -295,13 +316,20 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
             self.yaml = None
         except:
             errors = True
-            error_msg(self.errors["yaml2plist"], traceback.format_exc())
+            error_type = 'yaml2bplist' if self.save_binary else 'yaml2plist'
+            error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def is_enabled(self, **kwargs):
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        if kwargs.get('save_binary', False):
+            self.lang = 'bplist_language'
+            self.default_lang = 'Packages/Text/Plain text.tmLanguage'
+        else:
+            self.lang = 'plist_language'
+            self.default_lang = 'Packages/XML/XML.tmLanguage'
         self._run(edit, **kwargs)
 
 
@@ -319,9 +347,16 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
     def get_output_file(self, filename):
         name = None
 
+        if self.binary:
+            setting = 'bplist_json_conversion_ext'
+            src = 'bplist'
+        else:
+            setting = 'plist_json_conversion_ext'
+            src = 'plist'
+
         # Try and find file ext in the ext table
-        for ext in self.settings.get("plist_json_conversion_ext", []):
-            m = re.match("^(.*)\\." + re.escape(ext["plist"]) + "$", filename, re.IGNORECASE)
+        for ext in self.settings.get(setting, []):
+            m = re.match("^(.*)\\." + re.escape(ext[src]) + "$", filename, re.IGNORECASE)
             if m is not None:
                 name = m.group(1) + "." + ext["json"]
                 break
@@ -344,7 +379,8 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
                 self.plist = plist.readPlistFromView(self.view)
         except:
             errors = True
-            error_msg(self.errors["view2plist"], traceback.format_exc())
+            error_type = 'view2bplist' if self.binary else 'view2plist'
+            error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def convert(self, edit):
@@ -358,7 +394,8 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
                 self.plist = None
         except:
             errors = True
-            error_msg(self.errors["plist2json"], traceback.format_exc())
+            error_type = 'bplist2json' if self.binary else 'plist2json'
+            error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def is_enabled(self, **kwargs):
@@ -379,11 +416,18 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
     def get_output_file(self, filename):
         name = None
 
+        if self.save_binary:
+            setting = 'bplist_json_conversion_ext'
+            out = 'bplist'
+        else:
+            setting = 'plist_json_conversion_ext'
+            out = 'plist'
+
         # Try and find file ext in the ext table
-        for ext in self.settings.get("plist_json_conversion_ext", []):
+        for ext in self.settings.get(setting, []):
             m = re.match("^(.*)\\." + re.escape(ext["json"]) + "$", filename, re.IGNORECASE)
             if m is not None:
-                name = m.group(1) + "." + ext["plist"]
+                name = m.group(1) + "." + ext[out]
                 break
 
         # Could not find ext in table, replace current extension with default
@@ -423,13 +467,20 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
             self.json = None
         except:
             errors = True
-            error_msg(self.errors["json2plist"], traceback.format_exc())
+            error_type = 'json2bplist' if self.save_binary else 'json2plist'
+            error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def is_enabled(self, **kwargs):
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        if kwargs.get('save_binary', False):
+            self.lang = 'bplist_language'
+            self.default_lang = 'Packages/Text/Plain text.tmLanguage'
+        else:
+            self.lang = 'plist_language'
+            self.default_lang = 'Packages/XML/XML.tmLanguage'
         self._run(edit, **kwargs)
 
 
@@ -564,4 +615,93 @@ class SerializedYamlToJsonCommand(sublime_plugin.TextCommand, LanguageConverter)
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        self._run(edit, **kwargs)
+
+
+##########################
+# BPLIST <-> PLIST
+##########################
+class SerializedPlistToPlistCommand(sublime_plugin.TextCommand, LanguageConverter):
+    lang = 'plist_language'
+    default_lang = 'Packages/Text/Plain text.tmLanguage'
+
+    def __init__(self, *args, **kwargs):
+        self.setup()
+        super().__init__(*args, **kwargs)
+
+    def get_output_file(self, filename):
+        name = None
+
+        # Try and find file ext in the ext table
+        if self.binary:
+            src = 'bplist'
+            out = 'plist'
+            default_out = '.plist'
+        else:
+            src = 'plist'
+            out = 'bplist'
+            default_out = '.plist'
+
+        for ext in self.settings.get('bplist_plist_conversion_ext', []):
+            m = re.match("^(.*)\\." + re.escape(ext[src]) + "$", filename, re.IGNORECASE)
+            if m is not None:
+                name = m.group(1) + "." + ext[out]
+                break
+
+        # Could not find ext in table, replace current extension with default
+        if name is None:
+            name = splitext(filename)[0] + default_out
+
+        return name
+
+    def read_buffer(self):
+        errors = False
+        try:
+            # Ensure view buffer is in a UTF8 format.
+            # Wrap string in a file structure so it can be accessed by readPlist
+            # Read view buffer as PLIST and dump to Python dict
+            filename = self.view.file_name()
+            if self.binary and filename is not None and exists(filename):
+                self.plist = plist.readPlistFromFile(filename)
+            else:
+                self.plist = plist.readPlistFromView(self.view)
+        except:
+            errors = True
+            error_type = 'view2bplist' if self.binary else 'view2plist'
+            error_msg(self.errors[error_type], traceback.format_exc())
+        return errors
+
+    def convert(self, edit):
+        errors = False
+        try:
+            # Convert Python dict to PLIST buffer
+            if self.save_binary:
+                self.output = plist.plistBinaryDumps(
+                    self.plist,
+                    detect_timestamp=self.settings.get("plist_detect_timestamp", True),
+                    none_handler=self.settings.get("plist_none_handler", "fail")
+                )
+            else:
+                self.output = plist.plistDumps(
+                    self.plist,
+                    detect_timestamp=self.settings.get("plist_detect_timestamp", True),
+                    none_handler=self.settings.get("plist_none_handler", "fail")
+                )
+            self.plist = None
+        except:
+            errors = True
+            error_type = "bplist2plist" if self.binary else 'plist2bplist'
+            error_msg(self.errors[error_type], traceback.format_exc())
+        return errors
+
+    def is_enabled(self, **kwargs):
+        return self._is_enabled(**kwargs)
+
+    def run(self, edit, **kwargs):
+        if kwargs.get('save_binary', False):
+            self.lang = 'bplist_language'
+            self.default_lang = 'Packages/Text/Plain text.tmLanguage'
+        else:
+            self.lang = 'plist_language'
+            self.default_lang = 'Packages/XML/XML.tmLanguage'
         self._run(edit, **kwargs)

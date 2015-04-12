@@ -3,6 +3,7 @@
     "json_language": "Packages/JavaScript/JSON.tmLanguage",
     "yaml_language": "Packages/YAML/YAML.tmLanguage",
     "plist_language": "Packages/XML/XML.tmLanguage",
+    "bplist_language": "Packages/Text/Plain text.tmLanguage",
 
     // When converting buffer open conversion in new buffer
     "open_in_new_buffer": true,
@@ -30,6 +31,15 @@
         {"plist": "tmLanguage", "yaml": "tmLanguage.YAML"},
         {"plist": "tmPreferences", "yaml": "tmPreferences.YAML"},
         {"plist": "tmTheme", "yaml": "tmTheme.YAML"}
+    ],
+
+    "bplist_json_conversion_ext": [
+    ],
+
+    "bplist_yaml_conversion_ext": [
+    ],
+
+    "bplist_plist_conversion_ext": [
     ],
 
     "json_yaml_conversion_ext": [
