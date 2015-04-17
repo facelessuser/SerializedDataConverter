@@ -87,27 +87,23 @@ class LanguageConverter(object):
     def set_syntax(self):
         if self.output_view is not None:
             # Get syntax language and set it
-            syntax = self.settings.get(self.lang, self.default_lang) if self.lang is not None else self.default_lang
-            self.output_view.set_syntax_file(syntax)
+            self.output_view.set_syntax_file(self.syntax)
 
     def write_file(self, edit, show_file):
         errors = False
-        # Get current view's filename
-        filename = self.view.file_name()
-        save_filename = self.get_output_file(filename) if filename is not None and exists(filename) else None
 
-        if save_filename is not None:
+        if self.save_filename is not None and exists(self.save_filename):
             # Save content to UTF file
             try:
                 if self.save_binary:
-                    with open(save_filename, "wb") as f:
+                    with open(self.save_filename, "wb") as f:
                         f.write(self.output)
                 else:
-                    with codecs.open(save_filename, "w", "utf-8") as f:
+                    with codecs.open(self.save_filename, "w", "utf-8") as f:
                         f.write(self.output)
                 self.output = None
                 if show_file:
-                    self.output_view = self.view.window().open_file(save_filename)
+                    self.output_view = self.view.window().open_file(self.save_filename)
             except:
                 errors = True
                 error_msg(self.errors["filewrite"], traceback.format_exc())
@@ -159,11 +155,10 @@ class LanguageConverter(object):
 
         if not errors:
             if new_buffer or force_new_buffer:
-                # If a name can be acquired from the original view, give buffer a modified derivative of the name
-                filename = self.view.file_name()
-                buffer_name = basename(self.get_output_file(filename)) if filename is not None else None
-                if buffer_name is not None:
-                    self.output_view.set_name(buffer_name)
+                # If a name can be acquired from the original view,
+                # give buffer a modified derivative of the name.
+                if self.save_filename is not None:
+                    self.output_view.set_name(basename(self.save_filename))
             self.set_syntax()
 
     def _is_enabled(self, **kwargs):
@@ -204,6 +199,9 @@ class LanguageConverter(object):
     def _run(self, edit, **kwargs):
         self.binary = kwargs.get('binary', False)
         self.save_binary = kwargs.get('save_binary', False)
+        self.syntax = self.settings.get(self.lang, self.default_lang) if self.lang is not None else self.default_lang
+        filename = self.view.file_name()
+        self.save_filename = self.get_output_file(filename) if filename is not None else None
         if not self.read_buffer():
             if not self.convert(edit):
                 if kwargs.get('save_to_file', False):
