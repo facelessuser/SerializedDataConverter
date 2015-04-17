@@ -24,8 +24,11 @@ readJsonFromView = lambda view: json_convert_from(
 )
 
 
-# Strip tabs and trailing spaces to allow block format to successfully be triggered
 def json_convert_to(obj, preserve_binary=False):
+    """
+    Strip tabs and trailing spaces to allow block
+    format to successfully be triggered
+    """
     if isinstance(obj, (dict, plistlib._InternalDict)):
         for k, v in obj.items():
             obj[k] = json_convert_to(v, preserve_binary)
@@ -44,6 +47,7 @@ def json_convert_to(obj, preserve_binary=False):
 
 
 def json_convert_from(obj):
+    """ Convert specific json items to a form usuable by others """
     if isinstance(obj, dict):
         if len(obj) == 1 and "!!python/object:plistlib.Data" in obj:
             try:

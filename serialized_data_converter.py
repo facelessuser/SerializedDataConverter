@@ -13,11 +13,13 @@ PACKAGE_SETTINGS = "serialized_data_converter.sublime-settings"
 
 
 def to_hex(value):
+    """ Convert int value to hex string """
     return "%02x" % value
 
 
 class SerializedDataConverterListener(sublime_plugin.EventListener):
     def on_post_save(self, view):
+        """ Convert after saves """
         ext2convert = self.get_save_ext()
         filename = view.file_name()
         command = None
@@ -32,9 +34,11 @@ class SerializedDataConverterListener(sublime_plugin.EventListener):
             self.convert(view, command)
 
     def get_save_ext(self):
+        """ Get the save extension """
         return sublime.load_settings(PACKAGE_SETTINGS).get("convert_on_save", [])
 
     def convert(self, view, command):
+        """ Call the appropriate convert command """
         binary = False
         save_binary = False
         if command.startswith('bplist'):
@@ -59,37 +63,61 @@ class LanguageConverter(object):
     lang = None
     default_lang = "Packages/Text/Plain text.tmLanguage"
     errors = {
-        "filewrite": "Could not write file!\nPlease see console for more info.",
-        "bufferwrite": "Could not write view buffer!\nPlease see console for more info.",
-        "view2yaml": "Could not read view buffer as YAML!\nPlease see console for more info.",
-        "view2json": "Could not read view buffer as JSON!\nPlease see console for more info.",
-        "view2plist": "Could not read view buffer as PLIST!\nPlease see console for more info.",
-        "view2bplist": "Could not read view buffer as Binary PLIST!\nPlease see console for more info.",
-        "yaml2json": "Could not convert YAML to JSON!\nPlease see console for more info.",
-        "json2yaml": "Could not convert JSON to YAML!\nPlease see console for more info.",
-        "plist2yaml": "Could not convert PLIST to YAML!\nPlease see console for more info.",
-        "bplist2yaml": "Could not convert Binary PLIST to YAML!\nPlease see console for more info.",
-        "yaml2plist": "Could not convert YAML to PLIST!\nPlease see console for more info.",
-        "yaml2bplist": "Could not convert YAML to Binary PLIST!\nPlease see console for more info.",
-        "json2plist": "Could not convert JSON to PLIST!\nPlease see console for more info.",
-        "json2bplist": "Could not convert JSON to Binary PLIST!\nPlease see console for more info.",
-        "plist2json": "Could not convert PLIST to JSON!\nPlease see console for more info.",
-        "bplist2json": "Could not convert Binary PLIST to JSON!\nPlease see console for more info.",
-        "bplist2plist": "Could not convert Binary PLIST to PLIST!\nPlease see console for more info.",
-        "plist2bplist": "Could not convert PLIST to Binary PLIST!\nPlease see console for more info.",
+        "filewrite": "Could not write file!\n"
+                     "Please see console for more info.",
+        "bufferwrite": "Could not write view buffer!\n"
+                       "Please see console for more info.",
+        "view2yaml": "Could not read view buffer as YAML!\n"
+                     "Please see console for more info.",
+        "view2json": "Could not read view buffer as JSON!\n"
+                     "Please see console for more info.",
+        "view2plist": "Could not read view buffer as PLIST!\n"
+                      "Please see console for more info.",
+        "view2bplist": "Could not read view buffer as Binary PLIST!\n"
+                       "Please see console for more info.",
+        "yaml2json": "Could not convert YAML to JSON!\n"
+                     "Please see console for more info.",
+        "json2yaml": "Could not convert JSON to YAML!\n"
+                     "Please see console for more info.",
+        "plist2yaml": "Could not convert PLIST to YAML!\n"
+                       "Please see console for more info.",
+        "bplist2yaml": "Could not convert Binary PLIST to YAML!\n"
+                       "Please see console for more info.",
+        "yaml2plist": "Could not convert YAML to PLIST!\n"
+                       "Please see console for more info.",
+        "yaml2bplist": "Could not convert YAML to Binary PLIST!\n"
+                       "Please see console for more info.",
+        "json2plist": "Could not convert JSON to PLIST!\n"
+                       "Please see console for more info.",
+        "json2bplist": "Could not convert JSON to Binary PLIST!\n"
+                       "Please see console for more info.",
+        "plist2json": "Could not convert PLIST to JSON!\n"
+                       "Please see console for more info.",
+        "bplist2json": "Could not convert Binary PLIST to JSON!\n"
+                       "Please see console for more info.",
+        "bplist2plist": "Could not convert Binary PLIST to PLIST!\n"
+                       "Please see console for more info.",
+        "plist2bplist": "Could not convert PLIST to Binary PLIST!\n"
+                       "Please see console for more info.",
         "binwrite": "Source view does not exist on disk, so save name and location cannot be determined.\n"
                     "You can convert and save to disk as an XML PLIST and then convert it to BPLIST."
     }
 
     def setup(self):
+        """ General setup """
         self.settings = sublime.load_settings(PACKAGE_SETTINGS)
 
     def set_syntax(self):
+        """ Set the view syntax """
         if self.output_view is not None:
             # Get syntax language and set it
             self.output_view.set_syntax_file(self.syntax)
 
     def write_file(self, edit, show_file):
+        """
+        Write data to a file if a location can be acquired,
+        if not save to a view buffer.
+        """
         errors = False
 
         if self.save_filename is not None and exists(self.save_filename):
@@ -115,6 +143,7 @@ class LanguageConverter(object):
             self.write_buffer(edit, force_new_buffer=True)
 
     def write_buffer(self, edit, force_new_buffer=False):
+        """ Write the data to a view buffer """
         errors = False
         new_buffer = bool(self.settings.get("open_in_new_buffer", False))
 
@@ -162,6 +191,7 @@ class LanguageConverter(object):
             self.set_syntax()
 
     def _is_enabled(self, **kwargs):
+        """ Determine if the command should be enabled """
         enabled = True
         filename = self.view.file_name()
         view_okay = True
@@ -188,21 +218,25 @@ class LanguageConverter(object):
         return enabled
 
     def get_output_file(self, filename):
-        return self.view
+        """ Get output filename to save to """
+        return None
 
-    def read_buffer(self):
+    def read_source(self):
+        """ Read the source """
         return False
 
     def convert(self, edit):
+        """ Convert the read data to the desired format """
         return False
 
     def _run(self, edit, **kwargs):
+        """ Begin conversion """
         self.binary = kwargs.get('binary', False)
         self.save_binary = kwargs.get('save_binary', False)
         self.syntax = self.settings.get(self.lang, self.default_lang) if self.lang is not None else self.default_lang
         filename = self.view.file_name()
         self.save_filename = self.get_output_file(filename) if filename is not None else None
-        if not self.read_buffer():
+        if not self.read_source():
             if not self.convert(edit):
                 if kwargs.get('save_to_file', False):
                     self.write_file(edit, kwargs.get('show_file', True))
@@ -218,10 +252,12 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
     default_lang = "Packages/YAML/YAML.tmLanguage"
 
     def __init__(self, *args, **kwargs):
+        """ Initialize plugin """
         self.setup()
         super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
+        """ Get output filename to save to """
         name = None
 
         if self.binary:
@@ -243,7 +279,8 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
             name = splitext(filename)[0] + ".YAML"
         return name
 
-    def read_buffer(self):
+    def read_source(self):
+        """ Read the source """
         errors = False
         ext_tbl = self.settings.get("yaml_strip_tabs_from", [])
         filename = self.view.file_name()
@@ -271,6 +308,7 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
         return errors
 
     def convert(self, edit):
+        """ Convert the read data to the desired format """
         errors = False
         try:
             if not errors:
@@ -297,9 +335,11 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
         return errors
 
     def is_enabled(self, **kwargs):
+        """ Determine if the command should be enabled """
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        """ Begin conversion """
         self._run(edit, **kwargs)
 
 
@@ -308,10 +348,12 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
     default_lang = "Packages/XML/XML.tmLanguage"
 
     def __init__(self, *args, **kwargs):
+        """ Initialize plugin """
         self.setup()
         super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
+        """ Get output filename to save to """
         name = None
 
         if self.save_binary:
@@ -333,7 +375,8 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
             name = splitext(filename)[0] + ".plist"
         return name
 
-    def read_buffer(self):
+    def read_source(self):
+        """ Read the source """
         errors = False
         try:
             # Strip comments and dangling commas from view buffer
@@ -346,6 +389,7 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
         return errors
 
     def convert(self, edit):
+        """ Convert the read data to the desired format """
         errors = False
         try:
             # Convert Python dict to PLIST buffer
@@ -369,9 +413,11 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
         return errors
 
     def is_enabled(self, **kwargs):
+        """ Determine if the command should be enabled """
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        """ Begin conversion """
         if kwargs.get('save_binary', False):
             self.lang = 'bplist_language'
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'
@@ -389,10 +435,12 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
     default_lang = "Packages/JavaScript/JSON.tmLanguage"
 
     def __init__(self, *args, **kwargs):
+        """ Initialize plugin """
         self.setup()
         super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
+        """ Get output filename to save to """
         name = None
 
         if self.binary:
@@ -414,7 +462,8 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
             name = splitext(filename)[0] + ".JSON"
         return name
 
-    def read_buffer(self):
+    def read_source(self):
+        """ Read the source """
         errors = False
         try:
             # Ensure view buffer is in a UTF8 format.
@@ -434,6 +483,7 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
         return errors
 
     def convert(self, edit):
+        """ Convert the read data to the desired format """
         errors = False
         try:
             if not errors:
@@ -449,9 +499,11 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
         return errors
 
     def is_enabled(self, **kwargs):
+        """ Determine if the command should be enabled """
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        """ Begin conversion """
         self._run(edit, **kwargs)
 
 
@@ -460,10 +512,12 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
     default_lang = "Packages/XML/XML.tmLanguage"
 
     def __init__(self, *args, **kwargs):
+        """ Initialize plugin """
         self.setup()
         super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
+        """ Get output filename to save to """
         name = None
 
         if self.save_binary:
@@ -485,7 +539,8 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
             name = splitext(filename)[0] + ".plist"
         return name
 
-    def read_buffer(self):
+    def read_source(self):
+        """ Read the source """
         errors = False
         try:
             # Strip comments and dangling commas from view buffer
@@ -499,6 +554,7 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
         return errors
 
     def convert(self, edit):
+        """ Convert the read data to the desired format """
         errors = False
         try:
             # Convert Python dict to PLIST buffer
@@ -522,9 +578,11 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
         return errors
 
     def is_enabled(self, **kwargs):
+        """ Determine if the command should be enabled """
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        """ Begin conversion """
         if kwargs.get('save_binary', False):
             self.lang = 'bplist_language'
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'
@@ -542,10 +600,12 @@ class SerializedJsonToYamlCommand(sublime_plugin.TextCommand, LanguageConverter)
     default_lang = "Packages/YAML/YAML.tmLanguage"
 
     def __init__(self, *args, **kwargs):
+        """ Initialize plugin """
         self.setup()
         super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
+        """ Get output filename to save to """
         name = None
 
         # Try and find file ext in the ext table
@@ -560,7 +620,8 @@ class SerializedJsonToYamlCommand(sublime_plugin.TextCommand, LanguageConverter)
             name = splitext(filename)[0] + ".YAML"
         return name
 
-    def read_buffer(self):
+    def read_source(self):
+        """ Read the source """
         errors = False
         ext_tbl = self.settings.get("yaml_strip_tabs_from", [])
         filename = self.view.file_name()
@@ -582,6 +643,7 @@ class SerializedJsonToYamlCommand(sublime_plugin.TextCommand, LanguageConverter)
         return errors
 
     def convert(self, edit):
+        """ Convert the read data to the desired format """
         errors = False
         try:
             if not errors:
@@ -606,9 +668,11 @@ class SerializedJsonToYamlCommand(sublime_plugin.TextCommand, LanguageConverter)
         return errors
 
     def is_enabled(self, **kwargs):
+        """ Determine if the command should be enabled """
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        """ Begin conversion """
         self._run(edit, **kwargs)
 
 
@@ -617,10 +681,12 @@ class SerializedYamlToJsonCommand(sublime_plugin.TextCommand, LanguageConverter)
     default_lang = "Packages/JavaScript/JSON.tmLanguage"
 
     def __init__(self, *args, **kwargs):
+        """ Initialize plugin """
         self.setup()
         super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
+        """ Get output filename to save to """
         name = None
 
         # Try and find file ext in the ext table
@@ -635,7 +701,8 @@ class SerializedYamlToJsonCommand(sublime_plugin.TextCommand, LanguageConverter)
             name = splitext(filename)[0] + ".JSON"
         return name
 
-    def read_buffer(self):
+    def read_source(self):
+        """ Read the source """
         errors = False
         try:
             # Strip comments and dangling commas from view buffer
@@ -648,6 +715,7 @@ class SerializedYamlToJsonCommand(sublime_plugin.TextCommand, LanguageConverter)
         return errors
 
     def convert(self, edit):
+        """ Convert the read data to the desired format """
         errors = False
         try:
             # Convert Python dict to PLIST buffer
@@ -662,9 +730,11 @@ class SerializedYamlToJsonCommand(sublime_plugin.TextCommand, LanguageConverter)
         return errors
 
     def is_enabled(self, **kwargs):
+        """ Determine if the command should be enabled """
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        """ Begin conversion """
         self._run(edit, **kwargs)
 
 
@@ -676,10 +746,12 @@ class SerializedPlistToPlistCommand(sublime_plugin.TextCommand, LanguageConverte
     default_lang = 'Packages/Text/Plain text.tmLanguage'
 
     def __init__(self, *args, **kwargs):
+        """ Initialize plugin """
         self.setup()
         super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
+        """ Get output filename to save to """
         name = None
 
         # Try and find file ext in the ext table
@@ -704,7 +776,8 @@ class SerializedPlistToPlistCommand(sublime_plugin.TextCommand, LanguageConverte
 
         return name
 
-    def read_buffer(self):
+    def read_source(self):
+        """ Read the source """
         errors = False
         try:
             # Ensure view buffer is in a UTF8 format.
@@ -724,6 +797,7 @@ class SerializedPlistToPlistCommand(sublime_plugin.TextCommand, LanguageConverte
         return errors
 
     def convert(self, edit):
+        """ Convert the read data to the desired format """
         errors = False
         try:
             # Convert Python dict to PLIST buffer
@@ -747,9 +821,11 @@ class SerializedPlistToPlistCommand(sublime_plugin.TextCommand, LanguageConverte
         return errors
 
     def is_enabled(self, **kwargs):
+        """ Determine if the command should be enabled """
         return self._is_enabled(**kwargs)
 
     def run(self, edit, **kwargs):
+        """ Begin conversion """
         if kwargs.get('save_binary', False):
             self.lang = 'bplist_language'
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'

@@ -48,6 +48,7 @@ yamlDumps = lambda obj, default_flow_style=None, strip_tabs=False, detect_timest
 
 
 def convert_timestamp(obj):
+    """ Convert YAML timestamp format """
     delta = None
     time_stamp = None
     m = YAML_TIMESTAMP.match(obj)
@@ -86,6 +87,7 @@ def convert_timestamp(obj):
 
 
 def yaml_convert_to(obj, strip_tabs=False, detect_timestamp=False):
+    """ Convert specific serialized objects before converting to YAML """
     if isinstance(obj, (dict, plistlib._InternalDict)):
         for k, v in obj.items():
             obj[k] = yaml_convert_to(v, strip_tabs, detect_timestamp)
@@ -107,9 +109,11 @@ def yaml_convert_to(obj, strip_tabs=False, detect_timestamp=False):
     return obj
 
 
-# Control when to use block style
-# http://stackoverflow.com/questions/8640959/how-can-i-control-what-scalar-form-pyyaml-uses-for-my-data
 def _should_use_block(value):
+    """
+    Control when to use block style
+    http://stackoverflow.com/questions/8640959/how-can-i-control-what-scalar-form-pyyaml-uses-for-my-data
+    """
     for c in "\u000a\u000d\u001c\u001d\u001e\u0085\u2028\u2029":
         if c in value:
             return True
@@ -117,6 +121,7 @@ def _should_use_block(value):
 
 
 def _my_represent_scalar(self, tag, value, style=None):
+    """ Scalar """
     if style is None:
         if _should_use_block(value):
             style = '|'
@@ -157,6 +162,7 @@ yaml.add_constructor(
 
 
 def timestamp_constructor(self, node):
+    """ Constructor for YAML timestamp """
     timestamp = self.construct_yaml_timestamp(node)
     if type(timestamp) is not datetime.datetime:
         timestamp = str(timestamp)

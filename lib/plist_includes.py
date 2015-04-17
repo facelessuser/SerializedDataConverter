@@ -6,6 +6,7 @@ __all__ = ["readPlistFromView", "readPlistFromFile", "plistDumps", "plistBinaryD
 
 
 def convert_from_hex(view):
+    """ Convert Sublime hex view to bytes """
     text = view.substr(sublime.Region(0, view.size())).replace(' ', '').replace('\n', '')
     byte = []
     offset = 0
@@ -44,6 +45,7 @@ readPlistFromFile = lambda filename: plist_convert_from(
 
 
 def convert_timestamp(obj):
+    """ Convert plist timestamp """
     time_stamp = None
     if plistlib._dateParser.match(obj):
         time_stamp = plistlib._dateFromString(obj)
@@ -51,6 +53,7 @@ def convert_timestamp(obj):
 
 
 def plist_convert_from(obj):
+    """ Convert specific plist items to a form usable by others """
     if isinstance(obj, plistlib._InternalDict):
         for k, v in obj.items():
             obj[k] = plist_convert_from(v)
@@ -66,6 +69,7 @@ def plist_convert_from(obj):
 
 
 def plist_convert_to(obj, detect_timestamp=False, none_handler="fail"):
+    """ Convert specific serialized items to a plist format """
     if isinstance(obj, dict):
         for k, v in (list(obj.items()) if none_handler == "strip" else obj.items()):
             if none_handler == "strip" and v is None:
