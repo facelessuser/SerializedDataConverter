@@ -57,6 +57,12 @@
     //    -plist_to_yaml
     //    -json_to_yaml
     //    -yaml_to_json
+    //    -plist_to_bplist
+    //    -json_to_bplist
+    //    -yaml_to_bplist
+    //    -bplist_to_plist
+    //    -bplist_to_json
+    //    -bplist_to_yaml
     "convert_on_save": [
         // Enable or add what you would like
         // {"ext": "tmLanguage.JSON", "command": "json_to_plist"},

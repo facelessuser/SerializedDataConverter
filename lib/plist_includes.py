@@ -5,6 +5,16 @@ import datetime
 __all__ = ["readPlistFromView", "readPlistFromFile", "plistDumps", "plistBinaryDumps"]
 
 
+def convert_from_hex(view):
+    text = view.substr(sublime.Region(0, view.size())).replace(' ', '').replace('\n', '')
+    byte = []
+    offset = 0
+    for x in range(0, int(len(text) / 2)):
+        byte.append(int(text[x + offset:x + offset + 2], 16))
+        offset += 1
+    return bytes(byte)
+
+
 plistDumps = lambda obj, detect_timestamp=False, none_handler="fail": plistlib.writePlistToBytes(
     plist_convert_to(obj, detect_timestamp, none_handler)
 ).decode('utf-8')
@@ -12,6 +22,12 @@ plistDumps = lambda obj, detect_timestamp=False, none_handler="fail": plistlib.w
 plistBinaryDumps = lambda obj, detect_timestamp=False, none_handler="fail": plistlib.dumps(
     plist_convert_to(obj, detect_timestamp, none_handler),
     fmt=plistlib.FMT_BINARY
+)
+
+readPlistFromHexView = lambda view: plist_convert_from(
+    plistlib.readPlistFromBytes(
+        convert_from_hex(view)
+    )
 )
 
 readPlistFromView = lambda view: plist_convert_from(

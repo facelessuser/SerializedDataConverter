@@ -1,18 +1,22 @@
 SerializedDataConverter
 =======================
 
-Convert between serialized data formats (plist | json | yaml)
+Convert between serialized data formats (plist | bplist | json | yaml)
 
 <img src="https://dl.dropboxusercontent.com/u/342698/SerializedDataConverter/Example.png" border="0">
 
 # Usage
-All commands are accessible via the command palatte.  Comments are not preserved during conversion.
+All commands are accessible via the command palette.  Comments are not preserved during conversion.
 
 ## Serialized Data Converter: (Type A) to (Type B)
-Command that converts an open (JSON|PLIST|YAML) file to (JSON|PLIST|YAML). It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON.
+Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML). It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON.
 
-## Plist Json Converter: Save (Type A) to (Type B)
-Command that converts an open (JSON|PLIST|YAML) file to (JSON|PLIST|YAML) and saves it to the respective file type.  File name is determined by the respective setting (`plist_json_conversion_ext`|`plist_yaml_conversion_ext`|`json_yaml_conversion_ext`).  It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON. If the file to convert does not exist on disk, the converted file will not initially exist either, but it will only be shown in the view buffer until saved manually.
+Note that when reading a BPLIST (binary PLIST), the encoding must be `Hexadecimal` or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.
+
+## Serialized Data Converter: Save (Type A) to (Type B)
+Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML) and saves it to the respective file type.  File name is determined by the respective setting (`plist_json_conversion_ext`|`plist_yaml_conversion_ext`|`json_yaml_conversion_ext`).  It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON. If the file to convert does not exist on disk, the converted file will not initially exist either, but it will only be shown in the view buffer until saved manually.
+
+Note that when reading a BPLIST (binary PLIST), the encoding must be `Hexadecimal` or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.
 
 # Settings
 ## enable\_save\_to\_file\_commands
@@ -28,6 +32,11 @@ When a "show conversion in view buffer" command is executed, this will force the
 Allows you to provide a file name conversion mapping from any type extension to a another type extension and vice versa.  They are evaluated in the order they appear.  The name of the setting denotes which file type to which file the conversion rules apply to.  The mapping rules are defined by using the file type as the key, and the desired extension as the value.  The mapping works both ways.
 
 ```javascript
+    // When saving converted data to a file, or when opening
+    // conversion in new buffer use these extension maps for file name.
+    // Extensions will be evaluated in the order listed below.
+    // If the file does not match any of the extensions, the current
+    // extension will be replaced with either "plist", "json", or "yaml" accordingly.
     "plist_json_conversion_ext": [
         {"plist": "tmLanguage", "json": "tmLanguage.JSON"},
         {"plist": "tmPreferences", "json": "tmPreferences.JSON"},
@@ -38,6 +47,15 @@ Allows you to provide a file name conversion mapping from any type extension to 
         {"plist": "tmLanguage", "yaml": "tmLanguage.YAML"},
         {"plist": "tmPreferences", "yaml": "tmPreferences.YAML"},
         {"plist": "tmTheme", "yaml": "tmTheme.YAML"}
+    ],
+
+    "bplist_json_conversion_ext": [
+    ],
+
+    "bplist_yaml_conversion_ext": [
+    ],
+
+    "bplist_plist_conversion_ext": [
     ],
 
     "json_yaml_conversion_ext": [
@@ -51,9 +69,11 @@ Allows you to provide a file name conversion mapping from any type extension to 
 Allows the selection of a given language file to be used for the converted buffer or file.
 
 ```javascript
+    // Languages to use on conversion
     "json_language": "Packages/JavaScript/JSON.tmLanguage",
     "yaml_language": "Packages/YAML/YAML.tmLanguage",
     "plist_language": "Packages/XML/XML.tmLanguage",
+    "bplist_language": "Packages/Text/Plain text.tmLanguage",
 ```
 
 ## convert\_on\_save
