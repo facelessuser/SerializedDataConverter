@@ -59,7 +59,7 @@ class SerializedDataConverterListener(sublime_plugin.EventListener):
         )
 
 
-class LanguageConverter(object):
+class _LanguageConverter(sublime_plugin.TextCommand):
     lang = None
     default_lang = "Packages/Text/Plain text.tmLanguage"
     errors = {
@@ -103,9 +103,10 @@ class LanguageConverter(object):
                     "You can convert and save to disk as an XML PLIST and then convert it to BPLIST."
     }
 
-    def setup(self):
+    def __init__(self, *args, **kwargs):
         """ General setup """
         self.settings = sublime.load_settings(PACKAGE_SETTINGS)
+        super().__init__(*args, **kwargs)
 
     def set_syntax(self):
         """ Set the view syntax """
@@ -190,7 +191,7 @@ class LanguageConverter(object):
                     self.output_view.set_name(basename(self.save_filename))
             self.set_syntax()
 
-    def _is_enabled(self, **kwargs):
+    def is_enabled(self, **kwargs):
         """ Determine if the command should be enabled """
         enabled = True
         filename = self.view.file_name()
@@ -229,7 +230,7 @@ class LanguageConverter(object):
         """ Convert the read data to the desired format """
         return False
 
-    def _run(self, edit, **kwargs):
+    def run(self, edit, **kwargs):
         """ Begin conversion """
         self.binary = kwargs.get('binary', False)
         self.save_binary = kwargs.get('save_binary', False)
@@ -247,14 +248,9 @@ class LanguageConverter(object):
 ##########################
 # Plist <-> YAML
 ##########################
-class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter):
+class SerializedPlistToYamlCommand(_LanguageConverter):
     lang = "yaml_language"
     default_lang = "Packages/YAML/YAML.tmLanguage"
-
-    def __init__(self, *args, **kwargs):
-        """ Initialize plugin """
-        self.setup()
-        super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
         """ Get output filename to save to """
@@ -334,23 +330,10 @@ class SerializedPlistToYamlCommand(sublime_plugin.TextCommand, LanguageConverter
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
-    def is_enabled(self, **kwargs):
-        """ Determine if the command should be enabled """
-        return self._is_enabled(**kwargs)
 
-    def run(self, edit, **kwargs):
-        """ Begin conversion """
-        self._run(edit, **kwargs)
-
-
-class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter):
+class SerializedYamlToPlistCommand(_LanguageConverter):
     lang = "plist_language"
     default_lang = "Packages/XML/XML.tmLanguage"
-
-    def __init__(self, *args, **kwargs):
-        """ Initialize plugin """
-        self.setup()
-        super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
         """ Get output filename to save to """
@@ -412,10 +395,6 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
-    def is_enabled(self, **kwargs):
-        """ Determine if the command should be enabled """
-        return self._is_enabled(**kwargs)
-
     def run(self, edit, **kwargs):
         """ Begin conversion """
         if kwargs.get('save_binary', False):
@@ -424,20 +403,15 @@ class SerializedYamlToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
         else:
             self.lang = 'plist_language'
             self.default_lang = 'Packages/XML/XML.tmLanguage'
-        self._run(edit, **kwargs)
+        super().run(edit, **kwargs)
 
 
 ##########################
 # Plist <-> JSON
 ##########################
-class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter):
+class SerializedPlistToJsonCommand(_LanguageConverter):
     lang = "json_language"
     default_lang = "Packages/JavaScript/JSON.tmLanguage"
-
-    def __init__(self, *args, **kwargs):
-        """ Initialize plugin """
-        self.setup()
-        super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
         """ Get output filename to save to """
@@ -498,23 +472,10 @@ class SerializedPlistToJsonCommand(sublime_plugin.TextCommand, LanguageConverter
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
-    def is_enabled(self, **kwargs):
-        """ Determine if the command should be enabled """
-        return self._is_enabled(**kwargs)
 
-    def run(self, edit, **kwargs):
-        """ Begin conversion """
-        self._run(edit, **kwargs)
-
-
-class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter):
+class SerializedJsonToPlistCommand(_LanguageConverter):
     lang = "plist_language"
     default_lang = "Packages/XML/XML.tmLanguage"
-
-    def __init__(self, *args, **kwargs):
-        """ Initialize plugin """
-        self.setup()
-        super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
         """ Get output filename to save to """
@@ -577,10 +538,6 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
-    def is_enabled(self, **kwargs):
-        """ Determine if the command should be enabled """
-        return self._is_enabled(**kwargs)
-
     def run(self, edit, **kwargs):
         """ Begin conversion """
         if kwargs.get('save_binary', False):
@@ -589,20 +546,15 @@ class SerializedJsonToPlistCommand(sublime_plugin.TextCommand, LanguageConverter
         else:
             self.lang = 'plist_language'
             self.default_lang = 'Packages/XML/XML.tmLanguage'
-        self._run(edit, **kwargs)
+        super().run(edit, **kwargs)
 
 
 ##########################
 # YAML <-> JSON
 ##########################
-class SerializedJsonToYamlCommand(sublime_plugin.TextCommand, LanguageConverter):
+class SerializedJsonToYamlCommand(_LanguageConverter):
     lang = "yaml_language"
     default_lang = "Packages/YAML/YAML.tmLanguage"
-
-    def __init__(self, *args, **kwargs):
-        """ Initialize plugin """
-        self.setup()
-        super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
         """ Get output filename to save to """
@@ -667,23 +619,10 @@ class SerializedJsonToYamlCommand(sublime_plugin.TextCommand, LanguageConverter)
             error_msg(self.errors["json2yaml"], traceback.format_exc())
         return errors
 
-    def is_enabled(self, **kwargs):
-        """ Determine if the command should be enabled """
-        return self._is_enabled(**kwargs)
 
-    def run(self, edit, **kwargs):
-        """ Begin conversion """
-        self._run(edit, **kwargs)
-
-
-class SerializedYamlToJsonCommand(sublime_plugin.TextCommand, LanguageConverter):
+class SerializedYamlToJsonCommand(_LanguageConverter):
     lang = "json_language"
     default_lang = "Packages/JavaScript/JSON.tmLanguage"
-
-    def __init__(self, *args, **kwargs):
-        """ Initialize plugin """
-        self.setup()
-        super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
         """ Get output filename to save to """
@@ -729,26 +668,13 @@ class SerializedYamlToJsonCommand(sublime_plugin.TextCommand, LanguageConverter)
             error_msg(self.errors["yaml2json"], traceback.format_exc())
         return errors
 
-    def is_enabled(self, **kwargs):
-        """ Determine if the command should be enabled """
-        return self._is_enabled(**kwargs)
-
-    def run(self, edit, **kwargs):
-        """ Begin conversion """
-        self._run(edit, **kwargs)
-
 
 ##########################
 # BPLIST <-> PLIST
 ##########################
-class SerializedPlistToPlistCommand(sublime_plugin.TextCommand, LanguageConverter):
+class SerializedPlistToPlistCommand(_LanguageConverter):
     lang = 'plist_language'
     default_lang = 'Packages/Text/Plain text.tmLanguage'
-
-    def __init__(self, *args, **kwargs):
-        """ Initialize plugin """
-        self.setup()
-        super().__init__(*args, **kwargs)
 
     def get_output_file(self, filename):
         """ Get output filename to save to """
@@ -820,10 +746,6 @@ class SerializedPlistToPlistCommand(sublime_plugin.TextCommand, LanguageConverte
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
-    def is_enabled(self, **kwargs):
-        """ Determine if the command should be enabled """
-        return self._is_enabled(**kwargs)
-
     def run(self, edit, **kwargs):
         """ Begin conversion """
         if kwargs.get('save_binary', False):
@@ -832,4 +754,4 @@ class SerializedPlistToPlistCommand(sublime_plugin.TextCommand, LanguageConverte
         else:
             self.lang = 'plist_language'
             self.default_lang = 'Packages/XML/XML.tmLanguage'
-        self._run(edit, **kwargs)
+        super().run(edit, **kwargs)
