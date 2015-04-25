@@ -1,6 +1,6 @@
 site_name: SerializedDataConverter Documentation
 repo_url: https://github.com/facelessuser/SerializedDataConverter
-site_description: Diff plugin for Sublime Text.
+site_description: Convert between PLIST, BPLIST, JSON, and YAML in Sublime Text.
 copyright: Copyright &copy; 2012 - 2015 <a href="https://github.com/facelessuser">Isaac Muse</a>
 pages:
 - ['index.md', 'Home']

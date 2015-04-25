@@ -1,6 +1,4 @@
-SerializedDataConverter
-=======================
-
+# SerializedDataConverter
 Convert between serialized data formats (plist | bplist | json | yaml)
 
 <img src="https://dl.dropboxusercontent.com/u/342698/SerializedDataConverter/Example.png" border="0">
