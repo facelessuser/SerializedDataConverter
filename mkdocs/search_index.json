@@ -1,0 +1,114 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "SerializedDataConverter\n\n\nConvert between PLIST, BPLIST, JSON, and YAML.\n\n\n\n\nOverview\n\n\nConvert between serialized data formats (plist | bplist | json | yaml)\n\n\n\n\nThird Party Libraries\n\n\n\n\npyyaml: \nhttps://github.com/yaml/pyyaml\n\n\nplistlib: Sublime Text 3 currently uses Python 3.3, but Python 3.4 has a new version of plistlib that handles binary plists.  To get this functionality, we dropped the \nPython 3.4 plistlib\n directly into the plugin with minor changes to get it working in Python 3.3.", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#serializeddataconverter", 
+            "text": "Convert between PLIST, BPLIST, JSON, and YAML.", 
+            "title": "SerializedDataConverter"
+        }, 
+        {
+            "location": "/#overview", 
+            "text": "Convert between serialized data formats (plist | bplist | json | yaml)", 
+            "title": "Overview"
+        }, 
+        {
+            "location": "/#third-party-libraries", 
+            "text": "pyyaml:  https://github.com/yaml/pyyaml  plistlib: Sublime Text 3 currently uses Python 3.3, but Python 3.4 has a new version of plistlib that handles binary plists.  To get this functionality, we dropped the  Python 3.4 plistlib  directly into the plugin with minor changes to get it working in Python 3.3.", 
+            "title": "Third Party Libraries"
+        }, 
+        {
+            "location": "/usage/", 
+            "text": "User Guide\n\n\nConfiguration and usage of SerializedDataConverter.\n\n\n\n\nCommands\n\n\nAll commands are accessible via the command palette.  Comments are not preserved during conversion.\n\n\nSerialized Data Converter: (Type A) to (Type B)\n\n\nCommand that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML). It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON.\n\n\nNote that when reading a BPLIST (binary PLIST), the encoding must be \nHexadecimal\n or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.\n\n\nSerialized Data Converter: Save (Type A) to (Type B)\n\n\nCommand that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML) and saves it to the respective file type.  File name is determined by the appropriate setting (\nplist_json_conversion_ext\n|\nplist_yaml_conversion_ext\n|\njson_yaml_conversion_ext|bplist_json_conversion_ext|bplist_yaml_conversion_ext|bplist_plist_conversion_ext\n).  It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON. If the file to convert does not exist on disk, the converted file will not initially exist either, but it will only be shown in the view buffer until saved manually.\n\n\nNote that when reading a BPLIST (binary PLIST), the encoding must be \nHexadecimal\n or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.\n\n\nSettings\n\n\nenable_save_to_file_commands\n\n\nAllows the disabling of the \nsave to file\n commands in the command palette\n\n\nenable_show_in_buffer_commands\n\n\nAllows the disabling of the \nshow conversion if view buffer\n commands in the command palette\n\n\nopen_in_new_buffer\n\n\nWhen a \nshow conversion in view buffer\n command is executed, this will force the conversion to show up in its own new view buffer.\n\n\n(Type A)_(Type B)_conversion_ext\n\n\nAllows you to provide a file name conversion mapping from any type extension to a another type extension and vice versa.  They are evaluated in the order they appear.  The name of the setting denotes which file type to which file the conversion rules apply to.  The mapping rules are defined by using the file type as the key, and the desired extension as the value.  The mapping works both ways.\n\n\n    \n// When saving converted data to a file, or when opening\n\n    \n// conversion in new buffer use these extension maps for file name.\n\n    \n// Extensions will be evaluated in the order listed below.\n\n    \n// If the file does not match any of the extensions, the current\n\n    \n// extension will be replaced with either \nplist\n, \njson\n, or \nyaml\n accordingly.\n\n    \nplist_json_conversion_ext\n:\n \n[\n\n        \n{\nplist\n:\n \ntmLanguage\n,\n \njson\n:\n \ntmLanguage.JSON\n},\n\n        \n{\nplist\n:\n \ntmPreferences\n,\n \njson\n:\n \ntmPreferences.JSON\n},\n\n        \n{\nplist\n:\n \ntmTheme\n,\n \njson\n:\n \ntmTheme.JSON\n}\n\n    \n],\n\n\n    \nplist_yaml_conversion_ext\n:\n \n[\n\n        \n{\nplist\n:\n \ntmLanguage\n,\n \nyaml\n:\n \ntmLanguage.YAML\n},\n\n        \n{\nplist\n:\n \ntmPreferences\n,\n \nyaml\n:\n \ntmPreferences.YAML\n},\n\n        \n{\nplist\n:\n \ntmTheme\n,\n \nyaml\n:\n \ntmTheme.YAML\n}\n\n    \n],\n\n\n    \nbplist_json_conversion_ext\n:\n \n[\n\n    \n],\n\n\n    \nbplist_yaml_conversion_ext\n:\n \n[\n\n    \n],\n\n\n    \nbplist_plist_conversion_ext\n:\n \n[\n\n    \n],\n\n\n    \njson_yaml_conversion_ext\n:\n \n[\n\n        \n// Nothing to see here; move along\n\n        \n// Add your rules here\n\n        \n//{\njson\n: \nsome extension\n, \nyaml\n: \nsome extension\n}\n\n    \n],\n\n\n\n\n\n\n(Type)_language\n\n\nAllows the selection of a given language file to be used for the converted buffer or file.\n\n\n    \n// Languages to use on conversion\n\n    \njson_language\n:\n \nPackages/JavaScript/JSON.tmLanguage\n,\n\n    \nyaml_language\n:\n \nPackages/YAML/YAML.tmLanguage\n,\n\n    \nplist_language\n:\n \nPackages/XML/XML.tmLanguage\n,\n\n    \nbplist_language\n:\n \nPackages/Text/Plain text.tmLanguage\n,\n\n\n\n\n\n\nconvert_on_save\n\n\nWhen a file with the specified extension is saved, the plugin will automatically run the conversion command on the file to save the converted form to disk as well.\n\n\n    \nconvert_on_save\n:\n \n[\n\n        \n// Enable or add what you would like\n\n        \n// {\next\n: \ntmLanguage.JSON\n, \ncommand\n: \njson_to_plist\n},\n\n        \n// {\next\n: \ntmPreferences.JSON\n, \ncommand\n: \njson_to_plist\n},\n\n        \n// {\next\n: \ntmTheme.JSON\n, \ncommand\n: \njson_to_plist\n},\n\n        \n// {\next\n: \ntmLanguage.YAML\n, \ncommand\n: \nyaml_to_plist\n},\n\n        \n// {\next\n: \ntmPreferences.YAML\n, \ncommand\n: \nyaml_to_plist\n},\n\n        \n// {\next\n: \ntmTheme.YAML\n, \ncommand\n: \nyaml_to_plist\n}\n\n    \n],\n\n\n\n\n\n\nyaml_strip_tabs_from\n\n\nThese are language extensions in which the converter will strip tabs from to ensure multi-lines aren\nt quoted with \n\\t\n.  It also strips trailing spaces from multi-line strings. This helps multi-line strings convert in a pretty format (does not guarantee all values will be convert to a pretty format, but increases the odds). If you are having trouble converting a file and getting a 1:1 translation, remove the file type.\n\n\n    \nyaml_strip_tabs_from\n:\n \n[\n\n        \ntmLanguage\n,\n\n        \ntmTheme\n,\n\n        \ntmPreferences\n,\n\n        \ntmLanguage.JSON\n,\n\n        \ntmTheme.JSON\n,\n\n        \ntmPreferences.JSON\n\n    \n],\n\n\n\n\n\n\nyaml_default_flow_style\n\n\nLets you control the YAML output flow style.\n\n\n    \n// In most this should be left to \nfalse\n for easy reading, but feel free to change it\n\n    \n// (none | true | false)\n\n    \n// none shows things like this will (pretty good):\n\n    \n//     \n1\n: {name: something}\n\n    \n// false like this (cleanest to read):\n\n    \n//     \n1\n:\n\n    \n//         name: something\n\n    \n// true will have everything like this (harder to read):\n\n    \n//     {\n1\n: {name: something}}\n\n\n    \nyaml_default_flow_style\n:\n \nfalse\n\n\n\n\n\n\nOther Conversion Controls\n\n\nThere are some other knobs exposed allowing you to affect the conversion; they are listed below:\n\n\n    \n// Detect timestamps on conversion for yaml\n\n    \nyaml_detect_timestamp\n:\n \ntrue\n,\n\n\n    \n// Detect timestamps on conversion for plists\n\n    \nplist_detect_timestamp\n:\n \ntrue\n,\n\n\n    \n// Preserve binary data when converting to JSON\n\n    \n// This will create binary data in this form which\n\n    \n// will be recongnized and representing in plist and yaml native binary format:\n\n    \n//    {\n\n    \n//        \n!!python/object:plistlib.Data\n: \nU29tZSBkYXRh\n\n    \n//    }\n\n    \njson_preserve_binary_data\n:\n \ntrue\n,\n\n\n    \n// When converting to a plist, and the structure contains none, the plugin should:\n\n    \n//    - \nfail\n: let the conversion fail\n\n    \n//    - \nfalse\n: set the None objects to False\n\n    \n//    - \nstrip\n: strip the None members from the structure\n\n    \nplist_none_handler\n:\n \nfail\n\n\n\n\n\n\nLinux Issues (ST2 only)\n\n\nI have provided a fix for Ubuntu.  Ubuntu requires a full install of Python2.6, but it only comes with a minimal install by default.  You can enter the command below in your linux terminal to get the full install.\n\n\nsudo apt-get install python2.6\n\n\nI have provided the Python lib path in the settings file so it may be adapted for other distros in needed.\n\n\nlinux_python2.6_lib\n: \n/usr/lib/python2.6/lib-dynload", 
+            "title": "User Guide"
+        }, 
+        {
+            "location": "/usage/#user-guide", 
+            "text": "Configuration and usage of SerializedDataConverter.", 
+            "title": "User Guide"
+        }, 
+        {
+            "location": "/usage/#commands", 
+            "text": "All commands are accessible via the command palette.  Comments are not preserved during conversion.", 
+            "title": "Commands"
+        }, 
+        {
+            "location": "/usage/#serialized-data-converter-type-a-to-type-b", 
+            "text": "Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML). It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON.  Note that when reading a BPLIST (binary PLIST), the encoding must be  Hexadecimal  or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.", 
+            "title": "Serialized Data Converter: (Type A) to (Type B)"
+        }, 
+        {
+            "location": "/usage/#serialized-data-converter-save-type-a-to-type-b", 
+            "text": "Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML) and saves it to the respective file type.  File name is determined by the appropriate setting ( plist_json_conversion_ext | plist_yaml_conversion_ext | json_yaml_conversion_ext|bplist_json_conversion_ext|bplist_yaml_conversion_ext|bplist_plist_conversion_ext ).  It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON. If the file to convert does not exist on disk, the converted file will not initially exist either, but it will only be shown in the view buffer until saved manually.  Note that when reading a BPLIST (binary PLIST), the encoding must be  Hexadecimal  or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.", 
+            "title": "Serialized Data Converter: Save (Type A) to (Type B)"
+        }, 
+        {
+            "location": "/usage/#settings", 
+            "text": "", 
+            "title": "Settings"
+        }, 
+        {
+            "location": "/usage/#enable95save95to95file95commands", 
+            "text": "Allows the disabling of the  save to file  commands in the command palette", 
+            "title": "enable_save_to_file_commands"
+        }, 
+        {
+            "location": "/usage/#enable95show95in95buffer95commands", 
+            "text": "Allows the disabling of the  show conversion if view buffer  commands in the command palette", 
+            "title": "enable_show_in_buffer_commands"
+        }, 
+        {
+            "location": "/usage/#open95in95new95buffer", 
+            "text": "When a  show conversion in view buffer  command is executed, this will force the conversion to show up in its own new view buffer.", 
+            "title": "open_in_new_buffer"
+        }, 
+        {
+            "location": "/usage/#type-a95type-b95conversion_ext", 
+            "text": "Allows you to provide a file name conversion mapping from any type extension to a another type extension and vice versa.  They are evaluated in the order they appear.  The name of the setting denotes which file type to which file the conversion rules apply to.  The mapping rules are defined by using the file type as the key, and the desired extension as the value.  The mapping works both ways.       // When saving converted data to a file, or when opening \n     // conversion in new buffer use these extension maps for file name. \n     // Extensions will be evaluated in the order listed below. \n     // If the file does not match any of the extensions, the current \n     // extension will be replaced with either  plist ,  json , or  yaml  accordingly. \n     plist_json_conversion_ext :   [ \n         { plist :   tmLanguage ,   json :   tmLanguage.JSON }, \n         { plist :   tmPreferences ,   json :   tmPreferences.JSON }, \n         { plist :   tmTheme ,   json :   tmTheme.JSON } \n     ], \n\n     plist_yaml_conversion_ext :   [ \n         { plist :   tmLanguage ,   yaml :   tmLanguage.YAML }, \n         { plist :   tmPreferences ,   yaml :   tmPreferences.YAML }, \n         { plist :   tmTheme ,   yaml :   tmTheme.YAML } \n     ], \n\n     bplist_json_conversion_ext :   [ \n     ], \n\n     bplist_yaml_conversion_ext :   [ \n     ], \n\n     bplist_plist_conversion_ext :   [ \n     ], \n\n     json_yaml_conversion_ext :   [ \n         // Nothing to see here; move along \n         // Add your rules here \n         //{ json :  some extension ,  yaml :  some extension } \n     ],", 
+            "title": "(Type A)_(Type B)_conversion_ext"
+        }, 
+        {
+            "location": "/usage/#type95language", 
+            "text": "Allows the selection of a given language file to be used for the converted buffer or file.       // Languages to use on conversion \n     json_language :   Packages/JavaScript/JSON.tmLanguage , \n     yaml_language :   Packages/YAML/YAML.tmLanguage , \n     plist_language :   Packages/XML/XML.tmLanguage , \n     bplist_language :   Packages/Text/Plain text.tmLanguage ,", 
+            "title": "(Type)_language"
+        }, 
+        {
+            "location": "/usage/#convert95on95save", 
+            "text": "When a file with the specified extension is saved, the plugin will automatically run the conversion command on the file to save the converted form to disk as well.       convert_on_save :   [ \n         // Enable or add what you would like \n         // { ext :  tmLanguage.JSON ,  command :  json_to_plist }, \n         // { ext :  tmPreferences.JSON ,  command :  json_to_plist }, \n         // { ext :  tmTheme.JSON ,  command :  json_to_plist }, \n         // { ext :  tmLanguage.YAML ,  command :  yaml_to_plist }, \n         // { ext :  tmPreferences.YAML ,  command :  yaml_to_plist }, \n         // { ext :  tmTheme.YAML ,  command :  yaml_to_plist } \n     ],", 
+            "title": "convert_on_save"
+        }, 
+        {
+            "location": "/usage/#yaml95strip95tabs_from", 
+            "text": "These are language extensions in which the converter will strip tabs from to ensure multi-lines aren t quoted with  \\t .  It also strips trailing spaces from multi-line strings. This helps multi-line strings convert in a pretty format (does not guarantee all values will be convert to a pretty format, but increases the odds). If you are having trouble converting a file and getting a 1:1 translation, remove the file type.       yaml_strip_tabs_from :   [ \n         tmLanguage , \n         tmTheme , \n         tmPreferences , \n         tmLanguage.JSON , \n         tmTheme.JSON , \n         tmPreferences.JSON \n     ],", 
+            "title": "yaml_strip_tabs_from"
+        }, 
+        {
+            "location": "/usage/#yaml95default95flow_style", 
+            "text": "Lets you control the YAML output flow style.       // In most this should be left to  false  for easy reading, but feel free to change it \n     // (none | true | false) \n     // none shows things like this will (pretty good): \n     //      1 : {name: something} \n     // false like this (cleanest to read): \n     //      1 : \n     //         name: something \n     // true will have everything like this (harder to read): \n     //     { 1 : {name: something}} \n\n     yaml_default_flow_style :   false", 
+            "title": "yaml_default_flow_style"
+        }, 
+        {
+            "location": "/usage/#other-conversion-controls", 
+            "text": "There are some other knobs exposed allowing you to affect the conversion; they are listed below:       // Detect timestamps on conversion for yaml \n     yaml_detect_timestamp :   true , \n\n     // Detect timestamps on conversion for plists \n     plist_detect_timestamp :   true , \n\n     // Preserve binary data when converting to JSON \n     // This will create binary data in this form which \n     // will be recongnized and representing in plist and yaml native binary format: \n     //    { \n     //         !!python/object:plistlib.Data :  U29tZSBkYXRh \n     //    } \n     json_preserve_binary_data :   true , \n\n     // When converting to a plist, and the structure contains none, the plugin should: \n     //    -  fail : let the conversion fail \n     //    -  false : set the None objects to False \n     //    -  strip : strip the None members from the structure \n     plist_none_handler :   fail", 
+            "title": "Other Conversion Controls"
+        }, 
+        {
+            "location": "/usage/#linux-issues-st2-only", 
+            "text": "I have provided a fix for Ubuntu.  Ubuntu requires a full install of Python2.6, but it only comes with a minimal install by default.  You can enter the command below in your linux terminal to get the full install.  sudo apt-get install python2.6  I have provided the Python lib path in the settings file so it may be adapted for other distros in needed.  linux_python2.6_lib :  /usr/lib/python2.6/lib-dynload", 
+            "title": "Linux Issues (ST2 only)"
+        }, 
+        {
+            "location": "/license/", 
+            "text": "License\n\n\n\n\nSerializedDataConverter is released under the MIT license.\n\n\nCopyright \n 2012 - 2015 Isaac Muse \n\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \nSoftware\n), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\n\nTHE SOFTWARE IS PROVIDED \nAS IS\n, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.", 
+            "title": "License"
+        }, 
+        {
+            "location": "/license/#license", 
+            "text": "SerializedDataConverter is released under the MIT license.  Copyright   2012 - 2015 Isaac Muse   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the  Software ), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.  THE SOFTWARE IS PROVIDED  AS IS , WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.", 
+            "title": "License"
+        }
+    ]
+}
