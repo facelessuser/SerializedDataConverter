@@ -1,3 +1,9 @@
+"""
+Serialized Data Converter.
+
+Licensed under MIT
+Copyright (c) 2012 - 2015 Isaac Muse <isaacmuse@gmail.com>
+"""
 import sublime
 import sublime_plugin
 import codecs
@@ -13,13 +19,18 @@ PACKAGE_SETTINGS = "serialized_data_converter.sublime-settings"
 
 
 def to_hex(value):
-    """ Convert int value to hex string """
+    """Convert int value to hex string."""
+
     return "%02x" % value
 
 
 class SerializedDataConverterListener(sublime_plugin.EventListener):
+
+    """Listener to convert certain files on save."""
+
     def on_post_save(self, view):
-        """ Convert after saves """
+        """Convert after saves."""
+
         ext2convert = self.get_save_ext()
         filename = view.file_name()
         command = None
@@ -34,11 +45,13 @@ class SerializedDataConverterListener(sublime_plugin.EventListener):
             self.convert(view, command)
 
     def get_save_ext(self):
-        """ Get the save extension """
+        """Get the save extension."""
+
         return sublime.load_settings(PACKAGE_SETTINGS).get("convert_on_save", [])
 
     def convert(self, view, command):
-        """ Call the appropriate convert command """
+        """Call the appropriate convert command."""
+
         binary = False
         save_binary = False
         if command.startswith('bplist'):
@@ -60,6 +73,9 @@ class SerializedDataConverterListener(sublime_plugin.EventListener):
 
 
 class _LanguageConverter(sublime_plugin.TextCommand):
+
+    """Language converter base class."""
+
     lang = None
     default_lang = "Packages/Text/Plain text.tmLanguage"
     errors = {
@@ -104,21 +120,21 @@ class _LanguageConverter(sublime_plugin.TextCommand):
     }
 
     def __init__(self, *args, **kwargs):
-        """ General setup """
+        """General setup."""
+
         self.settings = sublime.load_settings(PACKAGE_SETTINGS)
         super().__init__(*args, **kwargs)
 
     def set_syntax(self):
-        """ Set the view syntax """
+        """Set the view syntax."""
+
         if self.output_view is not None:
             # Get syntax language and set it
             self.output_view.set_syntax_file(self.syntax)
 
     def write_file(self, edit, show_file):
-        """
-        Write data to a file if a location can be acquired,
-        if not save to a view buffer.
-        """
+        """Write data to a file if a location can be acquired else save to a view buffer."""
+
         errors = False
 
         if self.save_filename is not None and exists(self.save_filename):
@@ -133,7 +149,7 @@ class _LanguageConverter(sublime_plugin.TextCommand):
                 self.output = None
                 if show_file:
                     self.output_view = self.view.window().open_file(self.save_filename)
-            except:
+            except Exception:
                 errors = True
                 error_msg(self.errors["filewrite"], traceback.format_exc())
             if not errors and show_file:
@@ -144,7 +160,8 @@ class _LanguageConverter(sublime_plugin.TextCommand):
             self.write_buffer(edit, force_new_buffer=True)
 
     def write_buffer(self, edit, force_new_buffer=False):
-        """ Write the data to a view buffer """
+        """Write the data to a view buffer."""
+
         errors = False
         new_buffer = bool(self.settings.get("open_in_new_buffer", False))
 
@@ -173,13 +190,14 @@ class _LanguageConverter(sublime_plugin.TextCommand):
                 bin_output = None
             else:
                 self.output_view.set_encoding('UTF-8')
+                print(self.output)
                 self.output_view.replace(
                     edit,
                     sublime.Region(0, self.view.size()),
                     self.output
                 )
                 self.output = None
-        except:
+        except Exception:
             errors = True
             error_msg(self.errors["bufferwrite"], traceback.format_exc())
 
@@ -192,7 +210,8 @@ class _LanguageConverter(sublime_plugin.TextCommand):
             self.set_syntax()
 
     def is_enabled(self, **kwargs):
-        """ Determine if the command should be enabled """
+        """Determine if the command should be enabled."""
+
         enabled = True
         filename = self.view.file_name()
         view_okay = True
@@ -219,19 +238,23 @@ class _LanguageConverter(sublime_plugin.TextCommand):
         return enabled
 
     def get_output_file(self, filename):
-        """ Get output filename to save to """
+        """Get output filename to save to."""
+
         return None
 
     def read_source(self):
-        """ Read the source """
+        """Read the source."""
+
         return False
 
     def convert(self, edit):
-        """ Convert the read data to the desired format """
+        """Convert the read data to the desired format."""
+
         return False
 
     def run(self, edit, **kwargs):
-        """ Begin conversion """
+        """Begin conversion."""
+
         self.binary = kwargs.get('binary', False)
         self.save_binary = kwargs.get('save_binary', False)
         self.syntax = self.settings.get(self.lang, self.default_lang) if self.lang is not None else self.default_lang
@@ -249,11 +272,15 @@ class _LanguageConverter(sublime_plugin.TextCommand):
 # Plist <-> YAML
 ##########################
 class SerializedPlistToYamlCommand(_LanguageConverter):
+
+    """Convert PLIST to YAML."""
+
     lang = "yaml_language"
     default_lang = "Packages/YAML/YAML.tmLanguage"
 
     def get_output_file(self, filename):
-        """ Get output filename to save to """
+        """Get output filename to save to."""
+
         name = None
 
         if self.binary:
@@ -276,7 +303,8 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
         return name
 
     def read_source(self):
-        """ Read the source """
+        """Read the source."""
+
         errors = False
         ext_tbl = self.settings.get("yaml_strip_tabs_from", [])
         filename = self.view.file_name()
@@ -292,19 +320,20 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
             if self.binary and self.view.encoding() == 'Hexadecimal':
-                self.plist = plist.readPlistFromHexView(self.view)
+                self.plist = plist.read_plist_from_hex_view(self.view)
             elif self.binary and filename is not None and exists(filename):
-                self.plist = plist.readPlistFromFile(filename)
+                self.plist = plist.read_plist_from_file(filename)
             else:
-                self.plist = plist.readPlistFromView(self.view)
-        except:
+                self.plist = plist.read_plist_from_view(self.view)
+        except Exception:
             errors = True
             error_type = 'view2bplist' if self.binary else 'view2plist'
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def convert(self, edit):
-        """ Convert the read data to the desired format """
+        """Convert the read data to the desired format."""
+
         errors = False
         try:
             if not errors:
@@ -317,14 +346,14 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
                     default_flow_style = False
 
                 # Convert Python dict to Yaml buffer.
-                self.output = yaml.yamlDumps(
+                self.output = yaml.yaml_dumps(
                     self.plist,
                     default_flow_style=default_flow_style,
                     strip_tabs=self.strip_tabs,
                     detect_timestamp=self.settings.get("yaml_detect_timestamp", True)
                 )
                 self.plist = None
-        except:
+        except Exception:
             errors = True
             error_type = 'bplist2yaml' if self.binary else 'plist2yaml'
             error_msg(self.errors[error_type], traceback.format_exc())
@@ -332,11 +361,15 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
 
 
 class SerializedYamlToPlistCommand(_LanguageConverter):
+
+    """Convert YAML to PLIST."""
+
     lang = "plist_language"
     default_lang = "Packages/XML/XML.tmLanguage"
 
     def get_output_file(self, filename):
-        """ Get output filename to save to """
+        """Get output filename to save to."""
+
         name = None
 
         if self.save_binary:
@@ -359,44 +392,47 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
         return name
 
     def read_source(self):
-        """ Read the source """
+        """Read the source."""
+
         errors = False
         try:
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.yaml = yaml.readYamlFromView(self.view)
-        except:
+            self.yaml = yaml.read_yaml_from_view(self.view)
+        except Exception:
             errors = True
             error_msg(self.errors["view2yaml"], traceback.format_exc())
         return errors
 
     def convert(self, edit):
-        """ Convert the read data to the desired format """
+        """Convert the read data to the desired format."""
+
         errors = False
         try:
             # Convert Python dict to PLIST buffer
             if self.save_binary:
-                self.output = plist.plistBinaryDumps(
+                self.output = plist.plist_binary_dumps(
                     self.yaml,
                     detect_timestamp=self.settings.get("plist_detect_timestamp", True),
                     none_handler=self.settings.get("plist_none_handler", "fail")
                 )
             else:
-                self.output = plist.plistDumps(
+                self.output = plist.plist_dumps(
                     self.yaml,
                     detect_timestamp=self.settings.get("plist_detect_timestamp", True),
                     none_handler=self.settings.get("plist_none_handler", "fail")
                 )
             self.yaml = None
-        except:
+        except Exception:
             errors = True
             error_type = 'yaml2bplist' if self.save_binary else 'yaml2plist'
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def run(self, edit, **kwargs):
-        """ Begin conversion """
+        """Begin conversion."""
+
         if kwargs.get('save_binary', False):
             self.lang = 'bplist_language'
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'
@@ -410,11 +446,14 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
 # Plist <-> JSON
 ##########################
 class SerializedPlistToJsonCommand(_LanguageConverter):
+
+    """Convert PLIST to JSON."""
+
     lang = "json_language"
     default_lang = "Packages/JavaScript/JSON.tmLanguage"
 
     def get_output_file(self, filename):
-        """ Get output filename to save to """
+        """Get output filename to save to."""
         name = None
 
         if self.binary:
@@ -437,7 +476,8 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
         return name
 
     def read_source(self):
-        """ Read the source """
+        """Read the source."""
+
         errors = False
         try:
             # Ensure view buffer is in a UTF8 format.
@@ -445,28 +485,29 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
             # Read view buffer as PLIST and dump to Python dict
             filename = self.view.file_name()
             if self.binary and self.view.encoding() == 'Hexadecimal':
-                self.plist = plist.readPlistFromHexView(self.view)
+                self.plist = plist.read_plist_from_hex_view(self.view)
             elif self.binary and filename is not None and exists(filename):
-                self.plist = plist.readPlistFromFile(filename)
+                self.plist = plist.read_plist_from_file(filename)
             else:
-                self.plist = plist.readPlistFromView(self.view)
-        except:
+                self.plist = plist.read_plist_from_view(self.view)
+        except Exception:
             errors = True
             error_type = 'view2bplist' if self.binary else 'view2plist'
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def convert(self, edit):
-        """ Convert the read data to the desired format """
+        """Convert the read data to the desired format."""
+
         errors = False
         try:
             if not errors:
-                self.output = json.jsonDumps(
+                self.output = json.json_dumps(
                     self.plist,
                     preserve_binary=self.settings.get("json_preserve_binary_data", True)
                 )
                 self.plist = None
-        except:
+        except Exception:
             errors = True
             error_type = 'bplist2json' if self.binary else 'plist2json'
             error_msg(self.errors[error_type], traceback.format_exc())
@@ -474,11 +515,15 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
 
 
 class SerializedJsonToPlistCommand(_LanguageConverter):
+
+    """Convert JSON to PLIST."""
+
     lang = "plist_language"
     default_lang = "Packages/XML/XML.tmLanguage"
 
     def get_output_file(self, filename):
-        """ Get output filename to save to """
+        """Get output filename to save to."""
+
         name = None
 
         if self.save_binary:
@@ -501,45 +546,48 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
         return name
 
     def read_source(self):
-        """ Read the source """
+        """Read the source."""
+
         errors = False
         try:
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.json = json.readJsonFromView(self.view)
+            self.json = json.read_json_from_view(self.view)
 
-        except:
+        except Exception:
             errors = True
             error_msg(self.errors["view2json"], traceback.format_exc())
         return errors
 
     def convert(self, edit):
-        """ Convert the read data to the desired format """
+        """Convert the read data to the desired format."""
+
         errors = False
         try:
             # Convert Python dict to PLIST buffer
             if self.save_binary:
-                self.output = plist.plistBinaryDumps(
+                self.output = plist.plist_binary_dumps(
                     self.json,
                     detect_timestamp=self.settings.get("plist_detect_timestamp", True),
                     none_handler=self.settings.get("plist_none_handler", "fail")
                 )
             else:
-                self.output = plist.plistDumps(
+                self.output = plist.plist_dumps(
                     self.json,
                     detect_timestamp=self.settings.get("plist_detect_timestamp", True),
                     none_handler=self.settings.get("plist_none_handler", "fail")
                 )
             self.json = None
-        except:
+        except Exception:
             errors = True
             error_type = 'json2bplist' if self.save_binary else 'json2plist'
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def run(self, edit, **kwargs):
-        """ Begin conversion """
+        """Begin conversion."""
+
         if kwargs.get('save_binary', False):
             self.lang = 'bplist_language'
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'
@@ -553,11 +601,14 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
 # YAML <-> JSON
 ##########################
 class SerializedJsonToYamlCommand(_LanguageConverter):
+
+    """Convert JSON to YAML."""
+
     lang = "yaml_language"
     default_lang = "Packages/YAML/YAML.tmLanguage"
 
     def get_output_file(self, filename):
-        """ Get output filename to save to """
+        """Get output filename to save to."""
         name = None
 
         # Try and find file ext in the ext table
@@ -573,7 +624,8 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
         return name
 
     def read_source(self):
-        """ Read the source """
+        """Read the source."""
+
         errors = False
         ext_tbl = self.settings.get("yaml_strip_tabs_from", [])
         filename = self.view.file_name()
@@ -588,14 +640,15 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
             # Ensure view buffer is in a UTF8 format.
             # Wrap string in a file structure so it can be accessed by readPlist
             # Read view buffer as PLIST and dump to Python dict
-            self.json = json.readJsonFromView(self.view)
-        except:
+            self.json = json.read_json_from_view(self.view)
+        except Exception:
             errors = True
             error_msg(self.errors["view2json"], traceback.format_exc())
         return errors
 
     def convert(self, edit):
-        """ Convert the read data to the desired format """
+        """Convert the read data to the desired format."""
+
         errors = False
         try:
             if not errors:
@@ -607,25 +660,29 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
                 elif flow_setting == "false":
                     default_flow_style = False
 
-                self.output = yaml.yamlDumps(
+                self.output = yaml.yaml_dumps(
                     self.json,
                     default_flow_style=default_flow_style,
                     strip_tabs=self.strip_tabs,
                     detect_timestamp=self.settings.get("yaml_detect_timestamp", True)
                 )
                 self.json = None
-        except:
+        except Exception:
             errors = True
             error_msg(self.errors["json2yaml"], traceback.format_exc())
         return errors
 
 
 class SerializedYamlToJsonCommand(_LanguageConverter):
+
+    """Convert YAML to JSON."""
+
     lang = "json_language"
     default_lang = "Packages/JavaScript/JSON.tmLanguage"
 
     def get_output_file(self, filename):
-        """ Get output filename to save to """
+        """Get output filename to save to."""
+
         name = None
 
         # Try and find file ext in the ext table
@@ -641,29 +698,31 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
         return name
 
     def read_source(self):
-        """ Read the source """
+        """Read the source."""
+
         errors = False
         try:
             # Strip comments and dangling commas from view buffer
             # Read view buffer as JSON
             # Dump data to Python dict
-            self.yaml = yaml.readYamlFromView(self.view)
-        except:
+            self.yaml = yaml.read_yaml_from_view(self.view)
+        except Exception:
             errors = True
             error_msg(self.errors["view2yaml"], traceback.format_exc())
         return errors
 
     def convert(self, edit):
-        """ Convert the read data to the desired format """
+        """Convert the read data to the desired format."""
+
         errors = False
         try:
             # Convert Python dict to PLIST buffer
-            self.output = json.jsonDumps(
+            self.output = json.json_dumps(
                 self.yaml,
                 preserve_binary=self.settings.get("json_preserve_binary_data", True)
             )
             self.yaml = None
-        except:
+        except Exception:
             errors = True
             error_msg(self.errors["yaml2json"], traceback.format_exc())
         return errors
@@ -673,11 +732,15 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
 # BPLIST <-> PLIST
 ##########################
 class SerializedPlistToPlistCommand(_LanguageConverter):
+
+    """Convert BPLIST <-> PLIST."""
+
     lang = 'plist_language'
     default_lang = 'Packages/Text/Plain text.tmLanguage'
 
     def get_output_file(self, filename):
-        """ Get output filename to save to """
+        """Get output filename to save to."""
+
         name = None
 
         # Try and find file ext in the ext table
@@ -703,7 +766,8 @@ class SerializedPlistToPlistCommand(_LanguageConverter):
         return name
 
     def read_source(self):
-        """ Read the source """
+        """Read the source."""
+
         errors = False
         try:
             # Ensure view buffer is in a UTF8 format.
@@ -711,43 +775,45 @@ class SerializedPlistToPlistCommand(_LanguageConverter):
             # Read view buffer as PLIST and dump to Python dict
             filename = self.view.file_name()
             if self.binary and self.view.encoding() == 'Hexadecimal':
-                self.plist = plist.readPlistFromHexView(self.view)
+                self.plist = plist.read_plist_from_hex_view(self.view)
             elif self.binary and filename is not None and exists(filename):
-                self.plist = plist.readPlistFromFile(filename)
+                self.plist = plist.read_plist_from_file(filename)
             else:
-                self.plist = plist.readPlistFromView(self.view)
-        except:
+                self.plist = plist.read_plist_from_view(self.view)
+        except Exception:
             errors = True
             error_type = 'view2bplist' if self.binary else 'view2plist'
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def convert(self, edit):
-        """ Convert the read data to the desired format """
+        """Convert the read data to the desired format."""
+
         errors = False
         try:
             # Convert Python dict to PLIST buffer
             if self.save_binary:
-                self.output = plist.plistBinaryDumps(
+                self.output = plist.plist_binary_dumps(
                     self.plist,
                     detect_timestamp=self.settings.get("plist_detect_timestamp", True),
                     none_handler=self.settings.get("plist_none_handler", "fail")
                 )
             else:
-                self.output = plist.plistDumps(
+                self.output = plist.plist_dumps(
                     self.plist,
                     detect_timestamp=self.settings.get("plist_detect_timestamp", True),
                     none_handler=self.settings.get("plist_none_handler", "fail")
                 )
             self.plist = None
-        except:
+        except Exception:
             errors = True
             error_type = "bplist2plist" if self.binary else 'plist2bplist'
             error_msg(self.errors[error_type], traceback.format_exc())
         return errors
 
     def run(self, edit, **kwargs):
-        """ Begin conversion """
+        """Begin conversion."""
+
         if kwargs.get('save_binary', False):
             self.lang = 'bplist_language'
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'

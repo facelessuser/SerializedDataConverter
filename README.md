@@ -1,3 +1,5 @@
+[![Unix Build Status][travis-image]][travis-link]
+![License][license-image]
 # SerializedDataConverter
 Convert between serialized data formats (plist | bplist | json | yaml)
 
@@ -6,18 +8,14 @@ Convert between serialized data formats (plist | bplist | json | yaml)
 # Third Party Libraries
 
 - pyyaml: https://github.com/yaml/pyyaml
-- plistlib: Sublime Text 3 currently uses Python 3.3, but Python 3.4 has a new version of plistlib that handles binary plists.  To get this functionality, we dropped the [Python 3.4 plistlib](https://hg.python.org/cpython/file/3.4/Lib/plistlib.py) directly into the plugin with minor changes to get it working in Python 3.3.
+- plistlib: Sublime Text 3 currently uses Python 3.3, but Python 3.4 has a new version of plistlib that handles binary plists.  To get this functionality, we dropped the [Python 3.4 plistlib](https://hg.python.org/cpython/file/3.4/Lib/plistlib.py) directly into the plugin with minor changes to get it working in Python 3.3.  Eventually this will be removed if Sublime moves to Python 3.4.
 
 # Documentation
 http://facelessuser.github.io/SerializedDataConverter/
 
 # License
-SerializedDataConverter is released under the MIT license.
+MIT except for PYYAML and plistlib.  See LICENSE for more info.
 
-Copyright (c) 2012 - 2015 Isaac Muse <isaacmuse@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+[travis-image]: https://img.shields.io/travis/facelessuser/SerializedDataConverter/master.svg
+[travis-link]: https://travis-ci.org/facelessuser/SerializedDataConverter
+[license-image]: https://img.shields.io/badge/license-MIT-blue.svg
