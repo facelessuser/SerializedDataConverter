@@ -1,36 +1,54 @@
 # User Guide {: .doctitle}
 Configuration and usage of SerializedDataConverter.
-{: .doctitle-info}
 
 ---
 
-# Commands
+## Commands
 All commands are accessible via the command palette.  Comments are not preserved during conversion.
 
-## Serialized Data Converter: (Type A) to (Type B)
+### Serialized Data Converter: (Type A) to (Type B)
 Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML). It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON.
 
+Note that when reading a BPLIST (binary PLIST), the encoding must be `Hexadecimal` or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can cause data to be lost.
+
+### Serialized Data Converter: Save (Type A) to (Type B)
+Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML) and saves it to the respective file type.  File name is determined by the appropriate setting (`plist_json_conversion_ext`|`plist_yaml_conversion_ext`|`json_yaml_conversion_ext`|`bplist_json_conversion_ext`|`bplist_yaml_conversion_ext`|`bplist_plist_conversion_ext`).  It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON. If the file to convert does not exist on disk, the converted file will not initially exist either, but it will only be shown in the view buffer until saved manually.
+
 Note that when reading a BPLIST (binary PLIST), the encoding must be `Hexadecimal` or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.
 
-## Serialized Data Converter: Save (Type A) to (Type B)
-Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML) and saves it to the respective file type.  File name is determined by the appropriate setting (`plist_json_conversion_ext`|`plist_yaml_conversion_ext`|`json_yaml_conversion_ext|bplist_json_conversion_ext|bplist_yaml_conversion_ext|bplist_plist_conversion_ext`).  It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON. If the file to convert does not exist on disk, the converted file will not initially exist either, but it will only be shown in the view buffer until saved manually.
+## Settings
+SerializedDataConverter has a number of settings that can be configured.
 
-Note that when reading a BPLIST (binary PLIST), the encoding must be `Hexadecimal` or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.
+### enable_save_to_file_commands
+Allows the disabling of the "save to file" commands in the command palette.
 
-# Settings
-## enable\_save\_to\_file\_commands
-Allows the disabling of the "save to file" commands in the command palette
+```js
+    // Enable creation of new file based on extension map containing the converted data
+    // If the current file to convert does not exist on disk, the converted file will default
+    // To being shown in a view buffer only, and will not be automatically saved to disk.
+    "enable_save_to_file_commands": true,
+```
 
-## enable\_show\_in\_buffer\_commands
-Allows the disabling of the "show conversion if view buffer" commands in the command palette
+### enable_show_in_buffer_commands
+Allows the disabling of the "show conversion in view buffer" commands in the command palette.
 
-## open\_in\_new\_buffer
+```js
+    // Enable show conversion in a view buffer
+    "enable_show_in_buffer_commands": true,
+```
+
+### open_in_new_buffer
 When a "show conversion in view buffer" command is executed, this will force the conversion to show up in its own new view buffer.
 
-## (Type A)\_(Type B)\_conversion_ext
-Allows you to provide a file name conversion mapping from any type extension to a another type extension and vice versa.  They are evaluated in the order they appear.  The name of the setting denotes which file type to which file the conversion rules apply to.  The mapping rules are defined by using the file type as the key, and the desired extension as the value.  The mapping works both ways.
+```js
+    // When converting buffer open conversion in new buffer
+    "open_in_new_buffer": true,
+```
 
-```javascript
+### (Type A)\_(Type B)\_conversion_ext
+Allows you to provide a file name conversion mapping from any type extension to a another type extension and vice versa.  They are evaluated in the order they appear.  The name of the setting denotes which file type to which file the conversion rules apply to.  The mapping rules are defined by using the file type as the key, and the desired extension as the value.  The mapping works both ways, so if the name is `plist_json_conversion_ext`, then it will convert in either direction; either PLIST --> JSON or JSON --> PLIST.
+
+```js
     // When saving converted data to a file, or when opening
     // conversion in new buffer use these extension maps for file name.
     // Extensions will be evaluated in the order listed below.
@@ -64,7 +82,7 @@ Allows you to provide a file name conversion mapping from any type extension to 
     ],
 ```
 
-## (Type)\_language
+### (Type)\_language
 Allows the selection of a given language file to be used for the converted buffer or file.
 
 ```javascript
@@ -75,8 +93,8 @@ Allows the selection of a given language file to be used for the converted buffe
     "bplist_language": "Packages/Text/Plain text.tmLanguage",
 ```
 
-## convert\_on\_save
-When a file with the specified extension is saved, the plugin will automatically run the conversion command on the file to save the converted form to disk as well.
+### convert_on_save
+When a file with the specified extension is saved, the plugin will automatically run the conversion command on the file and save the converted form to the disk.
 
 ```javascript
     "convert_on_save": [
@@ -90,7 +108,7 @@ When a file with the specified extension is saved, the plugin will automatically
     ],
 ```
 
-# yaml\_strip\_tabs_from
+### yaml_strip_tabs_from
 These are language extensions in which the converter will strip tabs from to ensure multi-lines aren't quoted with "\t".  It also strips trailing spaces from multi-line strings. This helps multi-line strings convert in a pretty format (does not guarantee all values will be convert to a pretty format, but increases the odds). If you are having trouble converting a file and getting a 1:1 translation, remove the file type.
 
 ```javascript
@@ -104,10 +122,10 @@ These are language extensions in which the converter will strip tabs from to ens
     ],
 ```
 
-## yaml\_default\_flow_style
+### yaml_default_flow_style
 Lets you control the YAML output flow style.
 
-```javascript
+```js
     // In most this should be left to "false" for easy reading, but feel free to change it
     // (none | true | false)
     // none shows things like this will (pretty good):
@@ -121,16 +139,26 @@ Lets you control the YAML output flow style.
     "yaml_default_flow_style": "false"
 ```
 
-## Other Conversion Controls
-There are some other knobs exposed allowing you to affect the conversion; they are listed below:
+### yaml_detect_timestamp
+Detects python datetime objects when converting to YAML and will convert them to the appropriate syntax for YAML.
 
-```javascript
+```js
     // Detect timestamps on conversion for yaml
     "yaml_detect_timestamp": true,
+```
 
+### plist_detect_timestamp
+When converting to PLIST, this will instruct the library to detect python datetime objects and convert them appropriately for PLIST.
+
+```js
     // Detect timestamps on conversion for plists
     "plist_detect_timestamp": true,
+```
 
+### json_preserve_binary_data
+When converting to JSON, binary types will be preserved as a special type so that when converting to YAML or PLIST, the data can be preserved.  The JSON spec doesn't really support binary types natively.
+
+```js
     // Preserve binary data when converting to JSON
     // This will create binary data in this form which
     // will be recongnized and representing in plist and yaml native binary format:
@@ -138,7 +166,18 @@ There are some other knobs exposed allowing you to affect the conversion; they a
     //        "!!python/object:plistlib.Data": "U29tZSBkYXRh"
     //    }
     "json_preserve_binary_data": true,
+```
 
+### plist_none_handler
+Sets how SerializedDataConverter will handle a `None` (or null) type when converting to PLIST.
+
+| Mode | Description |
+|------|-------------|
+| fail | This will let the conversion fail as null types are not in the spec. |
+| false | This will convert null types to the boolean value of `false`. |
+| strip | This will remove the null type attribute all together. |
+
+```js
     // When converting to a plist, and the structure contains none, the plugin should:
     //    - "fail": let the conversion fail
     //    - "false": set the None objects to False
@@ -146,7 +185,7 @@ There are some other knobs exposed allowing you to affect the conversion; they a
     "plist_none_handler": "fail"
 ```
 
-# Linux Issues (ST2 only)
+## Linux Issues (ST2 only)
 I have provided a fix for Ubuntu.  Ubuntu requires a full install of Python2.6, but it only comes with a minimal install by default.  You can enter the command below in your linux terminal to get the full install.
 
 `sudo apt-get install python2.6`
