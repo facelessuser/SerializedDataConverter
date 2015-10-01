@@ -349,6 +349,7 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
                 self.output = yaml.yaml_dumps(
                     self.plist,
                     default_flow_style=default_flow_style,
+                    indent=self.settings.get("yaml_indent"),
                     strip_tabs=self.strip_tabs,
                     detect_timestamp=self.settings.get("yaml_detect_timestamp", True)
                 )
@@ -663,6 +664,7 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
                 self.output = yaml.yaml_dumps(
                     self.json,
                     default_flow_style=default_flow_style,
+                    indent=self.settings.get("yaml_indent"),
                     strip_tabs=self.strip_tabs,
                     detect_timestamp=self.settings.get("yaml_detect_timestamp", True)
                 )
