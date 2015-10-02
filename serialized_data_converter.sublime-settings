@@ -73,6 +73,7 @@
         // {"ext": "tmTheme.YAML", "command": "yaml_to_plist"}
     ],
 
+    // Sets the indentation level for generated yaml
     "yaml_indent": 4,
 
     // These are language extensions in which the converter will strip tabs
