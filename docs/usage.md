@@ -147,6 +147,14 @@ Detects python datetime objects when converting to YAML and will convert them to
     "yaml_detect_timestamp": true,
 ```
 
+### yaml_indent
+Allows the configuration of YAML indentation.
+
+```js
+    // Sets the indentation level for generated yaml
+    "yaml_indent": 4,
+```
+
 ### plist_detect_timestamp
 When converting to PLIST, this will instruct the library to detect python datetime objects and convert them appropriately for PLIST.
 
