@@ -9,7 +9,7 @@ import sublime_plugin
 import codecs
 import re
 import traceback
-from os.path import exists, basename, splitext
+import os
 from SerializedDataConverter.lib.log import error_msg
 from SerializedDataConverter.lib import plist_includes as plist
 from SerializedDataConverter.lib import yaml_includes as yaml
@@ -135,7 +135,7 @@ class _LanguageConverter(sublime_plugin.TextCommand):
 
         errors = False
 
-        if self.save_filename is not None and exists(self.save_filename):
+        if self.save_filename is not None and os.path.exists(os.path.dirname(self.save_filename)):
             # Save content to UTF file
             try:
                 if self.save_binary:
@@ -203,7 +203,7 @@ class _LanguageConverter(sublime_plugin.TextCommand):
                 # If a name can be acquired from the original view,
                 # give buffer a modified derivative of the name.
                 if self.save_filename is not None:
-                    self.output_view.set_name(basename(self.save_filename))
+                    self.output_view.set_name(os.path.basename(self.save_filename))
             self.set_syntax()
 
     def is_enabled(self, **kwargs):
@@ -214,7 +214,7 @@ class _LanguageConverter(sublime_plugin.TextCommand):
         view_okay = True
         if (
             kwargs.get('binary', False) and
-            (filename is None or not exists(filename)) and
+            (filename is None or not os.path.exists(filename)) and
             self.view.encoding() != 'Hexadecimal'
         ):
             view_okay = False
@@ -295,7 +295,7 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
 
         # Could not find ext in table, replace current extension with default
         if name is None:
-            name = splitext(filename)[0] + ".YAML"
+            name = os.path.splitext(filename)[0] + ".YAML"
         return name
 
     def read_source(self):
@@ -317,7 +317,7 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
             # Read view buffer as PLIST and dump to Python dict
             if self.binary and self.view.encoding() == 'Hexadecimal':
                 self.plist = plist.read_plist_from_hex_view(self.view)
-            elif self.binary and filename is not None and exists(filename):
+            elif self.binary and filename is not None and os.path.exists(filename):
                 self.plist = plist.read_plist_from_file(filename)
             else:
                 self.plist = plist.read_plist_from_view(self.view)
@@ -384,7 +384,7 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
 
         # Could not find ext in table, replace current extension with default
         if name is None:
-            name = splitext(filename)[0] + ".plist"
+            name = os.path.splitext(filename)[0] + ".plist"
         return name
 
     def read_source(self):
@@ -467,7 +467,7 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
 
         # Could not find ext in table, replace current extension with default
         if name is None:
-            name = splitext(filename)[0] + ".JSON"
+            name = os.path.splitext(filename)[0] + ".JSON"
         return name
 
     def read_source(self):
@@ -481,7 +481,7 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
             filename = self.view.file_name()
             if self.binary and self.view.encoding() == 'Hexadecimal':
                 self.plist = plist.read_plist_from_hex_view(self.view)
-            elif self.binary and filename is not None and exists(filename):
+            elif self.binary and filename is not None and os.path.exists(filename):
                 self.plist = plist.read_plist_from_file(filename)
             else:
                 self.plist = plist.read_plist_from_view(self.view)
@@ -536,7 +536,7 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
 
         # Could not find ext in table, replace current extension with default
         if name is None:
-            name = splitext(filename)[0] + ".plist"
+            name = os.path.splitext(filename)[0] + ".plist"
         return name
 
     def read_source(self):
@@ -613,7 +613,7 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
 
         # Could not find ext in table, replace current extension with default
         if name is None:
-            name = splitext(filename)[0] + ".YAML"
+            name = os.path.splitext(filename)[0] + ".YAML"
         return name
 
     def read_source(self):
@@ -687,7 +687,7 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
 
         # Could not find ext in table, replace current extension with default
         if name is None:
-            name = splitext(filename)[0] + ".JSON"
+            name = os.path.splitext(filename)[0] + ".JSON"
         return name
 
     def read_source(self):
@@ -753,7 +753,7 @@ class SerializedPlistToPlistCommand(_LanguageConverter):
 
         # Could not find ext in table, replace current extension with default
         if name is None:
-            name = splitext(filename)[0] + default_out
+            name = os.path.splitext(filename)[0] + default_out
 
         return name
 
@@ -768,7 +768,7 @@ class SerializedPlistToPlistCommand(_LanguageConverter):
             filename = self.view.file_name()
             if self.binary and self.view.encoding() == 'Hexadecimal':
                 self.plist = plist.read_plist_from_hex_view(self.view)
-            elif self.binary and filename is not None and exists(filename):
+            elif self.binary and filename is not None and os.path.exists(filename):
                 self.plist = plist.read_plist_from_file(filename)
             else:
                 self.plist = plist.read_plist_from_view(self.view)
