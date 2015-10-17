@@ -190,7 +190,6 @@ class _LanguageConverter(sublime_plugin.TextCommand):
                 bin_output = None
             else:
                 self.output_view.set_encoding('UTF-8')
-                print(self.output)
                 self.output_view.replace(
                     edit,
                     sublime.Region(0, self.view.size()),
