@@ -25,7 +25,6 @@ def to_hex(value):
 
 
 class SerializedDataConverterListener(sublime_plugin.EventListener):
-
     """Listener to convert certain files on save."""
 
     def on_post_save(self, view):
@@ -73,7 +72,6 @@ class SerializedDataConverterListener(sublime_plugin.EventListener):
 
 
 class _LanguageConverter(sublime_plugin.TextCommand):
-
     """Language converter base class."""
 
     lang = None
@@ -271,7 +269,6 @@ class _LanguageConverter(sublime_plugin.TextCommand):
 # Plist <-> YAML
 ##########################
 class SerializedPlistToYamlCommand(_LanguageConverter):
-
     """Convert PLIST to YAML."""
 
     lang = "yaml_language"
@@ -360,7 +357,6 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
 
 
 class SerializedYamlToPlistCommand(_LanguageConverter):
-
     """Convert YAML to PLIST."""
 
     lang = "plist_language"
@@ -445,7 +441,6 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
 # Plist <-> JSON
 ##########################
 class SerializedPlistToJsonCommand(_LanguageConverter):
-
     """Convert PLIST to JSON."""
 
     lang = "json_language"
@@ -514,7 +509,6 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
 
 
 class SerializedJsonToPlistCommand(_LanguageConverter):
-
     """Convert JSON to PLIST."""
 
     lang = "plist_language"
@@ -600,7 +594,6 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
 # YAML <-> JSON
 ##########################
 class SerializedJsonToYamlCommand(_LanguageConverter):
-
     """Convert JSON to YAML."""
 
     lang = "yaml_language"
@@ -673,7 +666,6 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
 
 
 class SerializedYamlToJsonCommand(_LanguageConverter):
-
     """Convert YAML to JSON."""
 
     lang = "json_language"
@@ -731,7 +723,6 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
 # BPLIST <-> PLIST
 ##########################
 class SerializedPlistToPlistCommand(_LanguageConverter):
-
     """Convert BPLIST <-> PLIST."""
 
     lang = 'plist_language'

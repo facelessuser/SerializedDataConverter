@@ -75,7 +75,6 @@ def yaml_load(stream, loader=yaml.Loader):
         return OrderedDict(loader.construct_pairs(node))
 
     class Loader(loader):
-
         """Custom loader."""
 
     Loader.add_constructor(
@@ -130,7 +129,6 @@ def yaml_dump(data, stream=None, dumper=yaml.Dumper, **kwargs):
         return node
 
     class Dumper(dumper):
-
         """Custom dumper."""
 
     Dumper.represent_scalar = my_represent_scalar
