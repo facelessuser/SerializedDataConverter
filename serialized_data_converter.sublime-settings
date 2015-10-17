@@ -73,6 +73,9 @@
         // {"ext": "tmTheme.YAML", "command": "yaml_to_plist"}
     ],
 
+    // Sets the indentation level for generated yaml
+    "yaml_indent": 4,
+
     // These are language extensions in which the converter will strip tabs
     // to ensure multilines aren't quoted with "\t".  It also strips trailing spaces
     // from multi-line strings. This helps multiline strings convert in a pretty format.

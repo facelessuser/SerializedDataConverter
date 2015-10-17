@@ -228,13 +228,13 @@ def read_yaml_from_view(view):
     )
 
 
-def yaml_dumps(obj, default_flow_style=None, strip_tabs=False, detect_timestamp=False):
+def yaml_dumps(obj, default_flow_style=None, indent=4, strip_tabs=False, detect_timestamp=False):
     """Wrapper for yaml dump."""
 
     return yaml_dump(
         yaml_convert_to(obj, strip_tabs, detect_timestamp),
         width=None,
-        indent=4,
+        indent=indent,
         allow_unicode=True,
         default_flow_style=default_flow_style
     )
