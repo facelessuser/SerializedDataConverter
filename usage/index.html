@@ -41,73 +41,57 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-      <ul class="current">
-    
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">About SerializedDataConverter</a>
         
-            <li class="toctree-l1 ">
-                <a class="" href="..">Home</a>
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../installation/">Installation</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">User Guide</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#user-guide">User Guide</a></li>
                 
-            </li>
-        
-
-    
-        
-            <li class="toctree-l1 current">
-                <a class="current" href="./">User Guide</a>
+                    <li><a class="toctree-l4" href="#commands">Commands</a></li>
                 
-                    <ul>
-                    
-                        <li class="toctree-l3"><a href="#user-guide">User Guide</a></li>
-                        
-                    
-                        <li class="toctree-l3"><a href="#commands">Commands</a></li>
-                        
-                            <li><a class="toctree-l4" href="#serialized-data-converter-type-a-to-type-b">Serialized Data Converter: (Type A) to (Type B)</a></li>
-                        
-                            <li><a class="toctree-l4" href="#serialized-data-converter-save-type-a-to-type-b">Serialized Data Converter: Save (Type A) to (Type B)</a></li>
-                        
-                    
-                        <li class="toctree-l3"><a href="#settings">Settings</a></li>
-                        
-                            <li><a class="toctree-l4" href="#enable95save95to95file95commands">enable_save_to_file_commands</a></li>
-                        
-                            <li><a class="toctree-l4" href="#enable95show95in95buffer95commands">enable_show_in_buffer_commands</a></li>
-                        
-                            <li><a class="toctree-l4" href="#open95in95new95buffer">open_in_new_buffer</a></li>
-                        
-                            <li><a class="toctree-l4" href="#type-a95type-b95conversion_ext">(Type A)_(Type B)_conversion_ext</a></li>
-                        
-                            <li><a class="toctree-l4" href="#type95language">(Type)_language</a></li>
-                        
-                            <li><a class="toctree-l4" href="#convert95on95save">convert_on_save</a></li>
-                        
-                    
-                        <li class="toctree-l3"><a href="#yaml95strip95tabs_from">yaml_strip_tabs_from</a></li>
-                        
-                            <li><a class="toctree-l4" href="#yaml95default95flow_style">yaml_default_flow_style</a></li>
-                        
-                            <li><a class="toctree-l4" href="#other-conversion-controls">Other Conversion Controls</a></li>
-                        
-                    
-                        <li class="toctree-l3"><a href="#linux-issues-st2-only">Linux Issues (ST2 only)</a></li>
-                        
-                    
-                    </ul>
+                    <li><a class="toctree-l4" href="#settings">Settings</a></li>
                 
-            </li>
-        
-
-    
-        
-            <li class="toctree-l1 ">
-                <a class="" href="../license/">License</a>
+                    <li><a class="toctree-l4" href="#linux-issues-st2-only">Linux Issues (ST2 only)</a></li>
                 
-            </li>
+            
+            </ul>
         
-
-    
-</ul>
-
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../contributing/">Contributing &amp; Support</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../license/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
       </div>
       &nbsp;
     </nav>
@@ -144,25 +128,43 @@
             <div class="section">
               
                 <h1 class="doctitle" id="user-guide"><a name="user-content-user-guide" href="#user-guide" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>User Guide</h1>
-<p class="doctitle-info">Configuration and usage of SerializedDataConverter.<br /></p>
+<p>Configuration and usage of SerializedDataConverter.</p>
 <hr />
-<h1 id="commands"><a name="user-content-commands" href="#commands" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Commands</h1>
+<h2 id="commands"><a name="user-content-commands" href="#commands" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Commands</h2>
 <p>All commands are accessible via the command palette.  Comments are not preserved during conversion.</p>
-<h2 id="serialized-data-converter-type-a-to-type-b"><a name="user-content-serialized-data-converter-type-a-to-type-b" href="#serialized-data-converter-type-a-to-type-b" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Serialized Data Converter: (Type A) to (Type B)</h2>
+<h3 id="serialized-data-converter-type-a-to-type-b"><a name="user-content-serialized-data-converter-type-a-to-type-b" href="#serialized-data-converter-type-a-to-type-b" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Serialized Data Converter: (Type A) to (Type B)</h3>
 <p>Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML). It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON.</p>
+<p>Note that when reading a BPLIST (binary PLIST), the encoding must be <code>Hexadecimal</code> or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can cause data to be lost.</p>
+<h3 id="serialized-data-converter-save-type-a-to-type-b"><a name="user-content-serialized-data-converter-save-type-a-to-type-b" href="#serialized-data-converter-save-type-a-to-type-b" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Serialized Data Converter: Save (Type A) to (Type B)</h3>
+<p>Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML) and saves it to the respective file type.  File name is determined by the appropriate setting (<code>plist_json_conversion_ext</code>|<code>plist_yaml_conversion_ext</code>|<code>json_yaml_conversion_ext</code>|<code>bplist_json_conversion_ext</code>|<code>bplist_yaml_conversion_ext</code>|<code>bplist_plist_conversion_ext</code>).  It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON. If the file to convert does not exist on disk, the converted file will not initially exist either, but it will only be shown in the view buffer until saved manually.</p>
 <p>Note that when reading a BPLIST (binary PLIST), the encoding must be <code>Hexadecimal</code> or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.</p>
-<h2 id="serialized-data-converter-save-type-a-to-type-b"><a name="user-content-serialized-data-converter-save-type-a-to-type-b" href="#serialized-data-converter-save-type-a-to-type-b" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Serialized Data Converter: Save (Type A) to (Type B)</h2>
-<p>Command that converts an open (JSON|PLIST|BPLIST|YAML) file to (JSON|PLIST|BPLIST|YAML) and saves it to the respective file type.  File name is determined by the appropriate setting (<code>plist_json_conversion_ext</code>|<code>plist_yaml_conversion_ext</code>|<code>json_yaml_conversion_ext|bplist_json_conversion_ext|bplist_yaml_conversion_ext|bplist_plist_conversion_ext</code>).  It will strip C style comments and also try and catch forgotten trailing commas for JSON source files if converting from JSON. If the file to convert does not exist on disk, the converted file will not initially exist either, but it will only be shown in the view buffer until saved manually.</p>
-<p>Note that when reading a BPLIST (binary PLIST), the encoding must be <code>Hexadecimal</code> or the view must be a file that exists on disk so that the raw, un-encoded data can be acquired as encoding can lose some of the data.</p>
-<h1 id="settings"><a name="user-content-settings" href="#settings" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Settings</h1>
-<h2 id="enable95save95to95file95commands"><a name="user-content-enable95save95to95file95commands" href="#enable95save95to95file95commands" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>enable_save_to_file_commands</h2>
-<p>Allows the disabling of the &ldquo;save to file&rdquo; commands in the command palette</p>
-<h2 id="enable95show95in95buffer95commands"><a name="user-content-enable95show95in95buffer95commands" href="#enable95show95in95buffer95commands" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>enable_show_in_buffer_commands</h2>
-<p>Allows the disabling of the &ldquo;show conversion if view buffer&rdquo; commands in the command palette</p>
-<h2 id="open95in95new95buffer"><a name="user-content-open95in95new95buffer" href="#open95in95new95buffer" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>open_in_new_buffer</h2>
+<h2 id="settings"><a name="user-content-settings" href="#settings" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Settings</h2>
+<p>SerializedDataConverter has a number of settings that can be configured.</p>
+<h3 id="enable_save_to_file_commands"><a name="user-content-enable_save_to_file_commands" href="#enable_save_to_file_commands" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>enable_save_to_file_commands</h3>
+<p>Allows the disabling of the &ldquo;save to file&rdquo; commands in the command palette.</p>
+<div class="codehilite"><pre>    <span class="c1">// Enable creation of new file based on extension map containing the converted data</span>
+    <span class="c1">// If the current file to convert does not exist on disk, the converted file will default</span>
+    <span class="c1">// To being shown in a view buffer only, and will not be automatically saved to disk.</span>
+    <span class="s2">&quot;enable_save_to_file_commands&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</pre></div>
+
+
+<h3 id="enable_show_in_buffer_commands"><a name="user-content-enable_show_in_buffer_commands" href="#enable_show_in_buffer_commands" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>enable_show_in_buffer_commands</h3>
+<p>Allows the disabling of the &ldquo;show conversion in view buffer&rdquo; commands in the command palette.</p>
+<div class="codehilite"><pre>    <span class="c1">// Enable show conversion in a view buffer</span>
+    <span class="s2">&quot;enable_show_in_buffer_commands&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</pre></div>
+
+
+<h3 id="open_in_new_buffer"><a name="user-content-open_in_new_buffer" href="#open_in_new_buffer" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>open_in_new_buffer</h3>
 <p>When a &ldquo;show conversion in view buffer&rdquo; command is executed, this will force the conversion to show up in its own new view buffer.</p>
-<h2 id="type-a95type-b95conversion_ext"><a name="user-content-type-a95type-b95conversion_ext" href="#type-a95type-b95conversion_ext" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>(Type A)_(Type B)_conversion_ext</h2>
-<p>Allows you to provide a file name conversion mapping from any type extension to a another type extension and vice versa.  They are evaluated in the order they appear.  The name of the setting denotes which file type to which file the conversion rules apply to.  The mapping rules are defined by using the file type as the key, and the desired extension as the value.  The mapping works both ways.</p>
+<div class="codehilite"><pre>    <span class="c1">// When converting buffer open conversion in new buffer</span>
+    <span class="s2">&quot;open_in_new_buffer&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</pre></div>
+
+
+<h3 id="type-a95type-b95conversion_ext"><a name="user-content-type-a95type-b95conversion_ext" href="#type-a95type-b95conversion_ext" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>(Type A)_(Type B)_conversion_ext</h3>
+<p>Allows you to provide a file name conversion mapping from any type extension to a another type extension and vice versa.  They are evaluated in the order they appear.  The name of the setting denotes which file type to which file the conversion rules apply to.  The mapping rules are defined by using the file type as the key, and the desired extension as the value.  The mapping works both ways, so if the name is <code>plist_json_conversion_ext</code>, then it will convert in either direction; either PLIST &rarr; JSON or JSON &rarr; PLIST.</p>
 <div class="codehilite"><pre>    <span class="c1">// When saving converted data to a file, or when opening</span>
     <span class="c1">// conversion in new buffer use these extension maps for file name.</span>
     <span class="c1">// Extensions will be evaluated in the order listed below.</span>
@@ -197,7 +199,7 @@
 </pre></div>
 
 
-<h2 id="type95language"><a name="user-content-type95language" href="#type95language" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>(Type)_language</h2>
+<h3 id="type95language"><a name="user-content-type95language" href="#type95language" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>(Type)_language</h3>
 <p>Allows the selection of a given language file to be used for the converted buffer or file.</p>
 <div class="codehilite"><pre>    <span class="c1">// Languages to use on conversion</span>
     <span class="s2">&quot;json_language&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/JavaScript/JSON.tmLanguage&quot;</span><span class="p">,</span>
@@ -207,8 +209,8 @@
 </pre></div>
 
 
-<h2 id="convert95on95save"><a name="user-content-convert95on95save" href="#convert95on95save" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>convert_on_save</h2>
-<p>When a file with the specified extension is saved, the plugin will automatically run the conversion command on the file to save the converted form to disk as well.</p>
+<h3 id="convert_on_save"><a name="user-content-convert_on_save" href="#convert_on_save" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>convert_on_save</h3>
+<p>When a file with the specified extension is saved, the plugin will automatically run the conversion command on the file and save the converted form to the disk.</p>
 <div class="codehilite"><pre>    <span class="s2">&quot;convert_on_save&quot;</span><span class="o">:</span> <span class="p">[</span>
         <span class="c1">// Enable or add what you would like</span>
         <span class="c1">// {&quot;ext&quot;: &quot;tmLanguage.JSON&quot;, &quot;command&quot;: &quot;json_to_plist&quot;},</span>
@@ -221,7 +223,7 @@
 </pre></div>
 
 
-<h1 id="yaml95strip95tabs_from"><a name="user-content-yaml95strip95tabs_from" href="#yaml95strip95tabs_from" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>yaml_strip_tabs_from</h1>
+<h3 id="yaml_strip_tabs_from"><a name="user-content-yaml_strip_tabs_from" href="#yaml_strip_tabs_from" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>yaml_strip_tabs_from</h3>
 <p>These are language extensions in which the converter will strip tabs from to ensure multi-lines aren&rsquo;t quoted with &ldquo;\t&rdquo;.  It also strips trailing spaces from multi-line strings. This helps multi-line strings convert in a pretty format (does not guarantee all values will be convert to a pretty format, but increases the odds). If you are having trouble converting a file and getting a 1:1 translation, remove the file type.</p>
 <div class="codehilite"><pre>    <span class="s2">&quot;yaml_strip_tabs_from&quot;</span><span class="o">:</span> <span class="p">[</span>
         <span class="s2">&quot;tmLanguage&quot;</span><span class="p">,</span>
@@ -234,7 +236,7 @@
 </pre></div>
 
 
-<h2 id="yaml95default95flow_style"><a name="user-content-yaml95default95flow_style" href="#yaml95default95flow_style" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>yaml_default_flow_style</h2>
+<h3 id="yaml_default_flow_style"><a name="user-content-yaml_default_flow_style" href="#yaml_default_flow_style" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>yaml_default_flow_style</h3>
 <p>Lets you control the YAML output flow style.</p>
 <div class="codehilite"><pre>    <span class="c1">// In most this should be left to &quot;false&quot; for easy reading, but feel free to change it</span>
     <span class="c1">// (none | true | false)</span>
@@ -250,23 +252,64 @@
 </pre></div>
 
 
-<h2 id="other-conversion-controls"><a name="user-content-other-conversion-controls" href="#other-conversion-controls" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Other Conversion Controls</h2>
-<p>There are some other knobs exposed allowing you to affect the conversion; they are listed below:</p>
+<h3 id="yaml_detect_timestamp"><a name="user-content-yaml_detect_timestamp" href="#yaml_detect_timestamp" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>yaml_detect_timestamp</h3>
+<p>Detects python datetime objects when converting to YAML and will convert them to the appropriate syntax for YAML.</p>
 <div class="codehilite"><pre>    <span class="c1">// Detect timestamps on conversion for yaml</span>
     <span class="s2">&quot;yaml_detect_timestamp&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</pre></div>
 
-    <span class="c1">// Detect timestamps on conversion for plists</span>
+
+<h3 id="yaml_indent"><a name="user-content-yaml_indent" href="#yaml_indent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>yaml_indent</h3>
+<p>Allows the configuration of YAML indentation.</p>
+<div class="codehilite"><pre>    <span class="c1">// Sets the indentation level for generated yaml</span>
+    <span class="s2">&quot;yaml_indent&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+</pre></div>
+
+
+<h3 id="plist_detect_timestamp"><a name="user-content-plist_detect_timestamp" href="#plist_detect_timestamp" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>plist_detect_timestamp</h3>
+<p>When converting to PLIST, this will instruct the library to detect python datetime objects and convert them appropriately for PLIST.</p>
+<div class="codehilite"><pre>    <span class="c1">// Detect timestamps on conversion for plists</span>
     <span class="s2">&quot;plist_detect_timestamp&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</pre></div>
 
-    <span class="c1">// Preserve binary data when converting to JSON</span>
+
+<h3 id="json_preserve_binary_data"><a name="user-content-json_preserve_binary_data" href="#json_preserve_binary_data" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>json_preserve_binary_data</h3>
+<p>When converting to JSON, binary types will be preserved as a special type so that when converting to YAML or PLIST, the data can be preserved.  The JSON spec doesn&rsquo;t really support binary types natively.</p>
+<div class="codehilite"><pre>    <span class="c1">// Preserve binary data when converting to JSON</span>
     <span class="c1">// This will create binary data in this form which</span>
     <span class="c1">// will be recongnized and representing in plist and yaml native binary format:</span>
     <span class="c1">//    {</span>
     <span class="c1">//        &quot;!!python/object:plistlib.Data&quot;: &quot;U29tZSBkYXRh&quot;</span>
     <span class="c1">//    }</span>
     <span class="s2">&quot;json_preserve_binary_data&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</pre></div>
 
-    <span class="c1">// When converting to a plist, and the structure contains none, the plugin should:</span>
+
+<h3 id="plist_none_handler"><a name="user-content-plist_none_handler" href="#plist_none_handler" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>plist_none_handler</h3>
+<p>Sets how SerializedDataConverter will handle a <code>None</code> (or null) type when converting to PLIST.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fail</td>
+<td>This will let the conversion fail as null types are not in the spec.</td>
+</tr>
+<tr>
+<td>false</td>
+<td>This will convert null types to the boolean value of <code>false</code>.</td>
+</tr>
+<tr>
+<td>strip</td>
+<td>This will remove the null type attribute all together.</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><pre>    <span class="c1">// When converting to a plist, and the structure contains none, the plugin should:</span>
     <span class="c1">//    - &quot;fail&quot;: let the conversion fail</span>
     <span class="c1">//    - &quot;false&quot;: set the None objects to False</span>
     <span class="c1">//    - &quot;strip&quot;: strip the None members from the structure</span>
@@ -274,7 +317,7 @@
 </pre></div>
 
 
-<h1 id="linux-issues-st2-only"><a name="user-content-linux-issues-st2-only" href="#linux-issues-st2-only" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Linux Issues (ST2 only)</h1>
+<h2 id="linux-issues-st2-only"><a name="user-content-linux-issues-st2-only" href="#linux-issues-st2-only" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Linux Issues (ST2 only)</h2>
 <p>I have provided a fix for Ubuntu.  Ubuntu requires a full install of Python2.6, but it only comes with a minimal install by default.  You can enter the command below in your linux terminal to get the full install.</p>
 <p><code>sudo apt-get install python2.6</code></p>
 <p>I have provided the Python lib path in the settings file so it may be adapted for other distros in needed.</p>
@@ -286,10 +329,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../license/" class="btn btn-neutral float-right" title="License"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../contributing/" class="btn btn-neutral float-right" title="Contributing &amp; Support"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../installation/" class="btn btn-neutral" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -320,17 +363,13 @@
           <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../installation/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../license/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../contributing/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
 
-<!--
-MkDocs version      : 0.13.0.dev
-Docs Build Date UTC : 2015-04-29 00:40:40.601334
--->
 </body>
 </html>
