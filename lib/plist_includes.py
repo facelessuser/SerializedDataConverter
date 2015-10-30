@@ -7,8 +7,18 @@ Copyright (c) 2012 - 2015 Isaac Muse <isaacmuse@gmail.com>
 import sublime
 from . import plistlib
 import datetime
+import re
 
 __all__ = ("read_plist_from_view", "read_plist_from_file", "plist_dumps", "plist_binary_dumps")
+
+
+def strip_plist_comments(text):
+    """Strip comments from plist."""
+
+    return re.sub(
+        br"^[\r\n\s]*<!--[\s\S]*?-->[\s\r\n]*|<!--[\s\S]*?-->", b'',
+        text
+    )
 
 
 def convert_from_hex(view):
@@ -45,7 +55,7 @@ def read_plist_from_hex_view(view):
 
     return plist_convert_from(
         plistlib.readPlistFromBytes(
-            convert_from_hex(view)
+            strip_plist_comments(convert_from_hex(view))
         )
     )
 
@@ -55,15 +65,22 @@ def read_plist_from_view(view):
 
     return plist_convert_from(
         plistlib.readPlistFromBytes(
-            view.substr(
-                sublime.Region(0, view.size())
-            ).encode('utf8')
+            strip_plist_comments(
+                view.substr(
+                    sublime.Region(0, view.size())
+                ).encode('utf8')
+            )
         )
     )
 
 
 def read_plist_from_file(filename):
-    """Read PLIST from filename."""
+    """
+    Read PLIST from filename.
+
+    This is only used when reading binary plists,
+    so no need to strip comments.
+    """
 
     return plist_convert_from(
         plistlib.readPlist(filename)
