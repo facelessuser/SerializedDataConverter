@@ -8,6 +8,7 @@ import sublime
 from . import plistlib
 import datetime
 import re
+import collections
 
 __all__ = ("read_plist_from_view", "read_plist_from_file", "plist_dumps", "plist_binary_dumps")
 
@@ -96,10 +97,17 @@ def convert_timestamp(obj):
     return time_stamp
 
 
+def sorted_dict(obj):
+    """Sort dict."""
+
+    return collections.OrderedDict(sorted(obj.items()))
+
+
 def plist_convert_from(obj):
     """Convert specific plist items to a form usable by others."""
 
     if isinstance(obj, plistlib._InternalDict):
+        obj = sorted_dict(obj)
         for k, v in obj.items():
             obj[k] = plist_convert_from(v)
     elif isinstance(obj, list):
