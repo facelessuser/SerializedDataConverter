@@ -101,12 +101,6 @@ def convert_timestamp(obj):
     return time_stamp
 
 
-def sorted_dict(obj):
-    """Sort dict."""
-
-    return collections.OrderedDict(sorted(obj.items()))
-
-
 def plist_convert_from(obj):
     """Convert specific plist items to a form usable by others."""
 
