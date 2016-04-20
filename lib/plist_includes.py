@@ -37,8 +37,9 @@ def convert_from_hex(view):
 def plist_dumps(obj, detect_timestamp=False, none_handler="fail"):
     """Wrapper for PLIST dump."""
 
-    return plistlib.writePlistToBytes(
-        plist_convert_to(obj, detect_timestamp, none_handler)
+    return plistlib.dumps(
+        plist_convert_to(obj, detect_timestamp, none_handler),
+        sort_keys=False
     ).decode('utf-8')
 
 
@@ -47,7 +48,8 @@ def plist_binary_dumps(obj, detect_timestamp=False, none_handler="fail"):
 
     return plistlib.dumps(
         plist_convert_to(obj, detect_timestamp, none_handler),
-        fmt=plistlib.FMT_BINARY
+        fmt=plistlib.FMT_BINARY,
+        sort_keys=False
     )
 
 
@@ -55,8 +57,9 @@ def read_plist_from_hex_view(view):
     """Read PLIST from a Sublime hex view."""
 
     return plist_convert_from(
-        plistlib.readPlistFromBytes(
-            strip_plist_comments(convert_from_hex(view))
+        plistlib.loads(
+            strip_plist_comments(convert_from_hex(view)),
+            dict_type=collections.OrderedDict
         )
     )
 
@@ -65,12 +68,13 @@ def read_plist_from_view(view):
     """Read PLIST from  a Sublime view."""
 
     return plist_convert_from(
-        plistlib.readPlistFromBytes(
+        plistlib.loads(
             strip_plist_comments(
                 view.substr(
                     sublime.Region(0, view.size())
                 ).encode('utf8')
-            )
+            ),
+            dict_type=collections.OrderedDict
         )
     )
 
@@ -84,7 +88,7 @@ def read_plist_from_file(filename):
     """
 
     return plist_convert_from(
-        plistlib.readPlist(filename)
+        plistlib.readPlist(filename, dict_type=collections.OrderedDict)
     )
 
 
@@ -106,8 +110,7 @@ def sorted_dict(obj):
 def plist_convert_from(obj):
     """Convert specific plist items to a form usable by others."""
 
-    if isinstance(obj, plistlib._InternalDict):
-        obj = sorted_dict(obj)
+    if isinstance(obj, (collections.OrderedDict, plistlib._InternalDict)):
         for k, v in obj.items():
             obj[k] = plist_convert_from(v)
     elif isinstance(obj, list):
