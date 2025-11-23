@@ -1,8 +1,8 @@
 {
     // Languages to use on conversion
-    "json_language": "Packages/JavaScript/JSON.tmLanguage",
-    "yaml_language": "Packages/YAML/YAML.tmLanguage",
-    "plist_language": "Packages/XML/XML.tmLanguage",
+    "json_language": "Packages/JSON/JSON.sublime-syntax",
+    "yaml_language": "Packages/YAML/YAML.sublime-syntax",
+    "plist_language": "Packages/XML/XML.sublime-syntax",
     "bplist_language": "Packages/Text/Plain text.tmLanguage",
 
     // When converting buffer open conversion in new buffer

@@ -1,4 +1,3 @@
-[![Unix Build Status][travis-image]][travis-link]
 ![License][license-image]
 # SerializedDataConverter
 Convert between serialized data formats (plist | bplist | json | yaml)
@@ -16,6 +15,4 @@ http://facelessuser.github.io/SerializedDataConverter/
 # License
 MIT except for PYYAML and plistlib.  See LICENSE for more info.
 
-[travis-image]: https://img.shields.io/travis/facelessuser/SerializedDataConverter/master.svg
-[travis-link]: https://travis-ci.org/facelessuser/SerializedDataConverter
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg

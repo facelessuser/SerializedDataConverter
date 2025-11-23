@@ -71,6 +71,19 @@ class SerializedDataConverterListener(sublime_plugin.EventListener):
         )
 
 
+class SerializedUpdateBufferCommand(sublime_plugin.TextCommand):
+    """A command dedicated to updating a new serialized data view."""
+
+    def run(self, edit, text):
+        """Insert the provided text."""
+
+        self.view.replace(
+            edit,
+            sublime.Region(0, self.view.size()),
+            text
+        )
+
+
 class _LanguageConverter(sublime_plugin.TextCommand):
     """Language converter base class."""
 
@@ -160,12 +173,18 @@ class _LanguageConverter(sublime_plugin.TextCommand):
     def write_buffer(self, edit, force_new_buffer=False):
         """Write the data to a view buffer."""
 
-        errors = False
         new_buffer = bool(self.settings.get("open_in_new_buffer", False))
 
         # Save content to view buffer
         try:
             self.output_view = self.view.window().new_file() if new_buffer or force_new_buffer else self.view
+            if new_buffer or force_new_buffer:
+                # If a name can be acquired from the original view,
+                # give buffer a modified derivative of the name.
+                if self.save_filename is not None:
+                    self.output_view.set_name(os.path.basename(self.save_filename))
+            self.set_syntax()
+
             if self.save_binary:
                 self.output_view.set_encoding('Hexadecimal')
                 bin_output = []
@@ -180,31 +199,15 @@ class _LanguageConverter(sublime_plugin.TextCommand):
                             bin_output.append(to_hex(b))
                     count += 1
                 self.output = None
-                self.output_view.replace(
-                    edit,
-                    sublime.Region(0, self.view.size()),
-                    ''.join(bin_output)
-                )
+                self.output_view.run_command('serialized_update_buffer', {'text': ''.join(bin_output)})
                 bin_output = None
             else:
                 self.output_view.set_encoding('UTF-8')
-                self.output_view.replace(
-                    edit,
-                    sublime.Region(0, self.view.size()),
-                    self.output
-                )
+                self.output_view.run_command('serialized_update_buffer', {'text': self.output})
                 self.output = None
         except Exception:
-            errors = True
             error_msg(self.errors["bufferwrite"], traceback.format_exc())
-
-        if not errors:
-            if new_buffer or force_new_buffer:
-                # If a name can be acquired from the original view,
-                # give buffer a modified derivative of the name.
-                if self.save_filename is not None:
-                    self.output_view.set_name(os.path.basename(self.save_filename))
-            self.set_syntax()
+            self.output = None
 
     def is_enabled(self, **kwargs):
         """Determine if the command should be enabled."""
@@ -272,7 +275,7 @@ class SerializedPlistToYamlCommand(_LanguageConverter):
     """Convert PLIST to YAML."""
 
     lang = "yaml_language"
-    default_lang = "Packages/YAML/YAML.tmLanguage"
+    default_lang = "Packages/YAML/YAML.sublime-syntax"
 
     def get_output_file(self, filename):
         """Get output filename to save to."""
@@ -361,7 +364,7 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
     """Convert YAML to PLIST."""
 
     lang = "plist_language"
-    default_lang = "Packages/XML/XML.tmLanguage"
+    default_lang = "Packages/XML/XML.sublime-syntax"
 
     def get_output_file(self, filename):
         """Get output filename to save to."""
@@ -434,7 +437,7 @@ class SerializedYamlToPlistCommand(_LanguageConverter):
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'
         else:
             self.lang = 'plist_language'
-            self.default_lang = 'Packages/XML/XML.tmLanguage'
+            self.default_lang = 'Packages/XML/XML.sublime-syntax'
         super().run(edit, **kwargs)
 
 
@@ -445,7 +448,7 @@ class SerializedPlistToJsonCommand(_LanguageConverter):
     """Convert PLIST to JSON."""
 
     lang = "json_language"
-    default_lang = "Packages/JavaScript/JSON.tmLanguage"
+    default_lang = "Packages/JSON/JSON.sublime-syntax"
 
     def get_output_file(self, filename):
         """Get output filename to save to."""
@@ -513,7 +516,7 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
     """Convert JSON to PLIST."""
 
     lang = "plist_language"
-    default_lang = "Packages/XML/XML.tmLanguage"
+    default_lang = "Packages/XML/XML.sublime-syntax"
 
     def get_output_file(self, filename):
         """Get output filename to save to."""
@@ -587,7 +590,7 @@ class SerializedJsonToPlistCommand(_LanguageConverter):
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'
         else:
             self.lang = 'plist_language'
-            self.default_lang = 'Packages/XML/XML.tmLanguage'
+            self.default_lang = 'Packages/XML/XML.sublime-syntax'
         super().run(edit, **kwargs)
 
 
@@ -598,7 +601,7 @@ class SerializedJsonToYamlCommand(_LanguageConverter):
     """Convert JSON to YAML."""
 
     lang = "yaml_language"
-    default_lang = "Packages/YAML/YAML.tmLanguage"
+    default_lang = "Packages/YAML/YAML.sublime-syntax"
 
     def get_output_file(self, filename):
         """Get output filename to save to."""
@@ -671,7 +674,7 @@ class SerializedYamlToJsonCommand(_LanguageConverter):
     """Convert YAML to JSON."""
 
     lang = "json_language"
-    default_lang = "Packages/JavaScript/JSON.tmLanguage"
+    default_lang = "Packages/JSON/JSON.sublime-syntax"
 
     def get_output_file(self, filename):
         """Get output filename to save to."""
@@ -811,5 +814,5 @@ class SerializedPlistToPlistCommand(_LanguageConverter):
             self.default_lang = 'Packages/Text/Plain text.tmLanguage'
         else:
             self.lang = 'plist_language'
-            self.default_lang = 'Packages/XML/XML.tmLanguage'
+            self.default_lang = 'Packages/XML/XML.sublime-syntax'
         super().run(edit, **kwargs)
