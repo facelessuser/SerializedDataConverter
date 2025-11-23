@@ -1,8 +1,8 @@
+[![Donate via PayPal][donate-image]][donate-link]
+[![Package Control Downloads][pc-image]][pc-link]
 ![License][license-image]
 # SerializedDataConverter
 Convert between serialized data formats (plist | bplist | json | yaml)
-
-<img src="https://dl.dropboxusercontent.com/u/342698/SerializedDataConverter/Example.png" border="0">
 
 # Third Party Libraries
 
@@ -15,4 +15,8 @@ http://facelessuser.github.io/SerializedDataConverter/
 # License
 MIT except for PYYAML and plistlib.  See LICENSE for more info.
 
-[license-image]: https://img.shields.io/badge/license-MIT-blue.svg
+[pc-image]: https://img.shields.io/packagecontrol/dt/SerializedDataConverter.svg?labelColor=333333&logo=sublime%20text
+[pc-link]: https://packagecontrol.io/packages/SerializedDataConverter
+[license-image]: https://img.shields.io/badge/license-MIT-blue.svg?labelColor=333333
+[donate-image]: https://img.shields.io/badge/Donate-PayPal-3fabd1?logo=paypal
+[donate-link]: https://www.paypal.me/facelessuser
