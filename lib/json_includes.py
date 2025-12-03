@@ -6,7 +6,6 @@ Copyright (c) 2012 - 2015 Isaac Muse <isaacmuse@gmail.com>
 """
 import sublime
 import json
-import plistlib
 import base64
 import collections
 from .file_strip.json import sanitize_json

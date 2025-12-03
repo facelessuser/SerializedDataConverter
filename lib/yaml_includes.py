@@ -7,7 +7,6 @@ Copyright (c) 2012 - 2015 Isaac Muse <isaacmuse@gmail.com>
 import sublime
 import datetime
 import yaml
-import plistlib
 from collections import OrderedDict
 import re
 
