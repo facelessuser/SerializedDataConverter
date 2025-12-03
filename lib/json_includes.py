@@ -41,7 +41,7 @@ def read_json_from_view(view):
 def json_convert_to(obj, preserve_binary=False):
     """Strip tabs and trailing spaces to allow block format to successfully be triggered."""
 
-    if isinstance(obj, (dict, collections.OrderedDict, plistlib._InternalDict)):
+    if isinstance(obj, (dict, collections.OrderedDict, dict)):
         for k, v in obj.items():
             obj[k] = json_convert_to(v, preserve_binary)
     elif isinstance(obj, list):
@@ -49,7 +49,7 @@ def json_convert_to(obj, preserve_binary=False):
         for v in obj:
             obj[count] = json_convert_to(v, preserve_binary)
             count += 1
-    elif isinstance(obj, plistlib.Data):
+    elif isinstance(obj, bytes):
         if preserve_binary:
             obj = collections.OrderedDict(
                 [("!!python/object:plistlib.Data", base64.b64encode(obj.data).decode("ascii"))]
@@ -66,7 +66,7 @@ def json_convert_from(obj):
     if isinstance(obj, (dict, collections.OrderedDict)):
         if len(obj) == 1 and "!!python/object:plistlib.Data" in obj:
             try:
-                obj = plistlib.Data(base64.decodebytes(obj["!!python/object:plistlib.Data"].encode('ascii')))
+                obj = bytes(base64.decodebytes(obj["!!python/object:plistlib.Data"].encode('ascii')))
             except Exception:
                 obj = obj["!!python/object:plistlib.Data"]
         else:

@@ -6,8 +6,8 @@ Copyright (c) 2012 - 2015 Isaac Muse <isaacmuse@gmail.com>
 """
 import sublime
 import datetime
-from . import pyyaml as yaml
-from . import plistlib
+import yaml
+import plistlib
 from collections import OrderedDict
 import re
 
@@ -48,7 +48,7 @@ def yaml_load(stream, loader=yaml.Loader):
     def binary_constructor(self, node):
         """Constructer to handle binary data."""
 
-        return plistlib.Data(self.construct_yaml_binary(node))
+        return bytes(self.construct_yaml_binary(node))
 
     def timestamp_constructor(self, node):
         """Constructor for YAML timestamp."""
@@ -135,13 +135,13 @@ def yaml_dump(data, stream=None, dumper=yaml.Dumper, **kwargs):
 
     # Handle python dict
     Dumper.add_representer(
-        plistlib._InternalDict,
+        dict,
         lambda self, data: self.represent_dict(data)
     )
 
     # Handle binary data
     Dumper.add_representer(
-        plistlib.Data,
+        bytes,
         lambda self, data: self.represent_binary(data.data)
     )
 
@@ -197,7 +197,7 @@ def convert_timestamp(obj):
 def yaml_convert_to(obj, strip_tabs=False, detect_timestamp=False):
     """Convert specific serialized objects before converting to YAML."""
 
-    if isinstance(obj, (dict, plistlib._InternalDict)):
+    if isinstance(obj, dict):
         for k, v in obj.items():
             obj[k] = yaml_convert_to(v, strip_tabs, detect_timestamp)
     elif isinstance(obj, list):
